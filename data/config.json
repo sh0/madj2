@@ -1,0 +1,131 @@
+//
+// MADJ configuration
+//
+
+{
+    // Media
+    "media" : [
+        "~/madj"
+    ],
+
+    // Soundcards
+    "soundcards" : [
+        {
+            "device" : "", // server address
+            "channels" : [ "left", "right" ]
+        }
+    ],
+
+    // Screens
+    "screens" : [
+        {
+            "name" : "screen_a",
+            "view_cols" : 2,
+            "view_rows" : 2,
+            "pos_x" : 0,
+            "pos_y" : 0,
+            "width" : 1024,
+            "height" : 768,
+            "fullscreen" : false,
+            "color" : "blue"
+        }
+    ],
+
+    // Tracker workspaces
+    "ws-tracker" : [
+        {
+            "name" : "work_a",
+            "screen" : "screen_a",
+            "slot" : 0,
+            "audio" : [ "left", "right" ]
+        }, {
+            "name" : "work_b",
+            "screen" : "screen_a",
+            "slot" : 1,
+            "audio" : [ "left" ]
+        }
+    ],
+
+    // Composite workspaces
+    "ws-composites" : [
+        {
+            "name" : "comp_a",
+            "screen" : "screen_a",
+            "slot" : 2,
+            "audio" : [ ]
+        }
+    ],
+
+    // Presentation workspaces
+    "ws-presentations" : [
+        {
+            "name" : "pres_a",
+            "screen" : "screen_a",
+            "slot" : 3,
+            "audio" : [ "right" ]
+        }
+    ],
+
+    // Joysticks
+    "joysticks" : [
+        {
+            "name" : "joy_a",
+            "dev" : "/dev/input/js0",
+            "color" : "orange",
+            "buttons" : [
+                "pad1", "pad2", "pad3", "pad4",
+                "lup", "rup", "ldown", "rdown",
+                "select", "start"
+            ],
+            "axes" : [
+                "lhatx", "lhaty",
+                "rhatx", "rhaty",
+                "arrowx", "arrowy"
+            ]
+        }
+    ],
+
+    // Keys
+    "keys" : [
+        // Keyboard
+        [ "screen_a", "escape", "system", "quit" ],
+        // Workspaces
+        [ "screen_a", "right", "focus", "next" ],
+        [ "screen_a", "left", "focus", "prev" ],
+        // File browser
+        [ "screen_a", "control_l+x", "current", "browser_toggle" ],
+        [ "screen_a", "return", "current", "browser_open" ],
+        [ "screen_a", "up", "current", "browser_up" ],
+        [ "screen_a", "down", "current", "browser_down" ],
+        [ "screen_a", "page_up", "current", "browser_pgup" ],
+        [ "screen_a", "page_down", "current", "browser_pgdn" ],
+        // Seek
+        [ "screen_a", "space", "current", "seek_pause" ],
+        [ "screen_a", "z", "current", "seek_play_rev" ],
+        [ "screen_a", "x", "current", "seek_play_fow" ],
+        [ "screen_a", "a", "current", "seek_play_slower" ],
+        [ "screen_a", "s", "current", "seek_play_faster" ],
+        [ "screen_a", "c", "current", "seek_sync_rev" ],
+        [ "screen_a", "v", "current", "seek_sync_fow" ],
+        // Visualizer
+        [ "screen_a", "control_l+q", "current", "visualizer_toggle" ],
+        [ "screen_a", "control_l+w", "current", "visualizer_prev" ],
+        [ "screen_a", "control_l+e", "current", "visualizer_next" ],
+
+        // Joysticks
+        [ "joy_a", "start", "system", "quit" ],
+        // Workspaces
+        [ "joy_a", "rdown+arrowx", "focus", "scroll" ],
+        // File selecting
+        [ "joy_a", "rup", "current", "file_browse" ],
+        // Master
+        [ "joy_a", "lup+pad1", "current", "sync_master" ],
+        [ "joy_a", "lup+pad2", "current", "sync_slave_free_flip" ],
+        // Arrows
+        [ "joy_a", "arrowx", "current", "arrow_x" ],
+        [ "joy_a", "arrowy", "current", "arrow_y" ],
+        [ "joy_a", "lhatx", "current", "hat_x" ],
+        [ "joy_a", "lhaty", "current", "hat_y" ]
+    ]
+}
+
