@@ -5,6 +5,7 @@
 
 // Internal
 #include "mj_config.h"
+#include "mj_global.h"
 #include "mj_context.h"
 
 // C
@@ -14,9 +15,6 @@
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 
-// Instance
-std::weak_ptr<c_context> g_madj;
-
 // Signal handler
 static void g_signal(int sig)
 {
@@ -25,10 +23,9 @@ static void g_signal(int sig)
         std::cout << "\r" << "Signal: Caught SIGINT, quitting!" << std::endl;
 
         // Kill instance
-        if (auto madj = g_madj.lock()) {
-            madj->kill();
-            g_madj.reset();
-        }
+        auto context = c_global::context;
+        if (context != false)
+            context->kill();
     }
 }
 
@@ -72,10 +69,8 @@ int main(int argc, char** argv)
     std::cout << boost::format("Build %s %s") % __TIME__ % __DATE__ << std::endl;
 
     // Create context
-    std::shared_ptr<c_context> madj;
     try {
-        madj = std::make_shared<c_context>(opt_config);
-        g_madj = madj;
+        c_global::context = std::make_shared<c_context>(opt_config);
     } catch (c_exception& ex) {
         msg_exception(ex, "Main: Failed to initialize main context, aborting!");
         return 1;
@@ -90,10 +85,10 @@ int main(int argc, char** argv)
         std::cout << "Main: Failed to set signal handler!" << std::endl;
 
     // Loop
-    madj->run();
+    c_global::context->run();
 
     // Close
-    madj.reset();
+    c_global::context.reset();
     return 0;
 }
 

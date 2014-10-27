@@ -6,8 +6,12 @@
 // Internal
 #include "mj_config.h"
 #include "mj_global.h"
+#include "mj_context.h"
 #include "vo_main.h"
 #include "vo_screen.h"
+
+// Boost
+#include <boost/algorithm/string.hpp>
 
 // Constructor and destructor
 c_video_screen::c_video_screen(
@@ -35,6 +39,9 @@ c_video_screen::c_video_screen(
         throw c_exception("Screen: Failed to initalize SDL!", { throw_format("name", m_name), throw_format("error", SDL_GetError()) });
 
     // Attributes
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
@@ -117,6 +124,35 @@ void c_video_screen::dispatch()
     }
     dbg_gl_check();
 
+    // Poll events
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+            case SDL_QUIT:
+                c_global::context->kill();
+                break;
+
+            case SDL_KEYDOWN:
+            case SDL_KEYUP:
+                SDL_Keysym key_sym = event.key.keysym;
+                std::string key_name = SDL_GetKeyName(key_sym.sym);
+                boost::algorithm::to_lower(key_name);
+                bool key_down = (event.type == SDL_KEYDOWN);
+                bool key_ctrl = ((key_sym.mod & KMOD_CTRL) != 0);
+                bool key_shift = ((key_sym.mod & KMOD_SHIFT) != 0);
+                bool key_alt = ((key_sym.mod & KMOD_ALT) != 0);
+                bool key_gui = ((key_sym.mod & KMOD_GUI) != 0);
+
+                if (key_sym.sym == SDLK_ESCAPE)
+                    c_global::context->kill();
+                else
+                    std::cout << "Screen: Key: " << key_name << std::endl;
+                //else
+                    //c_global::input->input_keyboard(key_name, key_down, key_ctrl, key_shift, key_alt, key_gui);
+                break;
+        }
+    }
+
     // Init screen drawing
     gl_init();
 
@@ -130,42 +166,7 @@ void c_video_screen::dispatch()
     dbg_gl_check();
 }
 
-// Input events
-/*
-void c_video_screen::input_dispatch(c_input* mgr)
-{
-    // Queue check
-    if (!gdk_events_pending())
-        return;
-
-    // Get events
-    GdkEvent* event;
-    while ((event = gdk_event_get()) != nullptr) {
-        // Check type
-        if (event->type == GDK_KEY_PRESS || event->type == GDK_KEY_RELEASE) {
-            uint32_t keyval = 0;
-            gdk_event_get_keyval(event, &keyval);
-            char* keyname = g_utf8_strdown(gdk_keyval_name(keyval), -1);
-            if (keyname) {
-                input_event(
-                    mgr, std::string(keyname),
-                    (event->type == GDK_KEY_PRESS ? 1.0 : 0.0)
-                );
-                g_free(keyname);
-            }
-        } else if (event->type == GDK_DESTROY || event->type == GDK_DELETE) {
-            msg_critical(
-                boost::format("Screen (%1%): Window destroyed!") %
-                m_name
-            );
-        }
-
-        // Free
-        gdk_event_free(event);
-    }
-}
-*/
-
+// GL functions
 bool c_video_screen::gl_init()
 {
     // Viewport
@@ -178,7 +179,7 @@ bool c_video_screen::gl_init()
 
     // Fragment properties
     glDisable(GL_BLEND);
-    glDisable(GL_TEXTURE_2D);
+    //glDisable(GL_TEXTURE_2D);
 
     // Clear
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

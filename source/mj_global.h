@@ -10,6 +10,7 @@
 #include "mj_config.h"
 
 // Declarations
+class c_context;
 class c_video;
 /*
 class c_media;
@@ -23,6 +24,7 @@ class c_global : c_noncopiable
 {
     public:
         // Subsystems
+        static std::shared_ptr<c_context> context;
         static std::shared_ptr<c_video> video;
         /*
         static std::shared_ptr<c_media> media;
