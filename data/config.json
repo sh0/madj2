@@ -24,14 +24,14 @@
             "view_rows" : 2,
             "pos_x" : 0,
             "pos_y" : 0,
-            "width" : 800,
-            "height" : 600,
+            "width" : 1024,
+            "height" : 768,
             "fullscreen" : false,
             "color" : "blue"
         }, {
             "name" : "screen_b",
-            "view_cols" : 1,
-            "view_rows" : 1,
+            "view_cols" : 3,
+            "view_rows" : 3,
             "pos_x" : 0,
             "pos_y" : 0,
             "width" : 800,

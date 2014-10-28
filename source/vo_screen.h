@@ -78,9 +78,6 @@ class c_video_screen : c_noncopiable
                     m_target(context->cegui_renderer().getDefaultRenderTarget()),
                     m_context(context->cegui_system().createGUIContext(m_target))
                 { }
-                ~c_cegui() {
-                    m_system.destroyGUIContext(m_context);
-                }
 
                 // Gets
                 CEGUI::RenderTarget& target() { return m_target; }
@@ -94,6 +91,7 @@ class c_video_screen : c_noncopiable
         };
         std::unique_ptr<c_cegui> m_cegui;
         CEGUI::GridLayoutContainer* m_cegui_glc;
+        //CEGUI::DefaultWindow* m_cegui_win;
 
         // GL functions
         bool gl_init();

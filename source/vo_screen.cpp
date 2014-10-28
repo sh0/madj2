@@ -71,9 +71,10 @@ c_video_screen::c_video_screen(
 
     CEGUI::SchemeManager::getSingleton().createFromFile("TaharezLook.scheme");
 
+    //m_cegui_win = reinterpret_cast<CEGUI::DefaultWindow*>(CEGUI::WindowManager::getSingletonPtr()->createWindow("DefaultWindow", name));
+    //m_cegui->context().setRootWindow(m_cegui_win);
     m_cegui_glc = reinterpret_cast<CEGUI::GridLayoutContainer*>(CEGUI::WindowManager::getSingletonPtr()->createWindow("GridLayoutContainer"));
     m_cegui_glc->setGridDimensions(m_view_cols, m_view_rows);
-    m_cegui->context().setRootWindow(m_cegui_glc);
 
     // Error check
     dbg_gl_check();
@@ -104,13 +105,16 @@ c_video_screen::c_video_screen(
             m_view_list.push_back(view);
 
             // Window
-            m_cegui_glc->addChildToPosition(view->window(), x, y);
+            auto window = view->window();
+            window->setSize(CEGUI::USize(cegui_reldim(1.0f / m_view_cols), cegui_reldim(1.0f / m_view_rows)));
+            m_cegui_glc->addChildToPosition(window, x, y);
         }
     }
 
     // Refresh layout
     m_cegui_glc->layout();
-    //m_cegui_glc->notifyScreenAreaChanged(true);
+    //m_cegui_win->addChild(m_cegui_glc);
+    m_cegui->context().setRootWindow(m_cegui_glc);
 }
 
 c_video_screen::~c_video_screen()
@@ -173,14 +177,11 @@ void c_video_screen::dispatch()
     // CEGUI
     CEGUI::Rectf area(CEGUI::Vector2f(0.0f, 0.0f), CEGUI::Sizef(m_window_width, m_window_height));
     m_cegui->target().setArea(area);
-
-    //m_cegui_glc->layout();
-
-    m_cegui->target().activate();
+    //m_cegui->target().activate();
     m_context->cegui_renderer().beginRendering();
     m_cegui->context().draw();
     m_context->cegui_renderer().endRendering();
-    m_cegui->target().deactivate();
+    //m_cegui->target().deactivate();
 
     // Swap buffers
     SDL_GL_SwapWindow(m_window);
