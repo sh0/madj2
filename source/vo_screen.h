@@ -10,6 +10,7 @@
 #include "mj_config.h"
 #include "vo_opengl.h"
 #include "vo_context.h"
+#include "vo_view.h"
 
 // Screen class
 class c_video_screen : c_noncopiable
@@ -31,12 +32,10 @@ class c_video_screen : c_noncopiable
         const std::string& color() { return m_color; }
 
         // View
-        /*
         std::shared_ptr<c_video_view> view(uint id) {
             assert(m_view_list.size() > id);
             return m_view_list[id];
         }
-        */
 
         // Window
         int32_t width() { return m_window_width; }
@@ -57,7 +56,7 @@ class c_video_screen : c_noncopiable
         // View
         int m_view_cols;
         int m_view_rows;
-        //std::vector<std::shared_ptr<c_video_view>> m_view_list;
+        std::vector<std::shared_ptr<c_video_view>> m_view_list;
 
         // Window
         int m_window_pos_x;

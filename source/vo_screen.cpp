@@ -92,14 +92,13 @@ c_video_screen::c_video_screen(
                 view_h += m_window_height - ((view_h - 1) * m_view_rows + 1);
 
             // View
-            /*
             auto view = std::make_shared<c_video_view>(
+                m_context,
                 m_window_width, m_window_height,
                 view_x, m_window_height - (view_y + view_h),
                 view_x + view_w, m_window_height - view_y
             );
             m_view_list.push_back(view);
-            */
         }
     }
 }
@@ -157,8 +156,8 @@ void c_video_screen::dispatch()
     gl_init();
 
     // Viewport drawing
-    //for (auto &view : m_view_list)
-    //    view->draw();
+    for (auto& view : m_view_list)
+        view->dispatch();
     dbg_gl_check();
 
     // Swap buffers
