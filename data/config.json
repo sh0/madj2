@@ -28,7 +28,7 @@
             "height" : 768,
             "fullscreen" : false,
             "color" : "blue"
-        }, {
+        } /*, {
             "name" : "screen_b",
             "view_cols" : 3,
             "view_rows" : 3,
@@ -38,7 +38,7 @@
             "height" : 600,
             "fullscreen" : false,
             "color" : "red"
-        }
+        } */
     ],
 
     // Tracker workspaces
@@ -70,8 +70,8 @@
     "ws-presentations" : [
         {
             "name" : "pres_a",
-            "screen" : "screen_b",
-            "slot" : 0,
+            "screen" : "screen_a",
+            "slot" : 3,
             "audio" : [ "right" ]
         }
     ],
