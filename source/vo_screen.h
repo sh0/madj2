@@ -69,6 +69,32 @@ class c_video_screen : c_noncopiable
         // Context
         std::shared_ptr<c_video_context> m_context;
 
+        // CEGUI
+        class c_cegui {
+            public:
+                // Constructor and destructor
+                c_cegui(std::shared_ptr<c_video_context> context) :
+                    m_system(context->cegui_system()),
+                    m_target(context->cegui_renderer().getDefaultRenderTarget()),
+                    m_context(context->cegui_system().createGUIContext(m_target))
+                { }
+                ~c_cegui() {
+                    m_system.destroyGUIContext(m_context);
+                }
+
+                // Gets
+                CEGUI::RenderTarget& target() { return m_target; }
+                CEGUI::GUIContext& context() { return m_context; }
+
+            private:
+                // Objects
+                CEGUI::System& m_system;
+                CEGUI::RenderTarget& m_target;
+                CEGUI::GUIContext& m_context;
+        };
+        std::unique_ptr<c_cegui> m_cegui;
+        CEGUI::GridLayoutContainer* m_cegui_glc;
+
         // GL functions
         bool gl_init();
 };

@@ -62,6 +62,15 @@ c_video_screen::c_video_screen(
     if (SDL_GL_SetSwapInterval(0) != 0) // 0 = immediate, 1 = vertical retrace sync, -1 = late swap tearing
         std::cout << "Screen: Failed to set swap interval!" << std::endl;
 
+    // CEGUI
+    m_cegui = std::unique_ptr<c_cegui>(new c_cegui(m_context));
+
+    CEGUI::SchemeManager::getSingleton().createFromFile("TaharezLook.scheme");
+
+    m_cegui_glc = reinterpret_cast<CEGUI::GridLayoutContainer*>(CEGUI::WindowManager::getSingletonPtr()->createWindow("GridLayoutContainer"));
+    m_cegui_glc->setGridDimensions(m_view_cols, m_view_rows);
+    m_cegui->context().setRootWindow(m_cegui_glc);
+
     // Error check
     dbg_gl_check();
 
@@ -81,26 +90,22 @@ c_video_screen::c_video_screen(
             int view_w = (m_window_width + m_view_cols - 1) / m_view_cols;
             int view_h = (m_window_height + m_view_rows - 1) / m_view_rows;
 
-            // Start coordinates
-            int view_x = x * (view_w - 1);
-            int view_y = y * (view_h - 1);
-
-            // Final viewport size correction
-            if (x == m_view_cols - 1)
-                view_w += m_window_width - ((view_w - 1) * m_view_cols + 1);
-            if (y == m_view_rows - 1)
-                view_h += m_window_height - ((view_h - 1) * m_view_rows + 1);
+            // Name
+            std::string view_name;
+            view_name += "view_" + std::to_string(m_id);
+            view_name += "_" + std::to_string(x) + "x" + std::to_string(y);
 
             // View
-            auto view = std::make_shared<c_video_view>(
-                m_context,
-                m_window_width, m_window_height,
-                view_x, m_window_height - (view_y + view_h),
-                view_x + view_w, m_window_height - view_y
-            );
+            auto view = std::make_shared<c_video_view>(view_name, view_w, view_h);
             m_view_list.push_back(view);
+
+            // Window
+            m_cegui_glc->addChildToPosition(view->window(), x, y);
         }
     }
+
+    // Refresh layout
+    m_cegui_glc->layout();
 }
 
 c_video_screen::~c_video_screen()
@@ -159,6 +164,15 @@ void c_video_screen::dispatch()
     for (auto& view : m_view_list)
         view->dispatch();
     dbg_gl_check();
+
+    // CEGUI
+    CEGUI::Rectf area(CEGUI::Vector2f(0.0f, 0.0f), CEGUI::Sizef(m_window_width, m_window_height));
+    m_cegui->target().setArea(area);
+    m_cegui->target().activate();
+    m_context->cegui_renderer().beginRendering();
+    m_cegui->context().draw();
+    m_context->cegui_renderer().endRendering();
+    m_cegui->target().deactivate();
 
     // Swap buffers
     SDL_GL_SwapWindow(m_window);

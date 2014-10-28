@@ -21,31 +21,23 @@ class c_video_view : c_noncopiable
 {
     public:
         // Constructor and destructor
-        c_video_view(
-            std::shared_ptr<c_video_context> context,
-            int width, int height,
-            int view_l, int view_t, int view_r, int view_b
-        );
+        c_video_view(std::string name, int width, int height);
         ~c_video_view();
 
         // Dispatch
         void dispatch();
 
+        // Window
+        CEGUI::Window* window() { return m_window; }
+
     private:
-        // Video context
-        std::shared_ptr<c_video_context> m_video_context;
+        // Info
+        std::string m_name;
+        int m_width;
+        int m_height;
 
-        // Screen
-        int m_screen_width;
-        int m_screen_height;
-
-        // View
-        int m_view_l, m_view_t;
-        int m_view_r, m_view_b;
-
-        // CEGUI
-        CEGUI::RenderTarget& m_cegui_target;
-        CEGUI::GUIContext& m_cegui_context;
+        // Window
+        CEGUI::Window* m_window;
 };
 
 #endif
