@@ -24,10 +24,20 @@
             "view_rows" : 2,
             "pos_x" : 0,
             "pos_y" : 0,
-            "width" : 1024,
-            "height" : 768,
+            "width" : 800,
+            "height" : 600,
             "fullscreen" : false,
             "color" : "blue"
+        }, {
+            "name" : "screen_b",
+            "view_cols" : 1,
+            "view_rows" : 1,
+            "pos_x" : 0,
+            "pos_y" : 0,
+            "width" : 800,
+            "height" : 600,
+            "fullscreen" : false,
+            "color" : "red"
         }
     ],
 
@@ -60,8 +70,8 @@
     "ws-presentations" : [
         {
             "name" : "pres_a",
-            "screen" : "screen_a",
-            "slot" : 3,
+            "screen" : "screen_b",
+            "slot" : 0,
             "audio" : [ "right" ]
         }
     ],

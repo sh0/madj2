@@ -62,6 +62,10 @@ c_video_screen::c_video_screen(
     if (SDL_GL_SetSwapInterval(0) != 0) // 0 = immediate, 1 = vertical retrace sync, -1 = late swap tearing
         std::cout << "Screen: Failed to set swap interval!" << std::endl;
 
+    CEGUI::Rectf area(CEGUI::Vector2f(0.0f, 0.0f), CEGUI::Sizef(m_window_width, m_window_height));
+    m_context->cegui_renderer().getDefaultRenderTarget().setArea(area);
+    m_context->cegui_renderer().getDefaultRenderTarget().activate();
+
     // CEGUI
     m_cegui = std::unique_ptr<c_cegui>(new c_cegui(m_context));
 
@@ -106,6 +110,7 @@ c_video_screen::c_video_screen(
 
     // Refresh layout
     m_cegui_glc->layout();
+    //m_cegui_glc->notifyScreenAreaChanged(true);
 }
 
 c_video_screen::~c_video_screen()
@@ -168,6 +173,9 @@ void c_video_screen::dispatch()
     // CEGUI
     CEGUI::Rectf area(CEGUI::Vector2f(0.0f, 0.0f), CEGUI::Sizef(m_window_width, m_window_height));
     m_cegui->target().setArea(area);
+
+    //m_cegui_glc->layout();
+
     m_cegui->target().activate();
     m_context->cegui_renderer().beginRendering();
     m_cegui->context().draw();
