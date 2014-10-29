@@ -60,6 +60,55 @@ class c_io_midi : c_noncopiable
                 size_t m_size;
         };
         c_buffer m_buffer;
+
+        // Data
+        struct s_channel {
+            std::array<bool, 128> note;
+            std::array<uint8_t, 128> velocity;
+            std::array<uint8_t, 128> pressure;
+            std::array<uint8_t, 128> control;
+            int ch_program;
+            int ch_pressure;
+            int ch_bender;
+        };
+        std::array<s_channel, 16> m_channel;
+
+        // Read message opcodes
+        int read_op1(uint8_t* data, size_t size);
+        int read_op2(uint8_t* data, size_t size);
+
+        // Read channel messages
+        void read_note_off(int channel, int key, int velocity);
+        void read_note_on(int channel, int key, int velocity);
+        void read_note_pressure(int channel, int key, int pressure);
+        void read_control(int channel, int id, int value);
+        void read_program_change(int channel, int program);
+        void read_channel_pressure(int channel, int pressure);
+        void read_bender(int channel, int value);
+
+        // Read system exclusive messages
+        void read_sysex(uint8_t* data, size_t size);
+        void read_sysex_ohmrgb(int op, int device, uint8_t* data, size_t size);
+
+        // Read system common messages
+        void read_common_mtc_quarter(int id, int value);
+        void read_common_song_pos(int id);
+        void read_common_song_select(int id);
+        void read_common_tune_request();
+
+        // Read system real-time messages
+        void read_realtime_clock();
+        void read_realtime_start();
+        void read_realtime_continue();
+        void read_realtime_stop();
+        void read_realtime_sensing();
+        void read_realtime_reset();
+
+        // Write system exclusive messages
+        void write_sysex(std::vector<uint8_t> msg);
+        void write_sysex_ohmrgb(std::vector<uint8_t> msg);
+        void write_sysex_ohmrgb_save_settings() { write_sysex_ohmrgb({ 0x02 }); }
+        void write_sysex_ohmrgb_set_leds(std::vector<uint8_t> leds);
 };
 
 #endif

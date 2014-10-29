@@ -7,6 +7,7 @@
 #include "mj_config.h"
 #include "mj_global.h"
 #include "mj_context.h"
+#include "io_main.h"
 #include "vo_main.h"
 #include "vo_screen.h"
 
@@ -159,9 +160,7 @@ void c_video_screen::dispatch()
                 if (key_sym.sym == SDLK_ESCAPE)
                     c_global::context->kill();
                 else
-                    std::cout << "Screen: Key: " << key_name << std::endl;
-                //else
-                    //c_global::input->input_keyboard(key_name, key_down, key_ctrl, key_shift, key_alt, key_gui);
+                    c_global::io->input_keyboard(key_name, key_down, key_ctrl, key_shift, key_alt, key_gui);
                 break;
         }
     }

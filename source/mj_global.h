@@ -12,12 +12,7 @@
 // Declarations
 class c_context;
 class c_video;
-/*
-class c_media;
-class c_input;
-class c_audio;
-class c_workspace;
-*/
+class c_io;
 
 // Global state class
 class c_global : c_noncopiable
@@ -26,12 +21,7 @@ class c_global : c_noncopiable
         // Subsystems
         static std::shared_ptr<c_context> context;
         static std::shared_ptr<c_video> video;
-        /*
-        static std::shared_ptr<c_media> media;
-        static std::shared_ptr<c_input> input;
-        static std::shared_ptr<c_audio> audio;
-        static std::shared_ptr<c_workspace> workspace;
-        */
+        static std::shared_ptr<c_io> io;
 };
 
 #endif
