@@ -76,22 +76,12 @@
         }
     ],
 
-    // Joysticks
-    "joysticks" : [
+    // MIDI
+    "midi" : [
         {
-            "name" : "joy_a",
-            "dev" : "/dev/input/js0",
+            "name" : "midi_a",
             "color" : "orange",
-            "buttons" : [
-                "pad1", "pad2", "pad3", "pad4",
-                "lup", "rup", "ldown", "rdown",
-                "select", "start"
-            ],
-            "axes" : [
-                "lhatx", "lhaty",
-                "rhatx", "rhaty",
-                "arrowx", "arrowy"
-            ]
+            "device" : "hw:0,0"
         }
     ],
 

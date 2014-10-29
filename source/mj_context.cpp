@@ -6,6 +6,7 @@
 // Internal
 #include "mj_config.h"
 #include "mj_context.h"
+#include "io_main.h"
 #include "vo_main.h"
 
 // C++
@@ -64,11 +65,11 @@ c_context::c_context(std::string config_fn)
     }
 
     // Create subsystems
+    c_global::io = std::make_shared<c_io>();
     c_global::video = std::make_shared<c_video>();
 
     #if 0
     c_global::media = std::make_shared<c_media>(MJ_DATA_PATH);
-    c_global::input = std::make_shared<c_input>(this);
     c_global::audio = std::make_shared<c_audio>();
     c_global::extension = std::make_shared<c_extension>();
     c_global::workspace = std::make_shared<c_workspace>();
@@ -99,6 +100,17 @@ c_context::c_context(std::string config_fn)
         }
     }
     #endif
+
+    // MIDI
+    if (auto pt_root = ptree.get_child_optional("midi")) {
+        for (auto& pt_midi : *pt_root) {
+            c_global::io->midi_add(
+                pt_midi.second.get<std::string>("name"),
+                pt_midi.second.get<std::string>("color"),
+                pt_midi.second.get<std::string>("device")
+            );
+        }
+    }
 
     // Screen config
     if (auto pt_root = ptree.get_child_optional("screens")) {
@@ -192,13 +204,7 @@ c_context::~c_context()
 {
     // Reset subsystems
     c_global::video.reset();
-    #if 0
-    c_global::workspace.reset();
-    c_global::extension.reset();
-    c_global::audio.reset();
-    c_global::input.reset();
-    c_global::media.reset();
-    #endif
+    c_global::io.reset();
 }
 
 void c_context::run()
@@ -213,12 +219,8 @@ void c_context::run()
         timer.cycle();
 
         // Subsystems
+        c_global::io->dispatch();
         c_global::video->dispatch();
-        #if 0
-        c_global::input->dispatch();
-        c_global::audio->dispatch();
-        c_global::workspace->dispatch();
-        #endif
     }
 }
 
