@@ -1,0 +1,9 @@
+# Mirrors
+mirror-vert : vertex-direct-2d, fragment-mirror-vert
+mirror-hori : vertex-direct-2d, fragment-mirror-hori
+mirror-both : vertex-direct-2d, fragment-mirror-both
+
+# Stripes
+stripes-vert : vertex-direct-2d, fragment-stripes-vert
+stripes-hori : vertex-direct-2d, fragment-stripes-hori
+stripes-diag : vertex-direct-2d, fragment-stripes-diag
