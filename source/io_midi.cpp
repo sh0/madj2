@@ -22,9 +22,6 @@ c_io_midi::c_io_midi(std::string device) :
     int ret = snd_rawmidi_open(&m_midi_input, &m_midi_output, m_device.c_str(), SND_RAWMIDI_NONBLOCK);
     if (ret < 0)
         throw c_exception("Midi: Unable to open device!", { throw_format("device", device), throw_format("error", snd_strerror(ret)) });
-    //ret = snd_rawmidi_open(nullptr, &m_midi_output, m_device.c_str(), SND_RAWMIDI_APPEND);
-    //if (ret < 0)
-    //    throw c_exception("Midi: Unable to open output device!", { throw_format("device", device), throw_format("error", snd_strerror(ret)) });
 }
 
 c_io_midi::~c_io_midi()
@@ -39,23 +36,40 @@ c_io_midi::~c_io_midi()
 // Dispatch
 void c_io_midi::dispatch()
 {
-    // Fill buffer
-    int ret = snd_rawmidi_read(m_midi_input, m_buffer.write_data(), m_buffer.write_size());
+    dispatch_read();
+    dispatch_write();
+}
+
+void c_io_midi::dispatch_read()
+{
+    // Read
+    int ret = snd_rawmidi_read(m_midi_input, m_buffer_recv.write_data(), m_buffer_recv.write_size());
     if (ret > 0)
-        m_buffer.write_push(ret);
+        m_buffer_recv.write_push(ret);
 
     // Process
     while (true) {
-        int size = read_op0(m_buffer.read_data(), m_buffer.read_size());
+        int size = read_op0(m_buffer_recv.read_data(), m_buffer_recv.read_size());
         if (size > 0) {
-            m_buffer.read_pop(size);
+            m_buffer_recv.read_pop(size);
         } else {
             if (size < 0) {
                 //std::cout << "Midi: Unknown command!" << std::endl;
-                m_buffer.read_pop(m_buffer.read_size());
+                m_buffer_recv.read_pop(m_buffer_recv.read_size());
             }
             return;
         }
+    }
+}
+
+void c_io_midi::dispatch_write()
+{
+    // Write
+    if (m_buffer_send.read_size() > 0) {
+        // Send
+        int ret = snd_rawmidi_write(m_midi_output, m_buffer_send.read_data(), m_buffer_send.read_size());
+        if (ret > 0)
+            m_buffer_send.read_pop(ret);
     }
 }
 
@@ -393,9 +407,8 @@ void c_io_midi::write_sysex(std::vector<uint8_t> msg)
     raw.push_back(0xf7);
 
     // Send
-    int ret = snd_rawmidi_write(m_midi_output, raw.data(), raw.size());
-    if (ret < static_cast<int>(raw.size()))
-        std::cout << boost::format("Midi: Failed to send message! size=%d, error=%s") % raw.size() % snd_strerror(ret) << std::endl;
+    m_buffer_send.write(raw);
+    dispatch_write();
 }
 
 void c_io_midi::write_sysex_ohmrgb(std::vector<uint8_t> msg)

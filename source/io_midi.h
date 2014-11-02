@@ -27,6 +27,10 @@ class c_io_midi : c_noncopiable
         void dispatch();
 
     private:
+        // Dispatch
+        void dispatch_read();
+        void dispatch_write();
+
         // Info
         std::string m_device;
 
@@ -37,8 +41,8 @@ class c_io_midi : c_noncopiable
         // Opcodes
         uint8_t m_last_opcode;
 
-        // Buffer
-        class c_buffer : c_noncopiable
+        // Receive buffer
+        class c_buffer_recv : c_noncopiable
         {
             public:
                 // Reading
@@ -62,7 +66,29 @@ class c_io_midi : c_noncopiable
                 std::array<uint8_t, 4096> m_buffer;
                 size_t m_size;
         };
-        c_buffer m_buffer;
+        c_buffer_recv m_buffer_recv;
+
+        // Send buffer
+        class c_buffer_send : c_noncopiable
+        {
+            public:
+                // Reading
+                uint8_t* read_data() { return m_data.data(); }
+                size_t read_size() { return m_data.size(); }
+                void read_pop(size_t size) {
+                    assert(size <= m_data.size());
+                    memcpy(&m_data[0], &m_data[size], m_data.size() - size);
+                    m_data.resize(m_data.size() - size);
+                }
+
+                // Writing
+                void write(std::vector<uint8_t>& data) {
+                    m_data.insert(m_data.end(), data.begin(), data.end());
+                }
+            private:
+                std::vector<uint8_t> m_data;
+        };
+        c_buffer_send m_buffer_send;
 
         // Data
         struct s_channel {
