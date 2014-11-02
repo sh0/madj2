@@ -45,7 +45,6 @@ append_flags(_flags "${CORE_CFLAGS}")
 set_target_properties(${CORE_EXEC} PROPERTIES COMPILE_FLAGS "${_flags}")
 string(REPLACE " " ";" CORE_LDFLAGS ${CORE_LDFLAGS})
 target_link_libraries(${CORE_EXEC} ${CORE_LDFLAGS})
-add_dependencies(${CORE_EXEC} gitversion)
 
 # Debug
 message(STATUS "################################################")
