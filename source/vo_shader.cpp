@@ -186,7 +186,7 @@ c_shader_program::c_shader_program(std::string name, std::vector<std::shared_ptr
 
     // Debug
     std::cout <<
-        boost::format("Shader (%1%): Loaded! uniforms=%2%, attributes=%3%") %
+        boost::format("Shader (%1%): uniforms=%2%, attributes=%3%") %
         m_name % uni_active % attr_active << std::endl;
 }
 
@@ -287,9 +287,9 @@ c_shader::c_shader()
 
         // Load
         std::string name = fn.stem().native();
-        if (boost::starts_with(name, "vertex-"))
+        if (boost::starts_with(name, "vertex-")) {
             m_objects[name] = std::make_shared<c_shader_object>(name, e_shader_type::vertex, fn.native());
-        else if (boost::starts_with(name, "tess_control-"))
+        } else if (boost::starts_with(name, "tess_control-"))
             m_objects[name] = std::make_shared<c_shader_object>(name, e_shader_type::tess_control, fn.native());
         else if (boost::starts_with(name, "tess_evaluation-"))
             m_objects[name] = std::make_shared<c_shader_object>(name, e_shader_type::tess_evaluation, fn.native());
@@ -297,6 +297,8 @@ c_shader::c_shader()
             m_objects[name] = std::make_shared<c_shader_object>(name, e_shader_type::geometry, fn.native());
         else if (boost::starts_with(name, "fragment-"))
             m_objects[name] = std::make_shared<c_shader_object>(name, e_shader_type::fragment, fn.native());
+        else
+            std::cout << "Shader: Unknown type of shader! name=" << name << ", path=" << fn << std::endl;
     }
 
     // Program list
@@ -331,7 +333,7 @@ c_shader::c_shader()
             boost::trim(str);
         std::vector<std::shared_ptr<c_shader_object>> objects_obj;
         for (auto& str : objects_str) {
-            auto it = m_objects.find(name);
+            auto it = m_objects.find(str);
             if (it != m_objects.end())
                 objects_obj.push_back(it->second);
             else

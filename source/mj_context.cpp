@@ -6,6 +6,7 @@
 // Internal
 #include "mj_config.h"
 #include "mj_context.h"
+#include "mm_main.h"
 #include "io_main.h"
 #include "vo_main.h"
 
@@ -65,41 +66,21 @@ c_context::c_context(std::string config_fn)
     }
 
     // Create subsystems
+    c_global::media = std::make_shared<c_media>();
     c_global::io = std::make_shared<c_io>();
     c_global::video = std::make_shared<c_video>();
 
     #if 0
-    c_global::media = std::make_shared<c_media>(MJ_DATA_PATH);
     c_global::audio = std::make_shared<c_audio>();
     c_global::extension = std::make_shared<c_extension>();
     c_global::workspace = std::make_shared<c_workspace>();
-
-    // Media config
-    if (auto pt_root = ptree.get_child_optional("media")) {
-        std::vector<std::string> path_list;
-        for (auto& pt_path : *pt_root)
-            path_list.push_back(pt_path.second.data());
-        config_media(path_list);
-    }
-
-    // Soundcard config
-    if (auto pt_root = ptree.get_child_optional("soundcards")) {
-        for (auto& pt_card : *pt_root) {
-
-            std::vector<std::string> channels;
-            if (auto pt_chan = pt_card.second.get_child_optional("channels")) {
-                for (auto& pt_elem : *pt_chan)
-                    channels.push_back(pt_elem.second.data());
-            }
-
-            config_soundcard(
-                pt_card.second.get<std::string>("driver"),
-                pt_card.second.get<std::string>("device"),
-                channels
-            );
-        }
-    }
     #endif
+
+    // Media
+    if (auto pt_root = ptree.get_child_optional("media")) {
+        for (auto& pt_path : *pt_root)
+            c_global::media->media_add(pt_path.second.data());
+    }
 
     // MIDI
     if (auto pt_root = ptree.get_child_optional("midi")) {
@@ -112,7 +93,7 @@ c_context::c_context(std::string config_fn)
         }
     }
 
-    // Screen config
+    // Screen
     if (auto pt_root = ptree.get_child_optional("screens")) {
         for (auto& pt_screen : *pt_root) {
             c_global::video->screen_add(
@@ -130,14 +111,20 @@ c_context::c_context(std::string config_fn)
     }
 
     #if 0
-    // Twitter config
-    if (auto pt_root = ptree.get_child_optional("twitter")) {
-        for (auto& pt_twitter : *pt_root) {
-            config_twitter(
-                pt_twitter.second.get<std::string>("name"),
-                pt_twitter.second.get<std::string>("follow"),
-                pt_twitter.second.get<std::string>("track"),
-                pt_twitter.second.get<std::string>("locations")
+    // Soundcard config
+    if (auto pt_root = ptree.get_child_optional("soundcards")) {
+        for (auto& pt_card : *pt_root) {
+
+            std::vector<std::string> channels;
+            if (auto pt_chan = pt_card.second.get_child_optional("channels")) {
+                for (auto& pt_elem : *pt_chan)
+                    channels.push_back(pt_elem.second.data());
+            }
+
+            config_soundcard(
+                pt_card.second.get<std::string>("driver"),
+                pt_card.second.get<std::string>("device"),
+                channels
             );
         }
     }
@@ -205,6 +192,7 @@ c_context::~c_context()
     // Reset subsystems
     c_global::video.reset();
     c_global::io.reset();
+    c_global::media.reset();
 }
 
 void c_context::run()
@@ -219,37 +207,13 @@ void c_context::run()
         timer.cycle();
 
         // Subsystems
+        c_global::media->dispatch();
         c_global::io->dispatch();
         c_global::video->dispatch();
     }
 }
 
 #if 0
-// Config
-bool c_context::config_media(
-    std::vector<std::string> path_list
-) {
-    // Home path
-    std::string path_home = getenv("HOME");
-
-    // Loop paths
-    for (auto path_item : path_list) {
-        // Home path conversion
-        if (path_item.empty())
-            continue;
-        if (path_item[0] == '~')
-            boost::algorithm::replace_first(path_item, "~", path_home);
-
-        // Convert path
-        boost::filesystem::path pfs = path_item;
-
-        // Add
-        msg_warning(boost::format("Config: Media path: %1%") % pfs);
-        c_global::media->media_add(pfs);
-    }
-    return true;
-}
-
 bool c_context::config_soundcard(
     std::string driver,
     std::string device,
@@ -270,48 +234,6 @@ bool c_context::config_soundcard(
         driver % device % channels.size()
     );
     return c_global::audio->driver_add(driver, device, channels);
-}
-
-bool c_context::config_screen(
-    std::string name,
-    int32_t screen,
-    int32_t view_cols,
-    int32_t view_rows,
-    int32_t width,
-    int32_t height,
-    bool fullscreen,
-    std::string color
-) {
-    // Check
-    if (name.empty()) {
-        msg_warning("Config: Screen: Must specify name in \"name\" field!");
-        return false;
-    } else if (
-        view_rows < 1 || view_rows > 10 ||
-        view_cols < 1 || view_cols > 10
-    ) {
-        msg_warning(
-            boost::format(
-                "Config: Screen: Must have \"view_rows\" and \"view_cols\" "
-                "fields both with values between 1 and 10! name=%s"
-            ) % name
-        );
-        return false;
-    }
-
-    // Add
-    msg_warning(
-        boost::format(
-            "Config: Screen! "
-            "name=%s, screen=%d, view_cols=%d, view_rows=%d, "
-            "width=%d, height=%d, fullscreen=%s, color=%s"
-        ) % name % screen % view_cols % view_rows %
-        width % height % (fullscreen ? "true" : "false") % color
-    );
-    return c_global::video->screen_add(
-        name, screen, view_cols, view_rows,
-        width, height, fullscreen, color
-    );
 }
 
 bool c_context::config_workspace_tracker(
@@ -337,28 +259,6 @@ bool c_context::config_workspace_tracker(
         ) % name % screen % slot % audio.size()
     );
     return c_global::workspace->tracker_add(name, screen, slot, audio);
-}
-
-bool c_context::config_workspace_twitter(
-    std::string name,
-    std::string screen,
-    int32_t slot
-) {
-    // Check
-    if (name.empty()) {
-        msg_warning("Config: Twitter workspace must specify name in \"name\" field!");
-        return false;
-    } else if (screen.empty()) {
-        msg_warning("Config: Twitter workspace must specify screen in \"screen\" field!");
-        return false;
-    }
-
-    // Add
-    msg_warning(
-        boost::format("Config: Twitter workspace! name=%s, screen=%s, slot=%d") %
-        name % screen % slot
-    );
-    return c_global::workspace->twitter_add(name, screen, slot);
 }
 
 bool c_context::config_joystick(

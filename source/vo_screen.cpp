@@ -31,7 +31,7 @@ c_video_screen::c_video_screen(
 {
     // Debug
     std::cout <<
-        boost::format("Screen (%s): Creating screen! id=%d, pos_x=%d, pos_y=%d, width=%d, height=%d, fullscreen=%s") %
+        boost::format("Screen (%s): id=%d, pos_x=%d, pos_y=%d, width=%d, height=%d, fullscreen=%s") %
         m_name % m_id % m_window_pos_x % m_window_pos_y % m_window_width % m_window_height %
         std::string(m_window_fullscreen ? "true" : "false") << std::endl;
 

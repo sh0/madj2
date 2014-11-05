@@ -11,22 +11,32 @@
 #include "vo_opengl.h"
 #include "vo_context.h"
 #include "vo_screen.h"
+#include "vo_shader.h"
 
 // Main video class
 class c_video : c_noncopiable
 {
     public:
+        // Destructor
+        ~c_video() {
+            m_screens.clear();
+            m_shader.reset();
+            m_context.reset();
+        }
+
         // Context
         std::shared_ptr<c_video_context> context(SDL_Window* window) {
-            if (auto ctx = m_context.lock()) {
-                ctx->make_current(window);
-                return ctx;
+            if (m_context) {
+                m_context->make_current(window);
             } else {
-                ctx = std::make_shared<c_video_context>(window);
-                m_context = ctx;
-                return ctx;
+                m_context = std::make_shared<c_video_context>(window);
+                m_shader = std::make_shared<c_shader>();
             }
+            return m_context;
         }
+
+        // Shaders
+        std::shared_ptr<c_shader> shader() { return m_shader; }
 
         // Screens
         std::vector<std::shared_ptr<c_video_screen>>& screen_list() { return m_screens; }
@@ -49,8 +59,9 @@ class c_video : c_noncopiable
         }
 
     private:
-        // Context
-        std::weak_ptr<c_video_context> m_context;
+        // OpenGL
+        std::shared_ptr<c_video_context> m_context;
+        std::shared_ptr<c_shader> m_shader;
 
         // Screens
         std::vector<std::shared_ptr<c_video_screen>> m_screens;

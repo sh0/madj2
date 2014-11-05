@@ -11,6 +11,7 @@
 
 // Declarations
 class c_context;
+class c_media;
 class c_video;
 class c_io;
 
@@ -20,6 +21,7 @@ class c_global : c_noncopiable
     public:
         // Subsystems
         static std::shared_ptr<c_context> context;
+        static std::shared_ptr<c_media> media;
         static std::shared_ptr<c_video> video;
         static std::shared_ptr<c_io> io;
 };
