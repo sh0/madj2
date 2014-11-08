@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<GUILayout version="4">
+    <Window name="Workspace" type="madj/FrameWindow">
+        <Property name="AlwaysOnTop" value="True" />
+        <Property name="MinSize" value="{{0.0,0},{0.0,0}}" />
+        <Property name="MaxSize" value="{{1.0,0},{1.0,0}}" />
+        <Property name="Position" value="{{0.0,0},{0.0,0}}" />
+        <Property name="Size" value="{{0.5,0},{0.5,0}}" />
+        <Property name="Text" value="Workspace" />
+        <Property name="CloseButtonEnabled" value="False" />
+
+        <Window name="Video" type="madj/Image">
+            <Property name="ID" value="1" />
+            <Property name="VerticalAlignment" value="Center" />
+            <Property name="HorizontalAlignment" value="Center" />
+            <Property name="MaxSize" value="{{1.0,0},{1.0,0}}" />
+            <Property name="Position" value="{{0.0,0},{0.0,0}}" />
+            <Property name="Size" value="{{1.0,0},{1.0,0}}" />
+        </Window>
+    </Window>
+</GUILayout>

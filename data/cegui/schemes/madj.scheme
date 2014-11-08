@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<GUIScheme version="5" name="madj">
+    <Imageset filename="madj.imageset" />
+    <Font filename="DroidSansMono-10.font" />
+	<LookNFeel filename="madj.looknfeel" />
+	<WindowRendererSet filename="CEGUICoreWindowRendererSet" />
+
+	<FalagardMapping windowType="madj/Label" targetType="DefaultWindow" renderer="Core/Default" lookNFeel="madj/Label" />
+    <FalagardMapping windowType="madj/Image" targetType="DefaultWindow" renderer="Core/Default" lookNFeel="madj/Image" />
+    <FalagardMapping windowType="madj/Button" targetType="CEGUI/PushButton" renderer="Core/Button" lookNFeel="madj/Button" />
+    <FalagardMapping windowType="madj/FrameWindow" targetType="CEGUI/FrameWindow" renderer="Core/FrameWindow" lookNFeel="madj/FrameWindow" />
+    <FalagardMapping windowType="madj/Titlebar" targetType="CEGUI/Titlebar" renderer="Core/Titlebar" lookNFeel="madj/Titlebar" />
+</GUIScheme>

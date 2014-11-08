@@ -1,0 +1,521 @@
+<?xml version="1.0" ?>
+<Falagard version="7">
+
+    <!--
+    ***************************************************
+        madj/Label
+    ***************************************************
+    -->
+    <WidgetLook name="madj/Label">
+        <PropertyDefinition redrawOnWrite="true" initialValue="FF000000" type="Colour" name="NormalTextColour"/>
+        <PropertyDefinition redrawOnWrite="true" initialValue="FF444444" type="Colour" name="DisabledTextColour"/>
+        <PropertyDefinition redrawOnWrite="true" initialValue="CentreAligned" type="VerticalTextFormatting" name="VertFormatting"/>
+        <PropertyDefinition redrawOnWrite="true" initialValue="CentreAligned" type="HorizontalTextFormatting" name="HorzFormatting"/>
+        <Property name="Size" value="{{0, 128}, {0, 32}}" />
+        <ImagerySection name="Label">
+            <TextComponent>
+                <Area>
+                    <Dim type="LeftEdge">
+                        <AbsoluteDim value="0"/>
+                    </Dim>
+                    <Dim type="TopEdge">
+                        <AbsoluteDim value="0"/>
+                    </Dim>
+                    <Dim type="Width">
+                        <UnifiedDim scale="1" type="Width"/>
+                    </Dim>
+                    <Dim type="Height">
+                        <UnifiedDim scale="1" type="Height"/>
+                    </Dim>
+                </Area>
+                <VertFormatProperty name="VertFormatting"/>
+                <HorzFormatProperty name="HorzFormatting"/>
+            </TextComponent>
+        </ImagerySection>
+        <StateImagery name="Enabled">
+            <Layer>
+                <Section section="Label">
+                    <ColourProperty name="NormalTextColour"/>
+                </Section>
+            </Layer>
+        </StateImagery>
+        <StateImagery name="Disabled">
+            <Layer>
+                <Section section="Label">
+                    <ColourProperty name="DisabledTextColour"/>
+                </Section>
+            </Layer>
+        </StateImagery>
+    </WidgetLook>
+
+    <!--
+    ***************************************************
+        madj/Image
+    ***************************************************
+    -->
+    <WidgetLook name="madj/Image">
+        <PropertyDefinition redrawOnWrite="true" initialValue="tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF" type="ColourRect" name="ImageColours"/>
+        <PropertyDefinition redrawOnWrite="true" initialValue="Stretched" type="VerticalFormatting" name="VertFormatting"/>
+        <PropertyDefinition redrawOnWrite="true" initialValue="Stretched" type="HorizontalFormatting" name="HorzFormatting"/>
+        <PropertyDefinition redrawOnWrite="true" initialValue="" type="Image" name="Image"/>
+        <Property name="Size" value="{{0, 128}, {0, 128}}" />
+
+        <ImagerySection name="imageSection">
+            <ImageryComponent>
+                <Area>
+                    <Dim type="LeftEdge">
+                        <AbsoluteDim value="0"/>
+                    </Dim>
+                    <Dim type="TopEdge">
+                        <AbsoluteDim value="0"/>
+                    </Dim>
+                    <Dim type="RightEdge">
+                        <UnifiedDim scale="1.0" type="RightEdge"/>
+                    </Dim>
+                    <Dim type="BottomEdge">
+                        <UnifiedDim scale="1.0" type="BottomEdge"/>
+                    </Dim>
+                </Area>
+                <ImageProperty name="Image"/>
+                <ColourRectProperty name="ImageColours"/>
+                <VertFormatProperty name="VertFormatting"/>
+                <HorzFormatProperty name="HorzFormatting"/>
+            </ImageryComponent>
+        </ImagerySection>
+        <StateImagery name="Enabled">
+            <Layer>
+                <Section section="imageSection"/>
+            </Layer>
+        </StateImagery>
+        <StateImagery name="Disabled">
+            <Layer>
+                <Section section="imageSection"/>
+            </Layer>
+        </StateImagery>
+    </WidgetLook>
+
+    <!--
+    ***************************************************
+        madj/Button
+    ***************************************************
+    -->
+    <WidgetLook name="madj/Button">
+        <PropertyDefinition redrawOnWrite="true" initialValue="" type="Image" name="NormalImage"/>
+        <PropertyDefinition redrawOnWrite="true" initialValue="" type="Image" name="HoverImage"/>
+        <PropertyDefinition redrawOnWrite="true" initialValue="" type="Image" name="PushedImage"/>
+        <PropertyDefinition redrawOnWrite="true" initialValue="" type="Image" name="DisabledImage"/>
+        <PropertyDefinition redrawOnWrite="true" initialValue="Stretched" type="VerticalFormatting" name="VertImageFormatting"/>
+        <PropertyDefinition redrawOnWrite="true" initialValue="Stretched" type="HorizontalFormatting" name="HorzImageFormatting"/>
+        <Property name="Size" value="{{0, 96}, {0, 32}}" />
+        <ImagerySection name="normal">
+            <ImageryComponent>
+                <ImageProperty name="NormalImage"/>
+                <VertFormatProperty name="VertImageFormatting"/>
+                <HorzFormatProperty name="HorzImageFormatting"/>
+            </ImageryComponent>
+        </ImagerySection>
+        <ImagerySection name="hover">
+            <ImageryComponent>
+                <ImageProperty name="HoverImage"/>
+                <VertFormatProperty name="VertImageFormatting"/>
+                <HorzFormatProperty name="HorzImageFormatting"/>
+            </ImageryComponent>
+        </ImagerySection>
+        <ImagerySection name="pushed">
+            <ImageryComponent>
+                <ImageProperty name="PushedImage"/>
+                <VertFormatProperty name="VertImageFormatting"/>
+                <HorzFormatProperty name="HorzImageFormatting"/>
+            </ImageryComponent>
+        </ImagerySection>
+        <ImagerySection name="disabled">
+            <ImageryComponent>
+                <ImageProperty name="DisabledImage"/>
+                <VertFormatProperty name="VertImageFormatting"/>
+                <HorzFormatProperty name="HorzImageFormatting"/>
+            </ImageryComponent>
+        </ImagerySection>
+        <StateImagery name="Normal">
+            <Layer>
+                <Section section="normal"/>
+            </Layer>
+        </StateImagery>
+        <StateImagery name="Hover">
+            <Layer>
+                <Section section="hover"/>
+            </Layer>
+        </StateImagery>
+        <StateImagery name="Pushed">
+            <Layer>
+                <Section section="pushed"/>
+            </Layer>
+        </StateImagery>
+        <StateImagery name="PushedOff">
+            <Layer>
+                <Section section="hover"/>
+            </Layer>
+        </StateImagery>
+        <StateImagery name="Disabled">
+            <Layer>
+                <Section section="disabled"/>
+            </Layer>
+        </StateImagery>
+    </WidgetLook>
+
+    <!--
+    ***************************************************
+        madj/FrameWindow
+    ***************************************************
+    -->
+    <WidgetLook name="madj/FrameWindow">
+        <PropertyDefinition name="ClientAreaColour" initialValue="FF141B38" redrawOnWrite="true" type="ColourRect"/>
+        <PropertyLinkDefinition name="CaptionColour" widget="__auto_titlebar__" targetProperty="CaptionColour" initialValue="FFFFFFFF" type="ColourRect"/>
+        <PropertyLinkDefinition name="TitlebarFont" widget="__auto_titlebar__" targetProperty="Font" type="Font"/>
+        <Property name="NSSizingCursorImage" value="madj/MouseNoSoCursor" />
+        <Property name="EWSizingCursorImage" value="madj/MouseEsWeCursor" />
+        <Property name="NWSESizingCursorImage" value="madj/MouseNwSeCursor" />
+        <Property name="NESWSizingCursorImage" value="madj/MouseNeSwCursor" />
+        <Property name="MinSize" value="{{0.1,0},{0.1,0}}" />
+        <Property name="AutoRenderingSurface" value="true" />
+        <Property name="Size" value="{{0.3, 0}, {0.3, 0}}" />
+        <NamedArea name="ClientWithTitleWithFrame">
+            <Area>
+                <Dim type="LeftEdge" ><ImageDim name="madj/WindowTopLeft" dimension="Width" /></Dim>
+                <Dim type="TopEdge" ><WidgetDim widget="__auto_titlebar__" dimension="BottomEdge" /></Dim>
+                <Dim type="RightEdge" >
+                    <OperatorDim op="Subtract">
+                        <UnifiedDim scale="1" type="RightEdge" />
+                        <ImageDim name="madj/WindowTopRight" dimension="Width" />
+                    </OperatorDim>
+                </Dim>
+                <Dim type="BottomEdge" >
+                    <OperatorDim op="Subtract">
+                        <UnifiedDim scale="1" type="BottomEdge" />
+                        <ImageDim name="madj/WindowBottomEdge" dimension="Height" />
+                    </OperatorDim>
+                </Dim>
+            </Area>
+        </NamedArea>
+        <NamedArea name="ClientWithTitleNoFrame">
+            <Area>
+                <Dim type="LeftEdge" ><AbsoluteDim value="0" /></Dim>
+                <Dim type="TopEdge" ><WidgetDim widget="__auto_titlebar__" dimension="BottomEdge" /></Dim>
+                <Dim type="Width" ><UnifiedDim scale="1" type="Width" /></Dim>
+                <Dim type="BottomEdge" ><WidgetDim dimension="BottomEdge" /></Dim>
+            </Area>
+        </NamedArea>
+        <NamedArea name="ClientNoTitleWithFrame">
+            <Area>
+                <Dim type="LeftEdge" ><ImageDim name="madj/WindowTopLeft" dimension="Width" /></Dim>
+                <Dim type="TopEdge" ><ImageDim name="madj/WindowTopEdge" dimension="Height" /></Dim>
+                <Dim type="RightEdge" >
+                    <OperatorDim op="Subtract">
+                        <UnifiedDim scale="1" type="RightEdge" />
+                        <ImageDim name="madj/WindowTopRight" dimension="Width" />
+                    </OperatorDim>
+                </Dim>
+                <Dim type="BottomEdge" >
+                    <OperatorDim op="Subtract">
+                        <UnifiedDim scale="1" type="BottomEdge" />
+                        <ImageDim name="madj/WindowBottomEdge" dimension="Height" />
+                    </OperatorDim>
+                </Dim>
+            </Area>
+        </NamedArea>
+        <NamedArea name="ClientNoTitleNoFrame" />
+        <Child type="madj/Titlebar" nameSuffix="__auto_titlebar__">
+            <Area>
+                <Dim type="Width" ><UnifiedDim scale="1" type="Width" /></Dim>
+                <Dim type="Height" ><FontDim type="LineSpacing" padding="8" /></Dim>
+            </Area>
+            <Property name="AlwaysOnTop" value="false" />
+        </Child>
+        <Child type="madj/Button" nameSuffix="__auto_closebutton__">
+            <Area>
+                <Dim type="LeftEdge" >
+                    <OperatorDim op="Subtract">
+                        <OperatorDim op="Subtract">
+                            <UnifiedDim scale="1" type="LeftEdge"/>
+                            <ImageDim name="madj/SysAreaRight" dimension="Width"/>
+                        </OperatorDim>
+                        <ImageDim name="madj/SysAreaMiddle" dimension="Width" />
+                    </OperatorDim>
+                </Dim>
+                <Dim type="TopEdge" >
+                    <OperatorDim op="Multiply">
+                        <OperatorDim op="Subtract">
+                            <WidgetDim widget="__auto_titlebar__" dimension="Height" />
+                            <ImageDim name="madj/NewCloseButtonNormal" dimension="Width" />
+                        </OperatorDim>
+                        <AbsoluteDim value="0.5" />
+                    </OperatorDim>
+                </Dim>
+                <Dim type="Width" ><ImageDim name="madj/NewCloseButtonNormal" dimension="Width" /></Dim>
+                <Dim type="Height" ><ImageDim name="madj/NewCloseButtonNormal" dimension="Width" /></Dim>
+            </Area>
+            <Property name="AlwaysOnTop" value="true" />
+            <Property name="NormalImage" value="madj/NewCloseButtonNormal" />
+            <Property name="HoverImage" value="madj/NewCloseButtonHover" />
+            <Property name="PushedImage" value="madj/NewCloseButtonPressed" />
+            <Property name="NonClient" value="true" />
+        </Child>
+        <ImagerySection name="withtitle_frame">
+            <FrameComponent>
+                <Area>
+                    <Dim type="TopEdge" ><WidgetDim widget="__auto_titlebar__" dimension="BottomEdge" /></Dim>
+                </Area>
+                <Image component="BottomLeftCorner" name="madj/WindowBottomLeft" />
+                <Image component="BottomRightCorner" name="madj/WindowBottomRight" />
+                <Image component="LeftEdge" name="madj/WindowLeftEdge" />
+                <Image component="RightEdge" name="madj/WindowRightEdge" />
+                <Image component="BottomEdge" name="madj/WindowBottomEdge" />
+            </FrameComponent>
+            <ImageryComponent>
+                <Area>
+                    <Dim type="LeftEdge" ><ImageDim name="madj/WindowTopLeft" dimension="Width" /></Dim>
+                    <Dim type="TopEdge" ><WidgetDim widget="__auto_titlebar__" dimension="BottomEdge" /></Dim>
+                    <Dim type="RightEdge" >
+                        <OperatorDim op="Subtract">
+                            <UnifiedDim scale="1" type="Width" />
+                            <ImageDim name="madj/WindowTopRight" dimension="Width" />
+                        </OperatorDim>
+                    </Dim>
+                    <Dim type="BottomEdge" >
+                        <OperatorDim op="Subtract">
+                            <UnifiedDim scale="1" type="Height" />
+                            <ImageDim name="madj/WindowBottomEdge" dimension="Height" />
+                        </OperatorDim>
+                    </Dim>
+                </Area>
+                <Image name="madj/GenericBrush" />
+                <ColourProperty name="ClientAreaColour" />
+                <VertFormat type="Stretched" />
+                <HorzFormat type="Stretched" />
+            </ImageryComponent>
+        </ImagerySection>
+        <ImagerySection name="notitle_frame">
+            <FrameComponent>
+                <Image component="TopLeftCorner" name="madj/WindowTopLeft" />
+                <Image component="TopRightCorner" name="madj/WindowTopRight" />
+                <Image component="BottomLeftCorner" name="madj/WindowBottomLeft" />
+                <Image component="BottomRightCorner" name="madj/WindowBottomRight" />
+                <Image component="LeftEdge" name="madj/WindowLeftEdge" />
+                <Image component="RightEdge" name="madj/WindowRightEdge" />
+                <Image component="BottomEdge" name="madj/WindowBottomEdge" />
+            </FrameComponent>
+            <ImageryComponent>
+                <Area>
+                    <Dim type="LeftEdge" ><ImageDim name="madj/WindowTopLeft" dimension="Width" /></Dim>
+                    <Dim type="TopEdge" ><ImageDim name="madj/WindowTopEdge" dimension="Width" /></Dim>
+                    <Dim type="RightEdge" >
+                        <OperatorDim op="Subtract">
+                            <UnifiedDim scale="1" type="Width" />
+                            <ImageDim name="madj/WindowTopRight" dimension="Width" />
+                        </OperatorDim>
+                    </Dim>
+                    <Dim type="BottomEdge" >
+                        <OperatorDim op="Subtract">
+                            <UnifiedDim scale="1" type="Height" />
+                            <ImageDim name="madj/WindowBottomEdge" dimension="Height" />
+                        </OperatorDim>
+                    </Dim>
+                </Area>
+                <Image name="madj/GenericBrush" />
+                <ColourProperty name="ClientAreaColour" />
+                <VertFormat type="Stretched" />
+                <HorzFormat type="Stretched" />
+            </ImageryComponent>
+        </ImagerySection>
+        <ImagerySection name="withtitle_noframe_client_area">
+            <ImageryComponent>
+                <Area>
+                    <Dim type="TopEdge" ><WidgetDim widget="__auto_titlebar__" dimension="Height" /></Dim>
+                </Area>
+                <Image name="madj/GenericBrush" />
+                <ColourProperty name="ClientAreaColour" />
+                <VertFormat type="Stretched" />
+                <HorzFormat type="Stretched" />
+            </ImageryComponent>
+        </ImagerySection>
+        <ImagerySection name="notitle_noframe_client_area">
+            <ImageryComponent>
+                <Image name="madj/GenericBrush" />
+                <ColourProperty name="ClientAreaColour" />
+                <VertFormat type="Stretched" />
+                <HorzFormat type="Stretched" />
+            </ImageryComponent>
+        </ImagerySection>
+        <StateImagery name="ActiveWithTitleWithFrame">
+            <Layer>
+                <Section section="withtitle_frame" />
+            </Layer>
+        </StateImagery>
+        <StateImagery name="InactiveWithTitleWithFrame">
+            <Layer>
+                <Section section="withtitle_frame" />
+            </Layer>
+        </StateImagery>
+        <StateImagery name="DisabledWithTitleWithFrame">
+            <Layer>
+                <Section section="withtitle_frame">
+                    <Colours topLeft="FF7F7F7F" topRight="FF7F7F7F" bottomLeft="FF7F7F7F" bottomRight="FF7F7F7F" />
+                </Section>
+            </Layer>
+        </StateImagery>
+        <StateImagery name="ActiveWithTitleNoFrame">
+            <Layer>
+                <Section section="withtitle_noframe_client_area" />
+            </Layer>
+        </StateImagery>
+        <StateImagery name="InactiveWithTitleNoFrame">
+            <Layer>
+                <Section section="withtitle_noframe_client_area" />
+            </Layer>
+        </StateImagery>
+        <StateImagery name="DisabledWithTitleNoFrame">
+            <Layer>
+                <Section section="withtitle_noframe_client_area">
+                    <Colours topLeft="FF7F7F7F" topRight="FF7F7F7F" bottomLeft="FF7F7F7F" bottomRight="FF7F7F7F" />
+                </Section>
+            </Layer>
+        </StateImagery>
+        <StateImagery name="ActiveNoTitleWithFrame">
+            <Layer>
+                <Section section="notitle_frame" />
+            </Layer>
+        </StateImagery>
+        <StateImagery name="InactiveNoTitleWithFrame">
+            <Layer>
+                <Section section="notitle_frame" />
+            </Layer>
+        </StateImagery>
+        <StateImagery name="DisabledNoTitleWithFrame">
+            <Layer>
+                <Section section="notitle_frame">
+                    <Colours topLeft="FF7F7F7F" topRight="FF7F7F7F" bottomLeft="FF7F7F7F" bottomRight="FF7F7F7F" />
+                </Section>
+            </Layer>
+        </StateImagery>
+        <StateImagery name="ActiveNoTitleNoFrame">
+            <Layer>
+                <Section section="notitle_noframe_client_area" />
+            </Layer>
+        </StateImagery>
+        <StateImagery name="InactiveNoTitleNoFrame">
+            <Layer>
+                <Section section="notitle_noframe_client_area" />
+            </Layer>
+        </StateImagery>
+        <StateImagery name="DisabledNoTitleNoFrame">
+            <Layer>
+                <Section section="notitle_noframe_client_area">
+                    <Colours topLeft="FF7F7F7F" topRight="FF7F7F7F" bottomLeft="FF7F7F7F" bottomRight="FF7F7F7F" />
+                </Section>
+            </Layer>
+        </StateImagery>
+    </WidgetLook>
+
+    <!--
+    ***************************************************
+        madj/Titlebar
+    ***************************************************
+    -->
+    <WidgetLook name="madj/Titlebar">
+        <PropertyDefinition name="CaptionColour" initialValue="FFFFFFFF" redrawOnWrite="true" type="ColourRect"/>
+        <Property name="NonClient" value="true" />
+        <Property name="Size" value="{{0, 256}, {0, 32}}" />
+        <ImagerySection name="main">
+            <ImageryComponent>
+                <Image name="madj/NewTitlebarLeft" />
+                <VertFormat type="Stretched" />
+            </ImageryComponent>
+            <ImageryComponent>
+                <Area>
+                    <Dim type="RightEdge" >
+                        <OperatorDim op="Subtract">
+                            <UnifiedDim scale="1" type="RightEdge"/>
+                            <OperatorDim op="Add">
+                                <ImageDim name="madj/SysAreaRight" dimension="Width"/>
+                                <ImageDim name="madj/SysAreaMiddle" dimension="Width" />
+                            </OperatorDim>
+                        </OperatorDim>
+                    </Dim>
+                </Area>
+                <Image name="madj/NewTitlebarRight" />
+                <VertFormat type="Stretched" />
+                <HorzFormat type="RightAligned" />
+            </ImageryComponent>
+            <ImageryComponent>
+                <Area>
+                    <Dim type="RightEdge" >
+                        <OperatorDim op="Subtract">
+                            <UnifiedDim scale="1" type="RightEdge"/>
+                            <ImageDim name="madj/SysAreaRight" dimension="Width" />
+                        </OperatorDim>
+                    </Dim>
+                </Area>
+                <Image name="madj/SysAreaMiddle" />
+                <VertFormat type="Stretched" />
+                <HorzFormat type="RightAligned" />
+            </ImageryComponent>
+            <ImageryComponent>
+                <Image name="madj/SysAreaRight" />
+                <VertFormat type="Stretched" />
+                <HorzFormat type="RightAligned" />
+            </ImageryComponent>
+            <ImageryComponent>
+                <Area>
+                    <Dim type="LeftEdge" ><ImageDim name="madj/NewTitlebarLeft" dimension="Width" /></Dim>
+                    <Dim type="RightEdge" >
+                        <OperatorDim op="Subtract">
+                            <OperatorDim op="Subtract">
+                                <OperatorDim op="Subtract">
+                                    <UnifiedDim scale="1" type="RightEdge"/>
+                                    <ImageDim name="madj/SysAreaRight" dimension="Width"/>
+                                </OperatorDim>
+                                <ImageDim name="madj/SysAreaMiddle" dimension="Width"/>
+                            </OperatorDim>
+                            <ImageDim name="madj/NewTitlebarRight" dimension="Width" />
+                        </OperatorDim>
+                    </Dim>
+                </Area>
+                <Image name="madj/NewTitlebarMiddle" />
+                <VertFormat type="Stretched" />
+                <HorzFormat type="Stretched" />
+            </ImageryComponent>
+        </ImagerySection>
+        <ImagerySection name="caption">
+            <TextComponent>
+                <Area>
+                    <Dim type="LeftEdge" ><ImageDim name="madj/NewTitlebarLeft" dimension="Width" /></Dim>
+                    <Dim type="Width" ><UnifiedDim scale="1" offset="-75" type="Width" /></Dim>
+                </Area>
+                <ColourProperty name="CaptionColour" />
+                <VertFormat type="CentreAligned" />
+            </TextComponent>
+        </ImagerySection>
+        <StateImagery name="Active">
+            <Layer>
+                <Section section="main" />
+                <Section section="caption" />
+            </Layer>
+        </StateImagery>
+        <StateImagery name="Inactive">
+            <Layer>
+                <Section section="main" />
+                <Section section="caption" />
+            </Layer>
+        </StateImagery>
+        <StateImagery name="Disabled">
+            <Layer>
+                <Section section="main">
+                    <Colours topLeft="FF7F7F7F" topRight="FF7F7F7F" bottomLeft="FF7F7F7F" bottomRight="FF7F7F7F" />
+                </Section>
+                <Section section="caption">
+                    <Colours topLeft="FF7F7F7F" topRight="FF7F7F7F" bottomLeft="FF7F7F7F" bottomRight="FF7F7F7F" />
+                </Section>
+            </Layer>
+        </StateImagery>
+    </WidgetLook>
+
+</Falagard>

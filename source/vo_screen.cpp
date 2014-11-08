@@ -69,9 +69,7 @@ c_video_screen::c_video_screen(
 
     // CEGUI
     m_cegui = std::unique_ptr<c_cegui>(new c_cegui(m_context));
-
-    CEGUI::SchemeManager::getSingleton().createFromFile("TaharezLook.scheme");
-
+    CEGUI::SchemeManager::getSingleton().createFromFile("madj.scheme");
     //m_cegui_win = reinterpret_cast<CEGUI::DefaultWindow*>(CEGUI::WindowManager::getSingletonPtr()->createWindow("DefaultWindow", name));
     //m_cegui->context().setRootWindow(m_cegui_win);
     m_cegui_glc = reinterpret_cast<CEGUI::GridLayoutContainer*>(CEGUI::WindowManager::getSingletonPtr()->createWindow("GridLayoutContainer"));

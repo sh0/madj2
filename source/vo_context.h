@@ -21,17 +21,19 @@ class c_video_context : c_noncopiable
     public:
         // Constructor and destructor
         c_video_context(SDL_Window* window) {
+            // OpenGL
             m_context = SDL_GL_CreateContext(window);
+
+            // CEGUI
             m_cegui = std::unique_ptr<c_cegui>(new c_cegui());
 
             CEGUI::DefaultResourceProvider* rp = static_cast<CEGUI::DefaultResourceProvider*>(cegui_system().getResourceProvider());
-            rp->setResourceGroupDirectory("madj", MJ_DATA_PATH "/cegui/");
-            rp->setResourceGroupDirectory("schemes", "/usr/share/cegui-0/schemes/");
-            rp->setResourceGroupDirectory("imagesets", "/usr/share/cegui-0/imagesets/");
-            rp->setResourceGroupDirectory("fonts", "/usr/share/cegui-0/fonts/");
-            rp->setResourceGroupDirectory("layouts", "/usr/share/cegui-0/layouts/");
-            rp->setResourceGroupDirectory("looknfeels", "/usr/share/cegui-0/looknfeel/");
-            rp->setResourceGroupDirectory("lua_scripts", "/usr/share/cegui-0/lua_scripts/");
+            rp->setResourceGroupDirectory("schemes", MJ_DATA_PATH "/cegui/schemes/");
+            rp->setResourceGroupDirectory("imagesets", MJ_DATA_PATH "/cegui/imagesets/");
+            rp->setResourceGroupDirectory("fonts", MJ_DATA_PATH "/cegui/fonts/");
+            rp->setResourceGroupDirectory("layouts", MJ_DATA_PATH "/cegui/layouts/");
+            rp->setResourceGroupDirectory("looknfeels", MJ_DATA_PATH "/cegui/looknfeel/");
+            rp->setResourceGroupDirectory("lua_scripts", MJ_DATA_PATH "/cegui/lua_scripts/");
 
             CEGUI::ImageManager::setImagesetDefaultResourceGroup("imagesets");
             CEGUI::Font::setDefaultResourceGroup("fonts");
