@@ -28,17 +28,7 @@
             "height" : 768,
             "fullscreen" : false,
             "color" : "blue"
-        } /*, {
-            "name" : "screen_b",
-            "view_cols" : 3,
-            "view_rows" : 3,
-            "pos_x" : 0,
-            "pos_y" : 0,
-            "width" : 800,
-            "height" : 600,
-            "fullscreen" : false,
-            "color" : "red"
-        } */
+        }
     ],
 
     // Tracker workspaces
@@ -78,11 +68,11 @@
 
     // MIDI
     "midi" : [
-        {
-            "name" : "midi_a",
+        /*{
+            "name" : "ohmrgb",
             "color" : "orange",
-            "device" : "hw:0,0"
-        }
+            "device" : "hw:3,0,0"
+        }*/
     ],
 
     // Keys

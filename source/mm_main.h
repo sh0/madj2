@@ -9,6 +9,10 @@
 // Internal
 #include "mj_config.h"
 
+// Boost
+#include <boost/filesystem.hpp>
+#include <boost/algorithm/string.hpp>
+
 // Media manager class
 class c_media : c_noncopiable
 {
@@ -23,7 +27,9 @@ class c_media : c_noncopiable
         void media_add(std::string path);
 
     private:
-
+        // Files
+        std::vector<boost::filesystem::path> m_file_audio;
+        std::vector<boost::filesystem::path> m_file_video;
 };
 
 #endif
