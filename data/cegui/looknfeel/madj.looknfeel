@@ -168,24 +168,30 @@
     ***************************************************
     -->
     <WidgetLook name="madj/FrameWindow">
-        <PropertyDefinition name="ClientAreaColour" initialValue="FF141B38" redrawOnWrite="true" type="ColourRect"/>
+        <PropertyDefinition name="ClientAreaColour" initialValue="80000000" redrawOnWrite="true" type="ColourRect"/>
         <PropertyLinkDefinition name="CaptionColour" widget="__auto_titlebar__" targetProperty="CaptionColour" initialValue="FFFFFFFF" type="ColourRect"/>
         <PropertyLinkDefinition name="TitlebarFont" widget="__auto_titlebar__" targetProperty="Font" type="Font"/>
+
+        <!--
         <Property name="NSSizingCursorImage" value="madj/MouseNoSoCursor" />
         <Property name="EWSizingCursorImage" value="madj/MouseEsWeCursor" />
         <Property name="NWSESizingCursorImage" value="madj/MouseNwSeCursor" />
         <Property name="NESWSizingCursorImage" value="madj/MouseNeSwCursor" />
-        <Property name="MinSize" value="{{0.1,0},{0.1,0}}" />
+        -->
+
+        <Property name="MinSize" value="{{0,64},{0,64}}" />
         <Property name="AutoRenderingSurface" value="true" />
-        <Property name="Size" value="{{0.3, 0}, {0.3, 0}}" />
+        <Property name="Size" value="{{0.1, 0}, {0.1, 0}}" />
+
+        <!-- Client areas -->
         <NamedArea name="ClientWithTitleWithFrame">
             <Area>
-                <Dim type="LeftEdge" ><ImageDim name="madj/WindowTopLeft" dimension="Width" /></Dim>
+                <Dim type="LeftEdge" ><ImageDim name="madj/WindowLeftEdge" dimension="Width" /></Dim>
                 <Dim type="TopEdge" ><WidgetDim widget="__auto_titlebar__" dimension="BottomEdge" /></Dim>
                 <Dim type="RightEdge" >
                     <OperatorDim op="Subtract">
                         <UnifiedDim scale="1" type="RightEdge" />
-                        <ImageDim name="madj/WindowTopRight" dimension="Width" />
+                        <ImageDim name="madj/WindowRightEdge" dimension="Width" />
                     </OperatorDim>
                 </Dim>
                 <Dim type="BottomEdge" >
@@ -196,6 +202,7 @@
                 </Dim>
             </Area>
         </NamedArea>
+
         <NamedArea name="ClientWithTitleNoFrame">
             <Area>
                 <Dim type="LeftEdge" ><AbsoluteDim value="0" /></Dim>
@@ -204,14 +211,15 @@
                 <Dim type="BottomEdge" ><WidgetDim dimension="BottomEdge" /></Dim>
             </Area>
         </NamedArea>
+
         <NamedArea name="ClientNoTitleWithFrame">
             <Area>
-                <Dim type="LeftEdge" ><ImageDim name="madj/WindowTopLeft" dimension="Width" /></Dim>
+                <Dim type="LeftEdge" ><ImageDim name="madj/WindowLeftEdge" dimension="Width" /></Dim>
                 <Dim type="TopEdge" ><ImageDim name="madj/WindowTopEdge" dimension="Height" /></Dim>
                 <Dim type="RightEdge" >
                     <OperatorDim op="Subtract">
                         <UnifiedDim scale="1" type="RightEdge" />
-                        <ImageDim name="madj/WindowTopRight" dimension="Width" />
+                        <ImageDim name="madj/WindowRightEdge" dimension="Width" />
                     </OperatorDim>
                 </Dim>
                 <Dim type="BottomEdge" >
@@ -222,7 +230,10 @@
                 </Dim>
             </Area>
         </NamedArea>
+
         <NamedArea name="ClientNoTitleNoFrame" />
+
+        <!-- Titlebar and close button -->
         <Child type="madj/Titlebar" nameSuffix="__auto_titlebar__">
             <Area>
                 <Dim type="Width" ><UnifiedDim scale="1" type="Width" /></Dim>
@@ -234,31 +245,30 @@
             <Area>
                 <Dim type="LeftEdge" >
                     <OperatorDim op="Subtract">
-                        <OperatorDim op="Subtract">
-                            <UnifiedDim scale="1" type="LeftEdge"/>
-                            <ImageDim name="madj/SysAreaRight" dimension="Width"/>
-                        </OperatorDim>
-                        <ImageDim name="madj/SysAreaMiddle" dimension="Width" />
+                        <UnifiedDim scale="1" type="LeftEdge"/>
+                        <ImageDim name="madj/CloseButton" dimension="Width" />
                     </OperatorDim>
                 </Dim>
                 <Dim type="TopEdge" >
                     <OperatorDim op="Multiply">
                         <OperatorDim op="Subtract">
                             <WidgetDim widget="__auto_titlebar__" dimension="Height" />
-                            <ImageDim name="madj/NewCloseButtonNormal" dimension="Width" />
+                            <ImageDim name="madj/CloseButton" dimension="Height" />
                         </OperatorDim>
                         <AbsoluteDim value="0.5" />
                     </OperatorDim>
                 </Dim>
-                <Dim type="Width" ><ImageDim name="madj/NewCloseButtonNormal" dimension="Width" /></Dim>
-                <Dim type="Height" ><ImageDim name="madj/NewCloseButtonNormal" dimension="Width" /></Dim>
+                <Dim type="Width" ><ImageDim name="madj/CloseButton" dimension="Width" /></Dim>
+                <Dim type="Height" ><ImageDim name="madj/CloseButton" dimension="Width" /></Dim>
             </Area>
             <Property name="AlwaysOnTop" value="true" />
-            <Property name="NormalImage" value="madj/NewCloseButtonNormal" />
-            <Property name="HoverImage" value="madj/NewCloseButtonHover" />
-            <Property name="PushedImage" value="madj/NewCloseButtonPressed" />
+            <Property name="NormalImage" value="madj/CloseButton" />
+            <Property name="HoverImage" value="madj/CloseButton" />
+            <Property name="PushedImage" value="madj/CloseButton" />
             <Property name="NonClient" value="true" />
         </Child>
+
+        <!-- Frame -->
         <ImagerySection name="withtitle_frame">
             <FrameComponent>
                 <Area>
@@ -293,6 +303,7 @@
                 <HorzFormat type="Stretched" />
             </ImageryComponent>
         </ImagerySection>
+
         <ImagerySection name="notitle_frame">
             <FrameComponent>
                 <Image component="TopLeftCorner" name="madj/WindowTopLeft" />
@@ -326,6 +337,7 @@
                 <HorzFormat type="Stretched" />
             </ImageryComponent>
         </ImagerySection>
+
         <ImagerySection name="withtitle_noframe_client_area">
             <ImageryComponent>
                 <Area>
@@ -337,6 +349,7 @@
                 <HorzFormat type="Stretched" />
             </ImageryComponent>
         </ImagerySection>
+
         <ImagerySection name="notitle_noframe_client_area">
             <ImageryComponent>
                 <Image name="madj/GenericBrush" />
@@ -345,6 +358,8 @@
                 <HorzFormat type="Stretched" />
             </ImageryComponent>
         </ImagerySection>
+
+        <!-- State -->
         <StateImagery name="ActiveWithTitleWithFrame">
             <Layer>
                 <Section section="withtitle_frame" />
@@ -424,76 +439,58 @@
         <PropertyDefinition name="CaptionColour" initialValue="FFFFFFFF" redrawOnWrite="true" type="ColourRect"/>
         <Property name="NonClient" value="true" />
         <Property name="Size" value="{{0, 256}, {0, 32}}" />
+
+        <!-- Bar -->
         <ImagerySection name="main">
             <ImageryComponent>
-                <Image name="madj/NewTitlebarLeft" />
+                <Image name="madj/TitlebarLeft" />
                 <VertFormat type="Stretched" />
+                <HorzFormat type="LeftAligned" />
             </ImageryComponent>
+
+            <ImageryComponent>
+                <Image name="madj/TitlebarRight" />
+                <VertFormat type="Stretched" />
+                <HorzFormat type="RightAligned" />
+            </ImageryComponent>
+
             <ImageryComponent>
                 <Area>
+                    <Dim type="LeftEdge" ><ImageDim name="madj/TitlebarLeft" dimension="Width" /></Dim>
                     <Dim type="RightEdge" >
                         <OperatorDim op="Subtract">
                             <UnifiedDim scale="1" type="RightEdge"/>
-                            <OperatorDim op="Add">
-                                <ImageDim name="madj/SysAreaRight" dimension="Width"/>
-                                <ImageDim name="madj/SysAreaMiddle" dimension="Width" />
-                            </OperatorDim>
+                            <ImageDim name="madj/TitlebarRight" dimension="Width"/>
                         </OperatorDim>
                     </Dim>
                 </Area>
-                <Image name="madj/NewTitlebarRight" />
-                <VertFormat type="Stretched" />
-                <HorzFormat type="RightAligned" />
-            </ImageryComponent>
-            <ImageryComponent>
-                <Area>
-                    <Dim type="RightEdge" >
-                        <OperatorDim op="Subtract">
-                            <UnifiedDim scale="1" type="RightEdge"/>
-                            <ImageDim name="madj/SysAreaRight" dimension="Width" />
-                        </OperatorDim>
-                    </Dim>
-                </Area>
-                <Image name="madj/SysAreaMiddle" />
-                <VertFormat type="Stretched" />
-                <HorzFormat type="RightAligned" />
-            </ImageryComponent>
-            <ImageryComponent>
-                <Image name="madj/SysAreaRight" />
-                <VertFormat type="Stretched" />
-                <HorzFormat type="RightAligned" />
-            </ImageryComponent>
-            <ImageryComponent>
-                <Area>
-                    <Dim type="LeftEdge" ><ImageDim name="madj/NewTitlebarLeft" dimension="Width" /></Dim>
-                    <Dim type="RightEdge" >
-                        <OperatorDim op="Subtract">
-                            <OperatorDim op="Subtract">
-                                <OperatorDim op="Subtract">
-                                    <UnifiedDim scale="1" type="RightEdge"/>
-                                    <ImageDim name="madj/SysAreaRight" dimension="Width"/>
-                                </OperatorDim>
-                                <ImageDim name="madj/SysAreaMiddle" dimension="Width"/>
-                            </OperatorDim>
-                            <ImageDim name="madj/NewTitlebarRight" dimension="Width" />
-                        </OperatorDim>
-                    </Dim>
-                </Area>
-                <Image name="madj/NewTitlebarMiddle" />
+                <Image name="madj/TitlebarMiddle" />
                 <VertFormat type="Stretched" />
                 <HorzFormat type="Stretched" />
             </ImageryComponent>
         </ImagerySection>
+
+        <!-- Title -->
         <ImagerySection name="caption">
             <TextComponent>
                 <Area>
-                    <Dim type="LeftEdge" ><ImageDim name="madj/NewTitlebarLeft" dimension="Width" /></Dim>
-                    <Dim type="Width" ><UnifiedDim scale="1" offset="-75" type="Width" /></Dim>
+                    <Dim type="LeftEdge" ><ImageDim name="madj/TitlebarLeft" dimension="Width" /></Dim>
+                    <Dim type="Width" >
+                        <OperatorDim op="Subtract">
+                            <OperatorDim op="Subtract">
+                                <UnifiedDim scale="1" type="Width" />
+                                <ImageDim name="madj/TitlebarLeft" dimension="Width" />
+                            </OperatorDim>
+                            <ImageDim name="madj/TitlebarRight" dimension="Width" />
+                        </OperatorDim>
+                    </Dim>
                 </Area>
                 <ColourProperty name="CaptionColour" />
                 <VertFormat type="CentreAligned" />
             </TextComponent>
         </ImagerySection>
+
+        <!-- States -->
         <StateImagery name="Active">
             <Layer>
                 <Section section="main" />
