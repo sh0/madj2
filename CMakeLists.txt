@@ -33,7 +33,7 @@ include(libs-boost)
 include(libs-cegui)
 include(libs-ffmpeg)
 include(libs-glew)
-include(libs-pulse)
+include(libs-portmidi)
 include(libs-sdl2)
 
 # Subdirs

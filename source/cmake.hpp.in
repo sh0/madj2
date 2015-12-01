@@ -1,0 +1,13 @@
+/*
+ * MADJ project
+ * Copyright (C) 2015 Siim Meerits <siim@yutani.ee>
+ */
+
+#ifndef H_CMAKE
+#define H_CMAKE
+
+// Prefix
+#define MJ_DATA_PATH "@DATA_PATH@"
+
+#endif
+

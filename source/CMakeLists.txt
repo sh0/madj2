@@ -5,26 +5,27 @@
 
 # Config
 configure_file(
-    "${SOURCE_DIR}/mj_cmake.h.in"
-    "${BINARY_DIR}/mj_cmake.h"
+    "${SOURCE_DIR}/cmake.hpp.in"
+    "${BINARY_DIR}/cmake.hpp"
 )
 include_directories(${SOURCE_DIR} ${BINARY_DIR})
 
 # Sources
-file(GLOB CORE_SOURCE ${SOURCE_DIR}/*.cpp)
-file(GLOB CORE_HEADER ${SOURCE_DIR}/*.h)
+file(GLOB_RECURSE CORE_SOURCE RELATIVE ${SOURCE_DIR} *.cpp)
+file(GLOB_RECURSE CORE_HEADER RELATIVE ${SOURCE_DIR} *.hpp)
 
 # Core flags
 append_flags(CORE_CFLAGS "-std=gnu++11 -Wall -march=native -pthread")
 append_flags(CORE_CFLAGS "-O2 -ggdb -fno-omit-frame-pointer")
 append_flags(CORE_CFLAGS "-Wpointer-arith -Wno-ctor-dtor-privacy -Winvalid-offsetof -Wno-strict-aliasing -Wno-unused-local-typedefs -Wno-deprecated")
+append_flags(CORE_CFLAGS "-D__FILENAME__='\"$(subst ${SOURCE_DIR}/,,$(abspath $<))\"'")
 append_flags(CORE_CFLAGS "${ALSA_CFLAGS}")
 append_flags(CORE_CFLAGS "${BOOST_CFLAGS}")
 append_flags(CORE_CFLAGS "${CEGUI_CFLAGS}")
 append_flags(CORE_CFLAGS "${FFMPEG_CFLAGS}")
 append_flags(CORE_CFLAGS "${GLEW_CFLAGS}")
 append_flags(CORE_CFLAGS "${LADSPA_CFLAGS}")
-append_flags(CORE_CFLAGS "${PULSE_CFLAGS}")
+append_flags(CORE_CFLAGS "${PORTMIDI_CFLAGS}")
 append_flags(CORE_CFLAGS "${SDL_CFLAGS}")
 
 # Linker flags
@@ -34,7 +35,7 @@ append_flags(CORE_LDFLAGS "${CEGUI_LDFLAGS}")
 append_flags(CORE_LDFLAGS "${FFMPEG_LDFLAGS}")
 append_flags(CORE_LDFLAGS "${GLEW_LDFLAGS}")
 append_flags(CORE_LDFLAGS "${LADSPA_LDFLAGS}")
-append_flags(CORE_LDFLAGS "${PULSE_LDFLAGS}")
+append_flags(CORE_LDFLAGS "${PORTMIDI_LDFLAGS}")
 append_flags(CORE_LDFLAGS "${SDL_LDFLAGS}")
 
 # Compile
