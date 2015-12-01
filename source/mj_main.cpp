@@ -35,7 +35,7 @@ int main(int argc, char** argv)
     // Command-line option parsing
     boost::program_options::options_description opt_desc("madj options");
     opt_desc.add_options()
-        ("help", "options help")
+        ("help,h", "options help")
         ("config,c", boost::program_options::value<std::string>(), "configuration file path")
     ;
     boost::program_options::variables_map opt_map;
