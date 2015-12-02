@@ -5,6 +5,7 @@
 
 // Internal
 #include "controller/controller.hpp"
+#include "controller/ohmrgb.hpp"
 
 // Portmidi
 #include <portmidi.h>
@@ -19,7 +20,7 @@ c_controller::c_controller()
 
     // Enumerate MIDI devices
     int midi_count = Pm_CountDevices();
-    std::array<int, 2> midi_ohmrgb = { -1, -1 }
+    std::array<int, 2> midi_ohmrgb = { -1, -1 };
     for (int id = 0; id < midi_count; id++) {
         // Get MIDI device info
         const PmDeviceInfo* info = Pm_GetDeviceInfo(id);
@@ -28,7 +29,7 @@ c_controller::c_controller()
 
         // Check for supported device
         std::string name = info->name;
-        std::cout << boost::format("Controller: MIDI device! name = %s, input = %d, output = %d") % name % info->input % info->output << std::endl;
+        //std::cout << boost::format("Controller: MIDI device! name = %s, input = %d, output = %d") % name % info->input % info->output << std::endl;
         if (name == "OhmRGB MIDI 1") {
             if (info->input)
                 midi_ohmrgb[0] = id;
@@ -38,7 +39,8 @@ c_controller::c_controller()
     }
 
     // Create devices
-
+    if (midi_ohmrgb[0] >= 0 || midi_ohmrgb[1] >= 0)
+        m_midi.push_back(std::make_shared<c_controller_ohmrgb>(midi_ohmrgb[0], midi_ohmrgb[1]));
 }
 
 // Input

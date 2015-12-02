@@ -18,9 +18,11 @@ class c_controller : boost::noncopyable
         c_controller();
 
         // MIDI
+        /*
         void midi_add(std::string name, std::string color, std::string device) {
             m_midi.push_back(std::make_shared<c_controller_midi>(device));
         }
+        */
 
         // Input
         void input_keyboard(std::string key, bool value, bool mod_ctrl, bool mod_shift, bool mod_alt, bool mod_gui);

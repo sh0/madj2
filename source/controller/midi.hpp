@@ -11,32 +11,32 @@
 
 // C++
 #include <array>
+#include <cstring>
 
-// ALSA
-#include <alsa/asoundlib.h>
+// Portmidi
+#include <portmidi.h>
 
 // MIDI controller class
 class c_controller_midi : boost::noncopyable
 {
     public:
         // Constructor and destructor
-        c_controller_midi(std::string device);
-        ~c_controller_midi();
+        c_controller_midi(PmDeviceID input, PmDeviceID output);
+        virtual ~c_controller_midi();
 
         // Dispatch
         void dispatch();
 
-    private:
-        // Dispatch
-        void dispatch_read();
-        void dispatch_write();
-
-        // Info
-        std::string m_device;
-
+    protected:
         // Devices
-        snd_rawmidi_t* m_midi_input;
-        snd_rawmidi_t* m_midi_output;
+        PmDeviceID m_input_device;
+        PortMidiStream* m_input_stream;
+        PmDeviceID m_output_device;
+        PortMidiStream* m_output_stream;
+
+        // Buffers
+        uint32_t m_input_size;
+        std::array<PmEvent, 1024> m_input_buffer;
 
         // Opcodes
         uint8_t m_last_opcode;
@@ -46,16 +46,17 @@ class c_controller_midi : boost::noncopyable
         {
             public:
                 // Reading
-                uint8_t* read_data() { return &m_buffer[0]; }
+                PmEvent* read_data() { return &m_buffer[0]; }
                 size_t read_size() { return m_size; }
                 void read_pop(size_t size) {
                     assert(size <= m_size);
-                    memcpy(&m_buffer[0], &m_buffer[size], m_size - size);
+                    for (size_t i = 0; i < m_size - size; i++)
+                        m_buffer[i] = m_buffer[size + i];
                     m_size -= size;
                 }
 
                 // Writing
-                uint8_t* write_data() { return &m_buffer[m_size]; }
+                PmEvent* write_data() { return &m_buffer[m_size]; }
                 size_t write_size() { return m_buffer.size() - m_size; }
                 void write_push(size_t size) {
                     assert(m_size + size <= m_buffer.size());
@@ -63,12 +64,13 @@ class c_controller_midi : boost::noncopyable
                 }
 
             private:
-                std::array<uint8_t, 4096> m_buffer;
+                std::array<PmEvent, 1024> m_buffer;
                 size_t m_size;
         };
         c_buffer_recv m_buffer_recv;
 
         // Send buffer
+        /*
         class c_buffer_send : boost::noncopyable
         {
             public:
@@ -89,6 +91,7 @@ class c_controller_midi : boost::noncopyable
                 std::vector<uint8_t> m_data;
         };
         c_buffer_send m_buffer_send;
+        */
 
         // Data
         struct s_channel {
@@ -103,73 +106,59 @@ class c_controller_midi : boost::noncopyable
         std::array<s_channel, 16> m_channel;
 
         // Read message opcodes
-        int read_op0(uint8_t* data, size_t size);
-        int read_op1(uint8_t* data, size_t size);
-        int read_op2(uint8_t* data, size_t size);
+        int read_msg(PmEvent* events, size_t size);
+        virtual void read_short(PmMessage msg);
+        virtual void read_sysex(std::vector<uint8_t> msg);
 
         // Read channel messages
-        void read_note_off(int channel, int key, int velocity);
-        void read_note_on(int channel, int key, int velocity);
-        void read_note_pressure(int channel, int key, int pressure);
-        void read_control(int channel, int id, int value);
-        void read_program_change(int channel, int program);
-        void read_channel_pressure(int channel, int pressure);
-        void read_bender(int channel, int value);
-
-        // Read system exclusive messages
-        void read_sysex(uint8_t* data, size_t size);
-        void read_sysex_ohmrgb(int op, int device, uint8_t* data, size_t size);
+        virtual void read_note_off(int channel, int key, int velocity);
+        virtual void read_note_on(int channel, int key, int velocity);
+        virtual void read_note_pressure(int channel, int key, int pressure);
+        virtual void read_control(int channel, int id, int value);
+        virtual void read_program_change(int channel, int program);
+        virtual void read_channel_pressure(int channel, int pressure);
+        virtual void read_bender(int channel, int value);
 
         // Read system common messages
-        void read_common_mtc_quarter(int id, int value);
-        void read_common_song_pos(int id);
-        void read_common_song_select(int id);
-        void read_common_tune_request();
+        virtual void read_common_mtc_quarter(int id, int value);
+        virtual void read_common_song_pos(int id);
+        virtual void read_common_song_select(int id);
+        virtual void read_common_tune_request();
 
         // Read system real-time messages
-        void read_realtime_clock();
-        void read_realtime_start();
-        void read_realtime_continue();
-        void read_realtime_stop();
-        void read_realtime_sensing();
-        void read_realtime_reset();
+        virtual void read_realtime_clock();
+        virtual void read_realtime_start();
+        virtual void read_realtime_continue();
+        virtual void read_realtime_stop();
+        virtual void read_realtime_sensing();
+        virtual void read_realtime_reset();
 
-        // Write system exclusive messages
+        // Write messages
+        void write_short(PmMessage msg);
         void write_sysex(std::vector<uint8_t> msg);
-        void write_sysex_ohmrgb(std::vector<uint8_t> msg);
-        void write_sysex_ohmrgb_save_settings() { write_sysex_ohmrgb({ 0x02 }); }
-        void write_sysex_ohmrgb_set_leds(std::vector<uint8_t> leds);
-        void write_sysex_ohmrgb_factory_reset() { write_sysex_ohmrgb({ 0x06 }); }
-        void write_sysex_ohmrgb_request_leds() { write_sysex_ohmrgb({ 0x07, 0x04 }); }
-        void write_sysex_ohmrgb_request_controls() { write_sysex_ohmrgb({ 0x07, 0x06 }); }
-        void write_sysex_ohmrgb_request_midi_state() { write_sysex_ohmrgb({ 0x07, 0x08 }); }
-        void write_sysex_ohmrgb_request_midi_mapping(uint8_t ll, uint8_t hh) { write_sysex_ohmrgb({ 0x07, 0x09, ll, hh }); }
-        void write_sysex_ohmrgb_request_analog_mapping() { write_sysex_ohmrgb({ 0x07, 0x0a }); }
-        void write_sysex_ohmrgb_request_button_mapping() { write_sysex_ohmrgb({ 0x07, 0x0b }); }
-        void write_sysex_ohmrgb_request_basic_channel() { write_sysex_ohmrgb({ 0x07, 0x0c }); }
-        void write_sysex_ohmrgb_request_output_merge() { write_sysex_ohmrgb({ 0x07, 0x0d }); }
-        void write_sysex_ohmrgb_request_crossfader() { write_sysex_ohmrgb({ 0x07, 0x0f }); }
-        void write_sysex_ohmrgb_request_bank_channel() { write_sysex_ohmrgb({ 0x07, 0x16 }); }
-        void write_sysex_ohmrgb_request_bank_channels() { write_sysex_ohmrgb({ 0x07, 0x17 }); }
-        void write_sysex_ohmrgb_request_current_bank() { write_sysex_ohmrgb({ 0x07, 0x1a }); }
-        void write_sysex_ohmrgb_request_expansion_jack_map() { write_sysex_ohmrgb({ 0x07, 0x22 }); }
-        void write_sysex_ohmrgb_request_color_map() { write_sysex_ohmrgb({ 0x07, 0x23 }); }
-        void write_sysex_ohmrgb_map_single_led(uint8_t ll, uint8_t hh, uint8_t cr) { write_sysex_ohmrgb({ 0x09, ll, hh, cr }); }
-        //void write_sysex_ohmrgb_map_analog_inputs();
-        //void write_sysex_ohmrgb_map_buttons();
-        void write_sysex_ohmrgb_set_basic_channel(uint8_t channel) { write_sysex_ohmrgb({ 0x0c, channel }); }
-        void write_sysex_ohmrgb_set_midi_output_merge(bool state) { write_sysex_ohmrgb({ 0x0d, static_cast<uint8_t>(state ? 0x01 : 0x00) }); }
-        void write_sysex_ohmrgb_erase_input_map() { write_sysex_ohmrgb({ 0x0e }); }
-        void write_sysex_ohmrgb_set_crossfader_flip(bool state) { write_sysex_ohmrgb({ 0x0f, static_cast<uint8_t>(state ? 0x01 : 0x00) }); }
-        void write_sysex_ohmrgb_set_bank_channel(uint8_t channel) { write_sysex_ohmrgb({ 0x16, channel }); }
-        void write_sysex_ohmrgb_set_bank_channels(uint8_t channel[4]) { write_sysex_ohmrgb({ 0x17, channel[0], channel[1], channel[2], channel[3] }); }
-        void write_sysex_ohmrgb_save_current_bank_settings() { write_sysex_ohmrgb({ 0x18 }); }
-        void write_sysex_ohmrgb_save_all_bank_settings() { write_sysex_ohmrgb({ 0x19 }); }
-        //void write_sysex_ohmrgb_map_expansion_analog_inputs();
-        //void write_sysex_ohmrgb_color_map();
-        //void write_sysex_ohmrgb_map_led_all_notes();
-        //void write_sysex_ohmrgb_map_led_all_ccs();
-        //void write_sysex_ohmrgb_set_leds_for_all_banks();
+
+        // Write channel messages
+        void write_note_off(int channel, int key, int velocity);
+        void write_note_on(int channel, int key, int velocity);
+        void write_note_pressure(int channel, int key, int pressure);
+        void write_control(int channel, int id, int value);
+        void write_program_change(int channel, int program);
+        void write_channel_pressure(int channel, int pressure);
+        void write_bender(int channel, int value);
+
+        // Write system common messages
+        void write_common_mtc_quarter(int id, int value);
+        void write_common_song_pos(int id);
+        void write_common_song_select(int id);
+        void write_common_tune_request();
+
+        // Read system real-time messages
+        void write_realtime_clock();
+        void write_realtime_start();
+        void write_realtime_continue();
+        void write_realtime_stop();
+        void write_realtime_sensing();
+        void write_realtime_reset();
 };
 
 #endif

@@ -83,6 +83,7 @@ c_context::c_context(std::string config_fn)
     }
 
     // MIDI
+    /*
     if (auto pt_root = ptree.get_child_optional("midi")) {
         for (auto& pt_midi : *pt_root) {
             c_global::controller->midi_add(
@@ -92,6 +93,7 @@ c_context::c_context(std::string config_fn)
             );
         }
     }
+    */
 
     // Screen
     if (auto pt_root = ptree.get_child_optional("screens")) {
