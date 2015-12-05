@@ -24,7 +24,7 @@ static void g_signal(int sig)
 
         // Kill instance
         auto context = c_global::context;
-        if (context != false)
+        if (context)
             context->kill();
     }
 }

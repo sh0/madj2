@@ -20,7 +20,7 @@ c_controller::c_controller()
 
     // Enumerate MIDI devices
     int midi_count = Pm_CountDevices();
-    std::array<int, 2> midi_ohmrgb = { -1, -1 };
+    std::array<int, 2> midi_ohmrgb = {{ -1, -1 }};
     for (int id = 0; id < midi_count; id++) {
         // Get MIDI device info
         const PmDeviceInfo* info = Pm_GetDeviceInfo(id);

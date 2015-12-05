@@ -23,6 +23,8 @@ class c_video_context : boost::noncopyable
         c_video_context(SDL_Window* window) {
             // OpenGL
             m_context = SDL_GL_CreateContext(window);
+            if (!m_context)
+                throw c_exception("Failed to create OpenGL context!", { throw_format("error", SDL_GetError()) });
 
             // CEGUI
             m_cegui = std::unique_ptr<c_cegui>(new c_cegui());

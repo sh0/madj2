@@ -49,7 +49,7 @@ class c_file_video : boost::noncopyable
         // Timing
         int64_t time_dts(double tr) {
             int64_t ts = static_cast<int64_t>(tr / m_rate);
-            return std::max(0L, std::min(m_num_frames - 1, ts));
+            return std::max(static_cast<int64_t>(0), std::min(m_num_frames - 1, ts));
         }
         double time_pts(int64_t ts) {
             return static_cast<double>(ts) * m_rate;

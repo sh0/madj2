@@ -106,9 +106,9 @@ void c_file_video::decode()
             std::unique_lock<std::mutex> lock(m_mutex);
 
             // Timestamp
-            ts = std::max(0L, std::min(m_num_frames - 1, m_decode_ts));
-            int64_t ts_min = std::max(0L, std::min(m_num_frames - 1, ts - m_decode_buffer));
-            int64_t ts_max = std::max(0L, std::min(m_num_frames - 1, ts + m_decode_buffer));
+            ts = std::max(static_cast<int64_t>(0), std::min(m_num_frames - 1, m_decode_ts));
+            int64_t ts_min = std::max(static_cast<int64_t>(0), std::min(m_num_frames - 1, ts - m_decode_buffer));
+            int64_t ts_max = std::max(static_cast<int64_t>(0), std::min(m_num_frames - 1, ts + m_decode_buffer));
 
             // Clear sequence frames that are out of buffering area
             m_sequence.erase(m_sequence.begin(), m_sequence.upper_bound(ts_min - 1));

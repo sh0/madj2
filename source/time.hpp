@@ -12,6 +12,8 @@
 // C++
 #include <chrono>
 #include <thread>
+#include <algorithm>
+#include <cmath>
 
 // Static functions
 inline int64_t mj_time_now() // us units
@@ -78,7 +80,7 @@ class c_time_thread
             int64_t time_diff = (m_time_last + (m_rate * 1000)) - time_new;
             if (time_diff > 0)
                 std::this_thread::sleep_for(std::chrono::milliseconds(time_diff / 1000));
-            m_time_last = time_new + std::max(time_diff, 0L);
+            m_time_last = time_new + std::max(time_diff, static_cast<int64_t>(0));
         }
 
     private:
