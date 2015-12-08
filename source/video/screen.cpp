@@ -50,7 +50,7 @@ c_video_screen::c_video_screen(
 
     // Create window
     std::string title = std::string("madj - ") + m_name;
-    Uint32 flags = SDL_WINDOW_OPENGL | (m_window_fullscreen ? SDL_WINDOW_BORDERLESS : 0);
+    Uint32 flags = SDL_WINDOW_OPENGL | (m_window_fullscreen ? SDL_WINDOW_BORDERLESS : 0) | SDL_WINDOW_RESIZABLE;
     m_window = SDL_CreateWindow(title.c_str(), m_window_pos_x, m_window_pos_y, m_window_width, m_window_height, flags);
     if (m_window == nullptr)
         throw c_exception("Screen: Failed to create window!", { throw_format("name", m_name), throw_format("error", SDL_GetError()) });
@@ -61,20 +61,27 @@ c_video_screen::c_video_screen(
 
     // Window settings
     SDL_DisableScreenSaver();
-    if (SDL_GL_SetSwapInterval(0) != 0) // 0 = immediate, 1 = vertical retrace sync, -1 = late swap tearing
+    if (SDL_GL_SetSwapInterval(1) != 0) // 0 = immediate, 1 = vertical retrace sync, -1 = late swap tearing
         std::cout << "Screen: Failed to set swap interval!" << std::endl;
 
+    /*
     CEGUI::Rectf area(CEGUI::Vector2f(0.0f, 0.0f), CEGUI::Sizef(m_window_width, m_window_height));
     m_context->cegui_renderer().getDefaultRenderTarget().setArea(area);
     m_context->cegui_renderer().getDefaultRenderTarget().activate();
+    */
 
     // CEGUI
     m_cegui = std::unique_ptr<c_cegui>(new c_cegui(m_context));
-    CEGUI::SchemeManager::getSingleton().createFromFile("madj.scheme");
+    CEGUI::SchemeManager::getSingleton().createFromFile("GWEN.scheme"); // "madj.scheme"
+
+    m_cegui_root = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("tracker-window.layout");
+    m_cegui->context().setRootWindow(m_cegui_root);
+
     //m_cegui_win = reinterpret_cast<CEGUI::DefaultWindow*>(CEGUI::WindowManager::getSingletonPtr()->createWindow("DefaultWindow", name));
     //m_cegui->context().setRootWindow(m_cegui_win);
-    m_cegui_glc = reinterpret_cast<CEGUI::GridLayoutContainer*>(CEGUI::WindowManager::getSingletonPtr()->createWindow("GridLayoutContainer"));
-    m_cegui_glc->setGridDimensions(m_view_cols, m_view_rows);
+
+    //m_cegui_glc = reinterpret_cast<CEGUI::GridLayoutContainer*>(CEGUI::WindowManager::getSingletonPtr()->createWindow("GridLayoutContainer"));
+    //m_cegui_glc->setGridDimensions(m_view_cols, m_view_rows);
 
     // Error check
     g_opengl_check();
@@ -87,9 +94,13 @@ c_video_screen::c_video_screen(
         throw c_exception("Screen: Wrong number of view columns/rows specified!", { throw_format("name", m_name) });
     }
 
+    #if 0
     // Create viewports
     for (int y = 0; y < m_view_rows; y++) {
         for (int x = 0; x < m_view_cols; x++) {
+
+            if (x != 0 && y != 0)
+                continue;
 
             // Width and height
             int view_w = (m_window_width + m_view_cols - 1) / m_view_cols;
@@ -106,15 +117,19 @@ c_video_screen::c_video_screen(
 
             // Window
             auto window = view->window();
-            window->setSize(CEGUI::USize(cegui_reldim(1.0f / m_view_cols), cegui_reldim(1.0f / m_view_rows)));
-            m_cegui_glc->addChildToPosition(window, x, y);
+            //window->setSize(CEGUI::USize(cegui_reldim(1.0f / m_view_cols), cegui_reldim(1.0f / m_view_rows)));
+            //m_cegui_glc->addChildToPosition(window, x, y);
+
+            m_cegui->context().setRootWindow(window);
         }
     }
+    #endif
 
     // Refresh layout
-    m_cegui_glc->layout();
-    //m_cegui_win->addChild(m_cegui_glc);
-    m_cegui->context().setRootWindow(m_cegui_glc);
+    //m_cegui_glc->layout();
+
+    ////m_cegui_win->addChild(m_cegui_glc);
+    //m_cegui->context().setRootWindow(m_cegui_glc);
 }
 
 c_video_screen::~c_video_screen()
@@ -147,19 +162,39 @@ void c_video_screen::dispatch()
 
             case SDL_KEYDOWN:
             case SDL_KEYUP:
-                SDL_Keysym key_sym = event.key.keysym;
-                std::string key_name = SDL_GetKeyName(key_sym.sym);
-                boost::algorithm::to_lower(key_name);
-                bool key_down = (event.type == SDL_KEYDOWN);
-                bool key_ctrl = ((key_sym.mod & KMOD_CTRL) != 0);
-                bool key_shift = ((key_sym.mod & KMOD_SHIFT) != 0);
-                bool key_alt = ((key_sym.mod & KMOD_ALT) != 0);
-                bool key_gui = ((key_sym.mod & KMOD_GUI) != 0);
+                {
+                    SDL_Keysym key_sym = event.key.keysym;
+                    std::string key_name = SDL_GetKeyName(key_sym.sym);
+                    boost::algorithm::to_lower(key_name);
+                    bool key_down = (event.type == SDL_KEYDOWN);
+                    bool key_ctrl = ((key_sym.mod & KMOD_CTRL) != 0);
+                    bool key_shift = ((key_sym.mod & KMOD_SHIFT) != 0);
+                    bool key_alt = ((key_sym.mod & KMOD_ALT) != 0);
+                    bool key_gui = ((key_sym.mod & KMOD_GUI) != 0);
 
-                if (key_sym.sym == SDLK_ESCAPE)
-                    c_global::context->kill();
-                else
-                    c_global::controller->input_keyboard(key_name, key_down, key_ctrl, key_shift, key_alt, key_gui);
+                    if (key_sym.sym == SDLK_ESCAPE)
+                        c_global::context->kill();
+                    else
+                        c_global::controller->input_keyboard(key_name, key_down, key_ctrl, key_shift, key_alt, key_gui);
+                }
+                break;
+
+            case SDL_WINDOWEVENT:
+                switch (event.window.event) {
+                    case SDL_WINDOWEVENT_RESIZED:
+                    case SDL_WINDOWEVENT_SIZE_CHANGED:
+                        {
+                            // New size
+                            m_window_width = event.window.data1;
+                            m_window_height = event.window.data2;
+
+                            // Renderer
+                            //m_context->cegui_renderer().grabTextures();
+                            //m_context->cegui_renderer().restoreTextures();
+                            m_context->cegui_renderer().setDisplaySize(CEGUI::Sizef(m_window_width, m_window_height));
+                        }
+                        break;
+                }
                 break;
         }
     }
@@ -172,7 +207,11 @@ void c_video_screen::dispatch()
         view->dispatch();
     g_opengl_check();
 
+    m_context->cegui_system().renderAllGUIContexts();
+    g_opengl_check();
+
     // CEGUI
+    #if 0
     CEGUI::Rectf area(CEGUI::Vector2f(0.0f, 0.0f), CEGUI::Sizef(m_window_width, m_window_height));
     m_cegui->target().setArea(area);
     //m_cegui->target().activate();
@@ -180,6 +219,7 @@ void c_video_screen::dispatch()
     m_cegui->context().draw();
     m_context->cegui_renderer().endRendering();
     //m_cegui->target().deactivate();
+    #endif
 
     // Swap buffers
     SDL_GL_SwapWindow(m_window);
@@ -193,20 +233,22 @@ bool c_video_screen::gl_init()
     glViewport(0, 0, m_window_width, m_window_height);
 
     // Vertex properties
+    /*
     glDisable(GL_DEPTH_TEST);
     glDepthMask(GL_FALSE);
     glDisable(GL_CULL_FACE);
+    */
 
     // Fragment properties
-    glDisable(GL_BLEND);
+    //glDisable(GL_BLEND);
     //glDisable(GL_TEXTURE_2D);
 
     // Clear
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Antialias
-    glShadeModel(GL_SMOOTH);
+    //glShadeModel(GL_SMOOTH);
 
     // Error check
     g_opengl_check();

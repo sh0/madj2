@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <GUIScheme version="5" name="madj">
-    <Imageset filename="madj.imageset" />
     <Font filename="DroidSansMono-10.font" />
+    <Imageset filename="madj.imageset" />
 	<LookNFeel filename="madj.looknfeel" />
 	<WindowRendererSet filename="CEGUICoreWindowRendererSet" />
 

@@ -58,12 +58,14 @@
 
     // Presentation workspaces
     "ws-presentations" : [
+        /*
         {
             "name" : "pres_a",
             "screen" : "screen_a",
             "slot" : 3,
             "audio" : [ "right" ]
         }
+        */
     ],
 
     // MIDI

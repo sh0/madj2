@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<GUILayout version="4">
+<Window type="DefaultWindow" name="root">
+    <Window type="GWEN/FrameWindow" name="testWindow">
+        <Property name="Position" value="{{0,0},{0,0}}" />
+        <Property name="Size" value="{{0,640},{0,480}}" />
+        <Property name="MaxSize" value="{{1,0},{1,0}}" />
+        <Property name="MinSize" value="{{0,0},{0,0}}" />
+        <Property name="Text" value="Hello World!" />
+    </Window>
+</Window>
+</GUILayout>
