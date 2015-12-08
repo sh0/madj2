@@ -10,6 +10,7 @@
 #include "controller/controller.hpp"
 #include "video/video.hpp"
 #include "video/screen.hpp"
+#include "video/scancode.hpp"
 
 // Boost
 #include <boost/algorithm/string.hpp>
@@ -27,7 +28,9 @@ c_video_screen::c_video_screen(
     // Window
     m_window_pos_x(pos_x), m_window_pos_y(pos_y),
     m_window_width(width), m_window_height(height),
-    m_window_fullscreen(fullscreen)
+    m_window_fullscreen(fullscreen),
+    // Timing
+    m_time(0)
 {
     // Debug
     std::cout <<
@@ -64,16 +67,28 @@ c_video_screen::c_video_screen(
     if (SDL_GL_SetSwapInterval(1) != 0) // 0 = immediate, 1 = vertical retrace sync, -1 = late swap tearing
         std::cout << "Screen: Failed to set swap interval!" << std::endl;
 
-    /*
+    // Rendering area
+    SDL_GL_GetDrawableSize(m_window, &m_window_width, &m_window_height);
     CEGUI::Rectf area(CEGUI::Vector2f(0.0f, 0.0f), CEGUI::Sizef(m_window_width, m_window_height));
     m_context->cegui_renderer().getDefaultRenderTarget().setArea(area);
     m_context->cegui_renderer().getDefaultRenderTarget().activate();
-    */
+
+    // Timing
+    m_time = SDL_GetTicks() / 1000.f;
 
     // CEGUI
     m_cegui = std::unique_ptr<c_cegui>(new c_cegui(m_context));
-    CEGUI::SchemeManager::getSingleton().createFromFile("GWEN.scheme"); // "madj.scheme"
 
+    // Scheme
+    CEGUI::SchemeManager::getSingleton().createFromFile("madj.scheme");
+    CEGUI::SchemeManager::getSingleton().createFromFile("GWEN.scheme");
+
+    // Defaults
+    m_cegui->context().setDefaultFont("DroidSansMono-10");
+    //m_cegui->context().getMouseCursor().setDefaultImage("TaharezLook/MouseArrow");
+    //m_cegui->context().setDefaultTooltipType("TaharezLook/Tooltip");
+
+    // Root window
     m_cegui_root = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("tracker-window.layout");
     m_cegui->context().setRootWindow(m_cegui_root);
 
@@ -163,6 +178,7 @@ void c_video_screen::dispatch()
             case SDL_KEYDOWN:
             case SDL_KEYUP:
                 {
+                    // Parse event
                     SDL_Keysym key_sym = event.key.keysym;
                     std::string key_name = SDL_GetKeyName(key_sym.sym);
                     boost::algorithm::to_lower(key_name);
@@ -172,10 +188,66 @@ void c_video_screen::dispatch()
                     bool key_alt = ((key_sym.mod & KMOD_ALT) != 0);
                     bool key_gui = ((key_sym.mod & KMOD_GUI) != 0);
 
+                    // Send event to controller
                     if (key_sym.sym == SDLK_ESCAPE)
                         c_global::context->kill();
                     else
                         c_global::controller->input_keyboard(key_name, key_down, key_ctrl, key_shift, key_alt, key_gui);
+
+                    // Send event to GUI
+                    CEGUI::Key::Scan key_cegui = static_cast<CEGUI::Key::Scan>(g_convert_sdl_scancode_to_cegui(static_cast<int>(event.key.keysym.scancode)));
+                    if (key_cegui != 0) {
+                        if (event.type == SDL_KEYDOWN)
+                            m_cegui->context().injectKeyDown(key_cegui);
+                        else if (event.type == SDL_KEYUP)
+                            m_cegui->context().injectKeyUp(key_cegui);
+                    }
+                }
+                break;
+
+            case SDL_TEXTINPUT:
+                {
+                    // Send event to GUI
+                    auto text = g_convert_sdl_textinput_to_cegui(event.text.text);
+                    for (auto c : text)
+                        m_cegui->context().injectChar(c);
+                }
+                break;
+
+            case SDL_MOUSEMOTION:
+                {
+                    m_cegui->context().injectMousePosition(event.motion.x, event.motion.y);
+                }
+                break;
+
+            case SDL_MOUSEBUTTONDOWN:
+            case SDL_MOUSEBUTTONUP:
+                {
+                    // Parse event
+                    CEGUI::MouseButton button = CEGUI::MouseButton::NoButton;
+                    switch (event.button.button) {
+                        case SDL_BUTTON_LEFT: button = CEGUI::MouseButton::LeftButton; break;
+                        case SDL_BUTTON_MIDDLE: button = CEGUI::MouseButton::MiddleButton; break;
+                        case SDL_BUTTON_RIGHT: button = CEGUI::MouseButton::RightButton; break;
+                        case SDL_BUTTON_X1: button = CEGUI::MouseButton::X1Button; break;
+                        case SDL_BUTTON_X2: button = CEGUI::MouseButton::X2Button; break;
+                    }
+                    if (button == CEGUI::MouseButton::NoButton)
+                        break;
+
+                    // Send event to GUI
+                    m_cegui->context().injectMousePosition(event.button.x, event.button.y);
+                    if (event.type == SDL_MOUSEBUTTONDOWN)
+                        m_cegui->context().injectMouseButtonDown(button);
+                    else if (event.type == SDL_MOUSEBUTTONUP)
+                        m_cegui->context().injectMouseButtonUp(button);
+                }
+                break;
+
+            case SDL_MOUSEWHEEL:
+                {
+                    // Send event to GUI
+                    m_cegui->context().injectMouseWheelChange(event.wheel.y);
                 }
                 break;
 
@@ -185,13 +257,18 @@ void c_video_screen::dispatch()
                     case SDL_WINDOWEVENT_SIZE_CHANGED:
                         {
                             // New size
-                            m_window_width = event.window.data1;
-                            m_window_height = event.window.data2;
+                            SDL_GL_GetDrawableSize(m_window, &m_window_width, &m_window_height);
 
                             // Renderer
                             //m_context->cegui_renderer().grabTextures();
                             //m_context->cegui_renderer().restoreTextures();
                             m_context->cegui_renderer().setDisplaySize(CEGUI::Sizef(m_window_width, m_window_height));
+                        }
+                        break;
+
+                    case SDL_WINDOWEVENT_LEAVE:
+                        {
+                            m_cegui->context().injectMouseLeaves();
                         }
                         break;
                 }
@@ -202,16 +279,19 @@ void c_video_screen::dispatch()
     // Init screen drawing
     gl_init();
 
+    // Time pulses
+    const float time_current = SDL_GetTicks() / 1000.f;
+    const float time_elapsed = time_current - m_time;
+    m_context->cegui_system().injectTimePulse(time_elapsed);
+    m_cegui->context().injectTimePulse(time_elapsed);
+    m_time = time_current;
+
     // Viewport drawing
     for (auto& view : m_view_list)
         view->dispatch();
     g_opengl_check();
 
-    m_context->cegui_system().renderAllGUIContexts();
-    g_opengl_check();
-
     // CEGUI
-    #if 0
     CEGUI::Rectf area(CEGUI::Vector2f(0.0f, 0.0f), CEGUI::Sizef(m_window_width, m_window_height));
     m_cegui->target().setArea(area);
     //m_cegui->target().activate();
@@ -219,7 +299,6 @@ void c_video_screen::dispatch()
     m_cegui->context().draw();
     m_context->cegui_renderer().endRendering();
     //m_cegui->target().deactivate();
-    #endif
 
     // Swap buffers
     SDL_GL_SwapWindow(m_window);
@@ -233,22 +312,20 @@ bool c_video_screen::gl_init()
     glViewport(0, 0, m_window_width, m_window_height);
 
     // Vertex properties
-    /*
     glDisable(GL_DEPTH_TEST);
     glDepthMask(GL_FALSE);
     glDisable(GL_CULL_FACE);
-    */
 
     // Fragment properties
-    //glDisable(GL_BLEND);
-    //glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
+    glDisable(GL_TEXTURE_2D);
 
     // Clear
-    glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Antialias
-    //glShadeModel(GL_SMOOTH);
+    glShadeModel(GL_SMOOTH);
 
     // Error check
     g_opengl_check();

@@ -66,6 +66,9 @@ class c_video_screen : boost::noncopyable
         bool m_window_fullscreen;
         SDL_Window* m_window;
 
+        // Timing
+        float m_time;
+
         // Context
         std::shared_ptr<c_video_context> m_context;
 

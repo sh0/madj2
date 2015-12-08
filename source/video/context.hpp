@@ -36,6 +36,7 @@ class c_video_context : boost::noncopyable
             rp->setResourceGroupDirectory("layouts", MJ_DATA_PATH "/cegui/layouts/");
             rp->setResourceGroupDirectory("looknfeels", MJ_DATA_PATH "/cegui/looknfeel/");
             rp->setResourceGroupDirectory("lua_scripts", MJ_DATA_PATH "/cegui/lua_scripts/");
+            rp->setResourceGroupDirectory("schemas", MJ_DATA_PATH "/cegui/xml_schemas/");
 
             CEGUI::ImageManager::setImagesetDefaultResourceGroup("imagesets");
             CEGUI::Font::setDefaultResourceGroup("fonts");
@@ -43,6 +44,10 @@ class c_video_context : boost::noncopyable
             CEGUI::WidgetLookManager::setDefaultResourceGroup("looknfeels");
             CEGUI::WindowManager::setDefaultResourceGroup("layouts");
             CEGUI::ScriptModule::setDefaultResourceGroup("lua_scripts");
+
+            CEGUI::XMLParser* parser = m_cegui->system().getXMLParser();
+            if (parser->isPropertyPresent("SchemaDefaultResourceGroup"))
+                parser->setProperty("SchemaDefaultResourceGroup", "schemas");
         }
 
         ~c_video_context() {
