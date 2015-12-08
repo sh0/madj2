@@ -12,6 +12,7 @@
 
 // CEGUI
 #include <CEGUI/RendererModules/OpenGL/GL3Renderer.h>
+#include <CEGUI/RendererModules/OpenGL/Texture.h>
 #include <CEGUI/System.h>
 #include <CEGUI/CEGUI.h>
 

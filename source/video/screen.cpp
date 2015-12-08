@@ -90,13 +90,8 @@ c_video_screen::c_video_screen(
 
     // Root window
     m_cegui_root = reinterpret_cast<CEGUI::DefaultWindow*>(CEGUI::WindowManager::getSingleton().loadLayoutFromFile("tracker-window.layout"));
+    m_cegui_root->setUsingAutoRenderingSurface(false);
     m_cegui->context().setRootWindow(m_cegui_root);
-
-    //m_cegui_win = reinterpret_cast<CEGUI::DefaultWindow*>(CEGUI::WindowManager::getSingletonPtr()->createWindow("DefaultWindow", name));
-    //m_cegui->context().setRootWindow(m_cegui_win);
-
-    //m_cegui_glc = reinterpret_cast<CEGUI::GridLayoutContainer*>(CEGUI::WindowManager::getSingletonPtr()->createWindow("GridLayoutContainer"));
-    //m_cegui_glc->setGridDimensions(m_view_cols, m_view_rows);
 
     // Error check
     g_opengl_check();
@@ -124,7 +119,7 @@ c_video_screen::c_video_screen(
             view_name += "_" + std::to_string(x) + "x" + std::to_string(y);
 
             // View
-            auto view = std::make_shared<c_video_view>(view_name, view_w, view_h);
+            auto view = std::make_shared<c_video_view>(m_context, view_name, view_w, view_h);
             m_view_list.push_back(view);
 
             // Window
@@ -132,21 +127,17 @@ c_video_screen::c_video_screen(
             window->setPosition(CEGUI::UVector2(CEGUI::UDim(x * block_w, 0.0f), CEGUI::UDim(y * block_h, 0.0f)));
             window->setSize(CEGUI::USize(CEGUI::UDim(block_w, 0.0f), CEGUI::UDim(block_h, 0.0f)));
             m_cegui_root->addChild(window);
-
-            //window->setSize(CEGUI::USize(cegui_reldim(1.0f / m_view_cols), cegui_reldim(1.0f / m_view_rows)));
-            //m_cegui_glc->addChildToPosition(window, x, y);
         }
     }
-
-    // Refresh layout
-    //m_cegui_glc->layout();
-
-    ////m_cegui_win->addChild(m_cegui_glc);
-    //m_cegui->context().setRootWindow(m_cegui_glc);
 }
 
 c_video_screen::~c_video_screen()
 {
+    // Views
+    for (auto& view : m_view_list)
+        m_cegui_root->removeChild(view->window());
+    m_view_list.clear();
+
     // Context
     m_context->make_current(nullptr);
     m_context.reset();
@@ -316,7 +307,6 @@ bool c_video_screen::gl_init()
 
     // Fragment properties
     glDisable(GL_BLEND);
-    glDisable(GL_TEXTURE_2D);
 
     // Clear
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

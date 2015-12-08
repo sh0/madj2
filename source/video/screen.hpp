@@ -47,6 +47,31 @@ class c_video_screen : boost::noncopyable
             );
         }
 
+        // CEGUI context
+        class c_cegui {
+            public:
+                // Constructor and destructor
+                c_cegui(std::shared_ptr<c_video_context> context) :
+                    m_system(context->cegui_system()),
+                    m_renderer(context->cegui_renderer()),
+                    m_target(context->cegui_renderer().getDefaultRenderTarget()),
+                    m_context(context->cegui_system().createGUIContext(m_target))
+                { }
+
+                // Gets
+                CEGUI::System& system() { return m_system; }
+                CEGUI::OpenGL3Renderer& renderer() { return m_renderer; }
+                CEGUI::RenderTarget& target() { return m_target; }
+                CEGUI::GUIContext& context() { return m_context; }
+
+            private:
+                // Objects
+                CEGUI::System& m_system;
+                CEGUI::OpenGL3Renderer& m_renderer;
+                CEGUI::RenderTarget& m_target;
+                CEGUI::GUIContext& m_context;
+        };
+
     private:
         // Info
         uint m_id;
@@ -73,28 +98,8 @@ class c_video_screen : boost::noncopyable
         std::shared_ptr<c_video_context> m_context;
 
         // CEGUI
-        class c_cegui {
-            public:
-                // Constructor and destructor
-                c_cegui(std::shared_ptr<c_video_context> context) :
-                    m_system(context->cegui_system()),
-                    m_target(context->cegui_renderer().getDefaultRenderTarget()),
-                    m_context(context->cegui_system().createGUIContext(m_target))
-                { }
-
-                // Gets
-                CEGUI::RenderTarget& target() { return m_target; }
-                CEGUI::GUIContext& context() { return m_context; }
-
-            private:
-                // Objects
-                CEGUI::System& m_system;
-                CEGUI::RenderTarget& m_target;
-                CEGUI::GUIContext& m_context;
-        };
         std::unique_ptr<c_cegui> m_cegui;
         CEGUI::DefaultWindow* m_cegui_root;
-        //CEGUI::GridLayoutContainer* m_cegui_glc;
 
         // GL functions
         bool gl_init();

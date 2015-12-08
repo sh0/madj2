@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <GUILayout version="4" >
     <Window type="madj/FrameWindow" name="Workspace" >
         <Property name="Area" value="{{0,0},{0,0},{0.5,0},{0.5,0}}" />
@@ -8,10 +7,14 @@
         <Property name="MinSize" value="{{0,100},{0,100}}" />
         <Property name="AlwaysOnTop" value="false" />
         <Property name="CloseButtonEnabled" value="false" />
+        <Property name="AutoRenderingSurface" value="false" />
         <Window type="madj/Image" name="Video" >
             <Property name="ID" value="1" />
             <Property name="Area" value="{{0,0},{0,0},{1,0},{1,0}}" />
+            <Property name="Size" value="{{1,0},{1,0}}" />
+            <Property name="MinSize" value="{{1,0},{1,0}}" />
             <Property name="MaxSize" value="{{1,0},{1,0}}" />
+            <Property name="AutoRenderingSurface" value="false" />
         </Window>
     </Window>
 </GUILayout>

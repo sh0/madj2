@@ -224,7 +224,6 @@
         <PropertyDefinition name="VertFormatting" initialValue="Stretched" redrawOnWrite="true" type="VerticalFormatting"/>
         <PropertyDefinition name="HorzFormatting" initialValue="Stretched" redrawOnWrite="true" type="HorizontalFormatting"/>
 
-        <Property name="BackgroundEnabled" value="true" />
         <Property name="MinSize" value="{{1,0},{1,0}}" />
         <Property name="Size" value="{{1, 0}, {1, 0}}" />
 

@@ -139,8 +139,12 @@ void c_opengl_texture_2d::upload(uint32_t width, uint32_t height, bool clear_tex
     if (!was_bound)
         bind(0);
 
-    // Alignment
+    // Custom alignment
+    GLint unpack_alignment = 1;
+    glGetIntegerv(GL_UNPACK_ALIGNMENT, &unpack_alignment);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    GLint unpack_row_length = m_width;
+    glGetIntegerv(GL_UNPACK_ROW_LENGTH, &unpack_row_length);
     glPixelStorei(GL_UNPACK_ROW_LENGTH, m_width);
 
     if (m_format == GL_DEPTH_COMPONENT32F) {
@@ -166,6 +170,10 @@ void c_opengl_texture_2d::upload(uint32_t width, uint32_t height, bool clear_tex
             GL_RGB, GL_UNSIGNED_BYTE, data.get()
         );
     }
+
+    // Restore alignment
+    glPixelStorei(GL_UNPACK_ALIGNMENT, unpack_alignment);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, unpack_row_length);
 
     // OpenGL check
     g_opengl_check();
