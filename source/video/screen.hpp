@@ -93,8 +93,8 @@ class c_video_screen : boost::noncopyable
                 CEGUI::GUIContext& m_context;
         };
         std::unique_ptr<c_cegui> m_cegui;
-        CEGUI::Window* m_cegui_root;
-        CEGUI::GridLayoutContainer* m_cegui_glc;
+        CEGUI::DefaultWindow* m_cegui_root;
+        //CEGUI::GridLayoutContainer* m_cegui_glc;
 
         // GL functions
         bool gl_init();

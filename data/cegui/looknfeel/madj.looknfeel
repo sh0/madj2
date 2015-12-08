@@ -96,6 +96,56 @@
 
     <!--
     ***************************************************
+        madj/StaticImage
+    ***************************************************
+    -->
+    <WidgetLook name="madj/StaticImage">
+        <PropertyDefinition name="ImageColours" initialValue="tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF" redrawOnWrite="true" type="ColourRect"/>
+        <PropertyDefinition name="FrameColours" initialValue="tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF" redrawOnWrite="true" type="ColourRect"/>
+        <PropertyDefinition name="BackgroundColours" initialValue="tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF" redrawOnWrite="true" type="ColourRect"/>
+        <PropertyDefinition name="VertFormatting" initialValue="Stretched" redrawOnWrite="true" type="VerticalFormatting"/>
+        <PropertyDefinition name="HorzFormatting" initialValue="Stretched" redrawOnWrite="true" type="HorizontalFormatting"/>
+
+        <Property name="BackgroundEnabled" value="true" />
+        <Property name="Size" value="{{0, 128}, {0, 128}}" />
+
+        <ImagerySection name="image">
+            <ImageryComponent>
+                <ImageProperty name="Image" />
+                <ColourRectProperty name="ImageColours" />
+                <VertFormatProperty name="VertFormatting" />
+                <HorzFormatProperty name="HorzFormatting" />
+            </ImageryComponent>
+        </ImagerySection>
+        <ImagerySection name="background">
+            <ImageryComponent>
+                <Colours topLeft="FFFFFFFF" topRight="FFFFFFFF" bottomLeft="FFFFFFFF" bottomRight="FFFFFFFF" />
+                <VertFormat type="Stretched" />
+                <HorzFormat type="Stretched" />
+            </ImageryComponent>
+        </ImagerySection>
+
+        <StateImagery name="Enabled" />
+        <StateImagery name="Disabled" />
+        <StateImagery name="NoFrameEnabledBackground">
+            <Layer>
+                <Section section="background" />
+            </Layer>
+        </StateImagery>
+        <StateImagery name="NoFrameDisabledBackground">
+            <Layer>
+                <Section section="background" />
+            </Layer>
+        </StateImagery>
+        <StateImagery name="NoFrameImage">
+            <Layer>
+                <Section section="image" />
+            </Layer>
+        </StateImagery>
+    </WidgetLook>
+
+    <!--
+    ***************************************************
         madj/Button
     ***************************************************
     -->
@@ -158,6 +208,42 @@
         <StateImagery name="Disabled">
             <Layer>
                 <Section section="disabled"/>
+            </Layer>
+        </StateImagery>
+    </WidgetLook>
+
+    <!--
+    ***************************************************
+        madj/RootWindow
+    ***************************************************
+    -->
+    <WidgetLook name="madj/RootWindow">
+        <PropertyDefinition name="ImageColours" initialValue="tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF" redrawOnWrite="true" type="ColourRect"/>
+        <PropertyDefinition name="FrameColours" initialValue="tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF" redrawOnWrite="true" type="ColourRect"/>
+        <PropertyDefinition name="BackgroundColours" initialValue="tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF" redrawOnWrite="true" type="ColourRect"/>
+        <PropertyDefinition name="VertFormatting" initialValue="Stretched" redrawOnWrite="true" type="VerticalFormatting"/>
+        <PropertyDefinition name="HorzFormatting" initialValue="Stretched" redrawOnWrite="true" type="HorizontalFormatting"/>
+
+        <Property name="BackgroundEnabled" value="true" />
+        <Property name="MinSize" value="{{1,0},{1,0}}" />
+        <Property name="Size" value="{{1, 0}, {1, 0}}" />
+
+        <ImagerySection name="background">
+            <ImageryComponent>
+                <Colours topLeft="FFFFFFFF" topRight="FFFFFFFF" bottomLeft="FFFFFFFF" bottomRight="FFFFFFFF" />
+                <VertFormat type="Stretched" />
+                <HorzFormat type="Stretched" />
+            </ImageryComponent>
+        </ImagerySection>
+
+        <StateImagery name="Enabled">
+            <Layer>
+                <Section section="background" />
+            </Layer>
+        </StateImagery>
+        <StateImagery name="Disabled">
+            <Layer>
+                <Section section="background" />
             </Layer>
         </StateImagery>
     </WidgetLook>

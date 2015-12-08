@@ -89,7 +89,7 @@ c_video_screen::c_video_screen(
     //m_cegui->context().setDefaultTooltipType("TaharezLook/Tooltip");
 
     // Root window
-    m_cegui_root = CEGUI::WindowManager::getSingleton().loadLayoutFromFile("tracker-window.layout");
+    m_cegui_root = reinterpret_cast<CEGUI::DefaultWindow*>(CEGUI::WindowManager::getSingleton().loadLayoutFromFile("tracker-window.layout"));
     m_cegui->context().setRootWindow(m_cegui_root);
 
     //m_cegui_win = reinterpret_cast<CEGUI::DefaultWindow*>(CEGUI::WindowManager::getSingletonPtr()->createWindow("DefaultWindow", name));
@@ -109,14 +109,11 @@ c_video_screen::c_video_screen(
         throw c_exception("Screen: Wrong number of view columns/rows specified!", { throw_format("name", m_name) });
     }
 
-    #if 0
     // Create viewports
+    float block_w = 1.0f / m_view_rows;
+    float block_h = 1.0f / m_view_cols;
     for (int y = 0; y < m_view_rows; y++) {
         for (int x = 0; x < m_view_cols; x++) {
-
-            if (x != 0 && y != 0)
-                continue;
-
             // Width and height
             int view_w = (m_window_width + m_view_cols - 1) / m_view_cols;
             int view_h = (m_window_height + m_view_rows - 1) / m_view_rows;
@@ -132,13 +129,14 @@ c_video_screen::c_video_screen(
 
             // Window
             auto window = view->window();
+            window->setPosition(CEGUI::UVector2(CEGUI::UDim(x * block_w, 0.0f), CEGUI::UDim(y * block_h, 0.0f)));
+            window->setSize(CEGUI::USize(CEGUI::UDim(block_w, 0.0f), CEGUI::UDim(block_h, 0.0f)));
+            m_cegui_root->addChild(window);
+
             //window->setSize(CEGUI::USize(cegui_reldim(1.0f / m_view_cols), cegui_reldim(1.0f / m_view_rows)));
             //m_cegui_glc->addChildToPosition(window, x, y);
-
-            m_cegui->context().setRootWindow(window);
         }
     }
-    #endif
 
     // Refresh layout
     //m_cegui_glc->layout();

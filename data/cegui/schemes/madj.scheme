@@ -7,7 +7,10 @@
 
 	<FalagardMapping windowType="madj/Label" targetType="DefaultWindow" renderer="Core/Default" lookNFeel="madj/Label" />
     <FalagardMapping windowType="madj/Image" targetType="DefaultWindow" renderer="Core/Default" lookNFeel="madj/Image" />
+    <FalagardMapping windowType="madj/StaticImage" targetType="DefaultWindow" renderer="Core/StaticImage" lookNFeel="madj/StaticImage" />
     <FalagardMapping windowType="madj/Button" targetType="CEGUI/PushButton" renderer="Core/Button" lookNFeel="madj/Button" />
+
+    <FalagardMapping windowType="madj/RootWindow" targetType="DefaultWindow" renderer="Core/Default" lookNFeel="madj/RootWindow" />
     <FalagardMapping windowType="madj/FrameWindow" targetType="CEGUI/FrameWindow" renderer="Core/FrameWindow" lookNFeel="madj/FrameWindow" />
     <FalagardMapping windowType="madj/Titlebar" targetType="CEGUI/Titlebar" renderer="Core/Titlebar" lookNFeel="madj/Titlebar" />
 </GUIScheme>
