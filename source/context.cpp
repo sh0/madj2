@@ -70,30 +70,11 @@ c_context::c_context(std::string config_fn)
     c_global::controller = std::make_shared<c_controller>();
     c_global::video = std::make_shared<c_video>();
 
-    #if 0
-    c_global::audio = std::make_shared<c_audio>();
-    c_global::extension = std::make_shared<c_extension>();
-    c_global::workspace = std::make_shared<c_workspace>();
-    #endif
-
     // Media
     if (auto pt_root = ptree.get_child_optional("media")) {
         for (auto& pt_path : *pt_root)
             c_global::media->media_add(pt_path.second.data());
     }
-
-    // MIDI
-    /*
-    if (auto pt_root = ptree.get_child_optional("midi")) {
-        for (auto& pt_midi : *pt_root) {
-            c_global::controller->midi_add(
-                pt_midi.second.get<std::string>("name"),
-                pt_midi.second.get<std::string>("color"),
-                pt_midi.second.get<std::string>("device")
-            );
-        }
-    }
-    */
 
     // Screen
     if (auto pt_root = ptree.get_child_optional("screens")) {
@@ -112,43 +93,21 @@ c_context::c_context(std::string config_fn)
         }
     }
 
-    #if 0
-    // Soundcard config
-    if (auto pt_root = ptree.get_child_optional("soundcards")) {
-        for (auto& pt_card : *pt_root) {
-
-            std::vector<std::string> channels;
-            if (auto pt_chan = pt_card.second.get_child_optional("channels")) {
-                for (auto& pt_elem : *pt_chan)
-                    channels.push_back(pt_elem.second.data());
-            }
-
-            config_soundcard(
-                pt_card.second.get<std::string>("driver"),
-                pt_card.second.get<std::string>("device"),
-                channels
-            );
-        }
-    }
-
     // Tracker workspaces
-    if (auto pt_root = ptree.get_child_optional("ws-tracker")) {
+    if (auto pt_root = ptree.get_child_optional("trackers")) {
         for (auto& pt_tracker : *pt_root) {
-            std::vector<std::string> audio;
-            if (auto pt_audio = pt_tracker.second.get_child_optional("audio")) {
-                for (auto& pt_elem : *pt_audio)
-                    audio.push_back(pt_elem.second.data());
-            }
-
-            config_workspace_tracker(
+            c_global::video->tracker_add(
                 pt_tracker.second.get<std::string>("name"),
                 pt_tracker.second.get<std::string>("screen"),
-                pt_tracker.second.get<int>("slot"),
-                audio
+                pt_tracker.second.get<int>("pos_x"),
+                pt_tracker.second.get<int>("pos_y"),
+                pt_tracker.second.get<int>("pos_w"),
+                pt_tracker.second.get<int>("pos_h")
             );
         }
     }
 
+    #if 0
     // Joysticks
     if (auto pt_root = ptree.get_child_optional("joysticks")) {
         for (auto& pt_joy : *pt_root) {
@@ -173,17 +132,29 @@ c_context::c_context(std::string config_fn)
             );
         }
     }
+    #endif
 
     // Keys
     if (auto pt_root = ptree.get_child_optional("keys")) {
         for (auto& pt_key : *pt_root) {
+            // List
             std::vector<std::string> list;
             for (auto& pt_elem : pt_key.second)
                 list.push_back(pt_elem.second.data());
-            config_key(list);
+            if (list.size() < 4)
+                continue;
+
+            // Mapping
+            std::string device = list[0];
+            std::vector<std::string> keys;
+            boost::split(keys, list[1], boost::is_any_of("+"));
+            std::string target = list[2];
+            std::string action = list[3];
+
+            // Add
+            c_global::controller->mapping_add(device, keys, target, action);
         }
     }
-    #endif
 
     // Main thread
     m_run = true;
@@ -214,103 +185,3 @@ void c_context::run()
         c_global::video->dispatch();
     }
 }
-
-#if 0
-bool c_context::config_soundcard(
-    std::string driver,
-    std::string device,
-    std::vector<std::string> channels
-) {
-    // Check
-    if ((driver != "jack") && (driver != "pulse")) {
-        msg_warning(
-            "Config: Soundcard: Only drivers \"jack\" and "
-            "\"pulse\" are supported!"
-        );
-        return false;
-    }
-
-    // Add
-    msg_warning(
-        boost::format("Config: Soundcard: driver=%s, device=%s, num_channels=%d") %
-        driver % device % channels.size()
-    );
-    return c_global::audio->driver_add(driver, device, channels);
-}
-
-bool c_context::config_workspace_tracker(
-    std::string name,
-    std::string screen,
-    int32_t slot,
-    std::vector<std::string> audio
-) {
-    // Check
-    if (name.empty()) {
-        msg_warning("Config: Tracker workspace must specify name in \"name\" field!");
-        return false;
-    } else if (screen.empty()) {
-        msg_warning("Config: Tracker workspace must specify screen in \"screen\" field!");
-        return false;
-    }
-
-    // Add
-    msg_warning(
-        boost::format(
-            "Config: Tracker workspace! "
-            "name=%s, screen=%s, slot=%d, num_audio=%d"
-        ) % name % screen % slot % audio.size()
-    );
-    return c_global::workspace->tracker_add(name, screen, slot, audio);
-}
-
-bool c_context::config_joystick(
-    std::string name,
-    std::string dev,
-    std::string color,
-    std::vector<std::string> buttons,
-    std::vector<std::string> axes
-) {
-    // Check
-    if (name.empty()) {
-        msg_warning("Config: Joystick must specify name in \"name\" field!");
-        return false;
-    }
-
-    // Add
-    msg_warning(
-        boost::format(
-            "Config: Joystick! "
-             "name=%s, dev=%s, color=%s, num_buttons=%d, num_axes=%d"
-        ) % name % dev % color % buttons.size() % axes.size()
-    );
-    return true;
-}
-
-bool c_context::config_key(
-    std::vector<std::string> key
-) {
-    // Check
-    if (key.size() != 4) {
-        msg_warning(
-            "Config: Key: Entry must have exactly 4 strings - "
-            "device, item, scope, action!"
-        );
-        return false;
-    }
-
-    // Parametes
-    std::string& dev = key[0];
-    std::string& item = key[1];
-    std::string& scope = key[2];
-    std::string& action = key[3];
-
-    // Add
-    /*
-    msg_warning(
-        boost::format("Config: Key! device=%s, item=%s, scope=%s, action=%s") %
-        dev % item % scope % action
-    );
-    */
-    return c_global::input->bind_add(dev, item, action, scope);
-}
-#endif

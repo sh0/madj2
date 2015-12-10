@@ -90,11 +90,13 @@ void c_opengl_texture_2d::bind(uint32_t id)
     m_bind_id = id;
 
     // Check integrity by verifying that no previous texture is bound
+    /*
     #ifndef NDEBUG
         GLuint obj = 0;
         glGetIntegerv(GL_TEXTURE_BINDING_2D, reinterpret_cast<GLint*>(&obj));
         assert(!obj);
     #endif
+    */
 
     // Bind
     glBindTexture(GL_TEXTURE_2D, m_object);
@@ -139,12 +141,14 @@ void c_opengl_texture_2d::upload(uint32_t width, uint32_t height, bool clear_tex
     if (!was_bound)
         bind(0);
 
-    // Custom alignment
+    // Save alignment
     GLint unpack_alignment = 1;
     glGetIntegerv(GL_UNPACK_ALIGNMENT, &unpack_alignment);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     GLint unpack_row_length = m_width;
     glGetIntegerv(GL_UNPACK_ROW_LENGTH, &unpack_row_length);
+
+    // Custom alignment
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glPixelStorei(GL_UNPACK_ROW_LENGTH, m_width);
 
     if (m_format == GL_DEPTH_COMPONENT32F) {
@@ -194,7 +198,13 @@ void c_opengl_texture_2d::upload(std::shared_ptr<c_opengl_image> image)
     if (!was_bound)
         bind(0);
 
-    // Alignment
+    // Save alignment
+    GLint unpack_alignment = 1;
+    glGetIntegerv(GL_UNPACK_ALIGNMENT, &unpack_alignment);
+    GLint unpack_row_length = m_width;
+    glGetIntegerv(GL_UNPACK_ROW_LENGTH, &unpack_row_length);
+
+    // Custom alignment
     uint stride = 1;
     if ((image->stride() % 8) == 0)
         stride = 8;
@@ -211,6 +221,10 @@ void c_opengl_texture_2d::upload(std::shared_ptr<c_opengl_image> image)
         m_width, m_height, 0,
         image->gl_format(), image->gl_type(), image->data()
     );
+
+    // Restore alignment
+    glPixelStorei(GL_UNPACK_ALIGNMENT, unpack_alignment);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, unpack_row_length);
 
     // OpenGL check
     g_opengl_check();
@@ -234,6 +248,12 @@ void c_opengl_texture_2d::upload(
     if (!was_bound)
         bind(0);
 
+    // Save alignment
+    GLint unpack_alignment = 1;
+    glGetIntegerv(GL_UNPACK_ALIGNMENT, &unpack_alignment);
+    GLint unpack_row_length = m_width;
+    glGetIntegerv(GL_UNPACK_ROW_LENGTH, &unpack_row_length);
+
     // Alignment
     uint32_t align = 1;
     if ((stride % 8) == 0)
@@ -251,6 +271,10 @@ void c_opengl_texture_2d::upload(
         m_width, m_height, 0,
         gl_format, gl_type, data
     );
+
+    // Restore alignment
+    glPixelStorei(GL_UNPACK_ALIGNMENT, unpack_alignment);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, unpack_row_length);
 
     // OpenGL check
     g_opengl_check();
@@ -275,6 +299,12 @@ void c_opengl_texture_2d::upload_sub(
     if (!was_bound)
         bind(0);
 
+    // Save alignment
+    GLint unpack_alignment = 1;
+    glGetIntegerv(GL_UNPACK_ALIGNMENT, &unpack_alignment);
+    GLint unpack_row_length = m_width;
+    glGetIntegerv(GL_UNPACK_ROW_LENGTH, &unpack_row_length);
+
     // Alignment
     uint32_t align = 1;
     if ((stride % 8) == 0)
@@ -293,6 +323,10 @@ void c_opengl_texture_2d::upload_sub(
         width, height,
         gl_format, gl_type, data
     );
+
+    // Restore alignment
+    glPixelStorei(GL_UNPACK_ALIGNMENT, unpack_alignment);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, unpack_row_length);
 
     // OpenGL check
     g_opengl_check();

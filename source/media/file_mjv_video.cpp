@@ -68,7 +68,10 @@ c_file_video::c_file_video(
         m_context->pix_fmt = m_pixfmt;
 
     // Decoding frame
-    m_frame = std::shared_ptr<AVFrame>(avcodec_alloc_frame(), &av_free);
+    m_frame = std::shared_ptr<AVFrame>(
+        av_frame_alloc(),
+        [](AVFrame* frame) { av_frame_free(&frame); }
+    );
 
     // Decode thread
     m_thread = std::thread(&c_file_video::decode, this);

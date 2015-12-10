@@ -28,14 +28,17 @@ class c_video_screen : boost::noncopyable
         void dispatch();
 
         // Info
-        const std::string& name() { return m_name; }
-        const std::string& color() { return m_color; }
+        std::string name() { return m_name; }
+        std::string color() { return m_color; }
+
+        // Context
+        std::shared_ptr<c_video_context> context() {
+            m_context->make_current(m_window);
+            return m_context;
+        }
 
         // View
-        std::shared_ptr<c_video_view> view(uint id) {
-            assert(m_view_list.size() > id);
-            return m_view_list[id];
-        }
+        void view_add(std::shared_ptr<c_video_view> view);
 
         // Window
         int32_t width() { return m_window_width; }

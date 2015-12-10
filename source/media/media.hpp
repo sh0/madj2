@@ -25,6 +25,7 @@ class c_media : boost::noncopyable
 
         // Scan media
         void media_add(std::string path);
+        const std::vector<boost::filesystem::path>& media_files() { return m_files; }
 
     private:
         // Files

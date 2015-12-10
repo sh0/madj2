@@ -7,24 +7,31 @@
 #include "config.hpp"
 #include "global.hpp"
 #include "video/video.hpp"
-#include "video/view.hpp"
+#include "video/tracker.hpp"
 
 // Constructor and destructor
-c_video_view::c_video_view(std::shared_ptr<c_video_context> context, std::string name, int width, int height) :
+c_video_tracker::c_video_tracker(
+    std::shared_ptr<c_video_context> context,
+    std::string name, int pos_x, int pos_y, int pos_w, int pos_h
+) :
     // Info
-    m_name(name), m_width(width), m_height(height),
+    m_name(name),
+    m_pos_x(pos_x), m_pos_y(pos_y), m_pos_w(pos_w), m_pos_h(pos_h),
     // Context
     m_context(context),
     // Video
     m_video_texture(context->cegui_renderer().createTexture(name + "-texture")),
     m_video_opengl(static_cast<CEGUI::OpenGLTexture&>(m_video_texture)),
     m_video_image(CEGUI::ImageManager::getSingleton().create("BasicImage", "video/" + name)),
-    m_video_basic(static_cast<CEGUI::BasicImage&>(m_video_image))
+    m_video_basic(static_cast<CEGUI::BasicImage&>(m_video_image)),
+    // Media
+    m_media_id(0)
 {
     // Debug
-    std::cout << boost::format("View (%s): width=%d, height=%d") % m_name % m_width % m_height << std::endl;
+    std::cout << boost::format("View (%s)") % m_name << std::endl;
 
     // Temporary video
+    #if 0
     m_video_temp = std::make_shared<c_opengl_texture_2d>();
     m_video_temp->upload(640, 480, true);
 
@@ -34,6 +41,7 @@ c_video_view::c_video_view(std::shared_ptr<c_video_context> context, std::string
     } else {
         m_video_basic.setArea(CEGUI::Rectf(0.0f, 0.0f, m_video_temp->width(), m_video_temp->height()));
     }
+    #endif
     m_video_basic.setAutoScaled(CEGUI::ASM_Disabled);
     m_video_basic.setTexture(&m_video_opengl);
 
@@ -44,10 +52,10 @@ c_video_view::c_video_view(std::shared_ptr<c_video_context> context, std::string
     m_window_image->setProperty("Image", m_video_image.getName());
 
     // Events
-    m_window->subscribeEvent(CEGUI::Window::EventSized, CEGUI::Event::Subscriber(&c_video_view::event_window_resize, this));
+    m_window->subscribeEvent(CEGUI::Window::EventSized, CEGUI::Event::Subscriber(&c_video_tracker::event_window_resize, this));
 }
 
-c_video_view::~c_video_view()
+c_video_tracker::~c_video_tracker()
 {
     // Window
     CEGUI::WindowManager::getSingletonPtr()->destroyWindow(m_window);
@@ -58,13 +66,44 @@ c_video_view::~c_video_view()
 }
 
 // Dispatch
-void c_video_view::dispatch()
+void c_video_tracker::dispatch()
 {
+    if (m_media_file && m_media_file->video()) {
 
+        auto texture = m_media_file->video()->read(m_media_id++);
+        if (texture && texture != m_media_texture) {
+            m_media_texture = texture;
+
+            m_video_opengl.setOpenGLTexture(m_media_texture->object(), CEGUI::Sizef(m_media_texture->width(), m_media_texture->height()));
+            m_video_basic.setArea(CEGUI::Rectf(0.0f, 0.0f, m_media_texture->width(), m_media_texture->height()));
+            //m_video_basic.setArea(CEGUI::Rectf(0.0f, 0.0f, 200, 200));
+            m_video_basic.setAutoScaled(CEGUI::ASM_Disabled);
+            m_video_basic.setTexture(&m_video_opengl);
+
+            m_window->invalidate(true);
+            m_window->notifyScreenAreaChanged(true);
+        }
+
+    }
 }
 
 // Events
-bool c_video_view::event_window_resize(const CEGUI::EventArgs& event)
+void c_video_tracker::event_action(std::string action)
+{
+    if (action == "browser_open") {
+        const auto& files = c_global::media->media_files();
+        if (files.empty()) {
+            std::cout << "Tracker: No media files to play!" << std::endl;
+            return;
+        }
+        auto path = files[0];
+        std::cout << "Tracker: Playing! path = " << path << std::endl;
+        m_media_id = 0;
+        m_media_file = std::make_shared<c_media_file>(path);
+    }
+}
+
+bool c_video_tracker::event_window_resize(const CEGUI::EventArgs& event)
 {
     // Update
     m_window->notifyScreenAreaChanged(true);

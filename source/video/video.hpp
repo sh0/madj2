@@ -12,6 +12,7 @@
 #include "opengl/shader.hpp"
 #include "video/context.hpp"
 #include "video/screen.hpp"
+#include "video/tracker.hpp"
 
 // Main video class
 class c_video : boost::noncopyable
@@ -52,6 +53,20 @@ class c_video : boost::noncopyable
             ));
         }
 
+        // Trackers
+        std::vector<std::shared_ptr<c_video_tracker>>& tracker_list() { return m_trackers; }
+        void tracker_add(
+            std::string name, std::string screen, int pos_x, int pos_y, int pos_w, int pos_h
+        ) {
+            for (auto& s : m_screens) {
+                if (s->name() != screen)
+                    continue;
+                auto tracker = std::make_shared<c_video_tracker>(s->context(), name, pos_x, pos_y, pos_w, pos_h);
+                m_trackers.push_back(tracker);
+                s->view_add(tracker);
+            }
+        }
+
         // Dispatch
         void dispatch() {
             for (auto& screen : m_screens)
@@ -65,6 +80,9 @@ class c_video : boost::noncopyable
 
         // Screens
         std::vector<std::shared_ptr<c_video_screen>> m_screens;
+
+        // Trackers
+        std::vector<std::shared_ptr<c_video_tracker>> m_trackers;
 };
 
 #endif

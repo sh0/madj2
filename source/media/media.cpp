@@ -7,10 +7,17 @@
 #include "config.hpp"
 #include "media/media.hpp"
 
+// FFmpeg
+extern "C" {
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
+}
+
 // Constructor
 c_media::c_media()
 {
-
+    // FFmpeg library
+    avcodec_register_all();
 }
 
 // Scan media
@@ -37,7 +44,7 @@ void c_media::media_add(std::string path)
                 boost::algorithm::to_lower(ext);
 
                 // File type selection
-                if (ext == ".mkv")
+                if (ext == ".mp4")
                     m_files.push_back(iter->path());
             }
         }

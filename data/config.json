@@ -32,17 +32,21 @@
     ],
 
     // Tracker workspaces
-    "ws-tracker" : [
+    "trackers" : [
         {
             "name" : "work_a",
             "screen" : "screen_a",
-            "slot" : 0,
-            "audio" : [ "left", "right" ]
+            "pos_x" : 0,
+            "pos_y" : 0,
+            "pos_w" : 1,
+            "pos_h" : 1
         }, {
             "name" : "work_b",
             "screen" : "screen_a",
-            "slot" : 1,
-            "audio" : [ "left" ]
+            "pos_x" : 1,
+            "pos_y" : 0,
+            "pos_w" : 1,
+            "pos_h" : 1
         }
     ],
 
@@ -51,73 +55,57 @@
         {
             "name" : "comp_a",
             "screen" : "screen_a",
-            "slot" : 2,
-            "audio" : [ ]
+            "slot" : 2
         }
     ],
 
     // Presentation workspaces
     "ws-presentations" : [
-        /*
         {
             "name" : "pres_a",
             "screen" : "screen_a",
-            "slot" : 3,
-            "audio" : [ "right" ]
+            "slot" : 3
         }
-        */
-    ],
-
-    // MIDI
-    "midi" : [
-        /*{
-            "name" : "ohmrgb",
-            "color" : "orange",
-            "device" : "hw:4,0,0"
-        }*/
     ],
 
     // Keys
     "keys" : [
         // Keyboard
-        [ "screen_a", "escape", "system", "quit" ],
-        // Workspaces
-        [ "screen_a", "right", "focus", "next" ],
-        [ "screen_a", "left", "focus", "prev" ],
+        [ "key", "escape", "system", "quit" ],
         // File browser
-        [ "screen_a", "control_l+x", "current", "browser_toggle" ],
-        [ "screen_a", "return", "current", "browser_open" ],
-        [ "screen_a", "up", "current", "browser_up" ],
-        [ "screen_a", "down", "current", "browser_down" ],
-        [ "screen_a", "page_up", "current", "browser_pgup" ],
-        [ "screen_a", "page_down", "current", "browser_pgdn" ],
+        [ "key", "ctrl+x", "work_a", "browser_toggle" ],
+        [ "key", "return", "work_a", "browser_open" ],
+        [ "key", "up", "work_a", "browser_up" ],
+        [ "key", "down", "work_a", "browser_down" ],
+        [ "key", "page_up", "work_a", "browser_pgup" ],
+        [ "key", "page_down", "work_a", "browser_pgdn" ],
         // Seek
-        [ "screen_a", "space", "current", "seek_pause" ],
-        [ "screen_a", "z", "current", "seek_play_rev" ],
-        [ "screen_a", "x", "current", "seek_play_fow" ],
-        [ "screen_a", "a", "current", "seek_play_slower" ],
-        [ "screen_a", "s", "current", "seek_play_faster" ],
-        [ "screen_a", "c", "current", "seek_sync_rev" ],
-        [ "screen_a", "v", "current", "seek_sync_fow" ],
+        [ "key", "space", "work_a", "seek_pause" ],
+        [ "key", "z", "work_a", "seek_play_rev" ],
+        [ "key", "x", "work_a", "seek_play_fow" ],
+        [ "key", "a", "work_a", "seek_play_slower" ],
+        [ "key", "s", "work_a", "seek_play_faster" ],
+        [ "key", "c", "work_a", "seek_sync_rev" ],
+        [ "key", "v", "work_a", "seek_sync_fow" ],
         // Visualizer
-        [ "screen_a", "control_l+q", "current", "visualizer_toggle" ],
-        [ "screen_a", "control_l+w", "current", "visualizer_prev" ],
-        [ "screen_a", "control_l+e", "current", "visualizer_next" ],
+        [ "key", "ctrl+q", "work_a", "visualizer_toggle" ],
+        [ "key", "ctrl+w", "work_a", "visualizer_prev" ],
+        [ "key", "ctrl+e", "work_a", "visualizer_next" ],
 
         // Joysticks
         [ "joy_a", "start", "system", "quit" ],
         // Workspaces
         [ "joy_a", "rdown+arrowx", "focus", "scroll" ],
         // File selecting
-        [ "joy_a", "rup", "current", "file_browse" ],
+        [ "joy_a", "rup", "work_a", "file_browse" ],
         // Master
-        [ "joy_a", "lup+pad1", "current", "sync_master" ],
-        [ "joy_a", "lup+pad2", "current", "sync_slave_free_flip" ],
+        [ "joy_a", "lup+pad1", "work_a", "sync_master" ],
+        [ "joy_a", "lup+pad2", "work_a", "sync_slave_free_flip" ],
         // Arrows
-        [ "joy_a", "arrowx", "current", "arrow_x" ],
-        [ "joy_a", "arrowy", "current", "arrow_y" ],
-        [ "joy_a", "lhatx", "current", "hat_x" ],
-        [ "joy_a", "lhaty", "current", "hat_y" ]
+        [ "joy_a", "arrowx", "work_a", "arrow_x" ],
+        [ "joy_a", "arrowy", "work_a", "arrow_y" ],
+        [ "joy_a", "lhatx", "work_a", "hat_x" ],
+        [ "joy_a", "lhaty", "work_a", "hat_y" ]
     ]
 }
 

@@ -17,17 +17,13 @@ class c_controller : boost::noncopyable
         // Constructor
         c_controller();
 
-        // MIDI
-        /*
-        void midi_add(std::string name, std::string color, std::string device) {
-            m_midi.push_back(std::make_shared<c_controller_midi>(device));
-        }
-        */
-
         // Input
         void input_keyboard(std::string key, bool value, bool mod_ctrl, bool mod_shift, bool mod_alt, bool mod_gui);
         void input_midi_key(std::string key, bool value);
         void input_midi_pot(std::string key, float value);
+
+        // Mappings
+        void mapping_add(std::string device, std::vector<std::string> keys, std::string target, std::string action);
 
         // Dispatch
         void dispatch() {
@@ -38,6 +34,19 @@ class c_controller : boost::noncopyable
     private:
         // MIDI
         std::vector<std::shared_ptr<c_controller_midi>> m_midi;
+
+        // Mappings
+        struct s_mapping {
+            std::string device;
+            std::vector<std::string> keys;
+            std::string target;
+            std::string action;
+
+            bool has_key(std::string key) {
+                return (std::find(keys.begin(), keys.end(), key) != keys.end());
+            }
+        };
+        std::vector<s_mapping> m_mappings;
 };
 
 #endif

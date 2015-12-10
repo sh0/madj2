@@ -105,6 +105,7 @@ c_video_screen::c_video_screen(
     }
 
     // Create viewports
+    /*
     float block_w = 1.0f / m_view_rows;
     float block_h = 1.0f / m_view_cols;
     for (int y = 0; y < m_view_rows; y++) {
@@ -129,6 +130,7 @@ c_video_screen::c_video_screen(
             m_cegui_root->addChild(window);
         }
     }
+    */
 }
 
 c_video_screen::~c_video_screen()
@@ -288,6 +290,7 @@ void c_video_screen::dispatch()
     m_cegui->context().draw();
     m_context->cegui_renderer().endRendering();
     //m_cegui->target().deactivate();
+    g_opengl_check();
 
     // Swap buffers
     SDL_GL_SwapWindow(m_window);
@@ -322,3 +325,16 @@ bool c_video_screen::gl_init()
     return true;
 }
 
+// View
+void c_video_screen::view_add(std::shared_ptr<c_video_view> view) {
+    // List
+    m_view_list.push_back(view);
+
+    // Window
+    auto window = view->window();
+    float block_w = 1.0f / m_view_rows;
+    float block_h = 1.0f / m_view_cols;
+    window->setPosition(CEGUI::UVector2(CEGUI::UDim(view->pos_x() * block_w, 0.0f), CEGUI::UDim(view->pos_y() * block_h, 0.0f)));
+    window->setSize(CEGUI::USize(CEGUI::UDim(view->pos_w() * block_w, 0.0f), CEGUI::UDim(view->pos_h() * block_h, 0.0f)));
+    m_cegui_root->addChild(window);
+}
