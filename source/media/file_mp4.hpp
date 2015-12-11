@@ -35,11 +35,13 @@ class c_media_file_mp4 : public c_media_video, boost::noncopyable
 
         // Info
         virtual int64_t frames() { return m_frames; }
+        virtual double rate() { return 0.0; };
+        virtual double aspect() { return 1.0; };
         virtual int width() { return m_width; }
         virtual int height() { return m_height; }
 
         // Read
-        virtual std::shared_ptr<c_opengl_texture_2d> read(int64_t id);
+        virtual std::shared_ptr<c_opengl_image> read(int64_t id);
 
     private:
         // Path
@@ -62,10 +64,6 @@ class c_media_file_mp4 : public c_media_video, boost::noncopyable
 
         // Scaling
         SwsContext* m_swscaler;
-
-        // Frame
-        int64_t m_frame_id;
-        std::shared_ptr<c_opengl_texture_2d> m_frame_texture;
 };
 
 #endif

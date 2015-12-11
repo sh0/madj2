@@ -12,14 +12,21 @@
 
 // Constructors
 c_opengl_image::c_opengl_image(e_type type, int width, int height) :
-    m_type(type), m_width(width), m_height(height)
+    m_type(type), m_width(width), m_height(height), m_stride(0)
+{
+    // Initialize
+    init();
+}
+
+c_opengl_image::c_opengl_image(e_type type, int width, int height, int stride) :
+    m_type(type), m_width(width), m_height(height), m_stride(stride)
 {
     // Initialize
     init();
 }
 
 c_opengl_image::c_opengl_image(e_type type, int width, int height, std::unique_ptr<uint8_t[]>&& data) :
-    m_type(type), m_width(width), m_height(height), m_data(std::move(data))
+    m_type(type), m_width(width), m_height(height), m_stride(0), m_data(std::move(data))
 {
     // Initialize
     init();
@@ -31,25 +38,29 @@ void c_opengl_image::init()
     // Select image format
     switch (m_type) {
         case e_type::rgb24:
-            m_stride = m_width * 3;
+            if (!m_stride)
+                m_stride = m_width * 3;
             m_gl_format = GL_RGB;
             m_gl_type = GL_UNSIGNED_BYTE;
             break;
 
         case e_type::bgr24:
-            m_stride = m_width * 3;
+            if (!m_stride)
+                m_stride = m_width * 3;
             m_gl_format = GL_BGR;
             m_gl_type = GL_UNSIGNED_BYTE;
             break;
 
         case e_type::rgba32:
-            m_stride = m_width * 4;
+            if (!m_stride)
+                m_stride = m_width * 4;
             m_gl_format = GL_RGBA;
             m_gl_type = GL_UNSIGNED_BYTE;
             break;
 
         case e_type::bgra32:
-            m_stride = m_width * 4;
+            if (!m_stride)
+                m_stride = m_width * 4;
             m_gl_format = GL_BGRA;
             m_gl_type = GL_UNSIGNED_BYTE;
             break;

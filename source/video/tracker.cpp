@@ -25,7 +25,8 @@ c_video_tracker::c_video_tracker(
     m_video_image(CEGUI::ImageManager::getSingleton().create("BasicImage", "video/" + name)),
     m_video_basic(static_cast<CEGUI::BasicImage&>(m_video_image)),
     // Media
-    m_media_id(0)
+    m_media_id(0),
+    m_media_texture(std::make_shared<c_opengl_texture_2d>())
 {
     // Debug
     std::cout << boost::format("View (%s)") % m_name << std::endl;
@@ -70,18 +71,21 @@ void c_video_tracker::dispatch()
 {
     if (m_media_file && m_media_file->video()) {
 
-        auto texture = m_media_file->video()->read(m_media_id++);
-        if (texture && texture != m_media_texture) {
-            m_media_texture = texture;
+        auto image = m_media_file->video()->read(m_media_id++);
+        if (image) {
+            bool update = (image->width() != m_media_texture->width() || image->height() != m_media_texture->height());
+            m_media_texture->upload(image);
 
-            m_video_opengl.setOpenGLTexture(m_media_texture->object(), CEGUI::Sizef(m_media_texture->width(), m_media_texture->height()));
-            m_video_basic.setArea(CEGUI::Rectf(0.0f, 0.0f, m_media_texture->width(), m_media_texture->height()));
-            //m_video_basic.setArea(CEGUI::Rectf(0.0f, 0.0f, 200, 200));
-            m_video_basic.setAutoScaled(CEGUI::ASM_Disabled);
-            m_video_basic.setTexture(&m_video_opengl);
+            if (update) {
+                m_video_opengl.setOpenGLTexture(m_media_texture->object(), CEGUI::Sizef(m_media_texture->width(), m_media_texture->height()));
+                m_video_basic.setArea(CEGUI::Rectf(0.0f, 0.0f, m_media_texture->width(), m_media_texture->height()));
+                //m_video_basic.setArea(CEGUI::Rectf(0.0f, 0.0f, 200, 200));
+                m_video_basic.setAutoScaled(CEGUI::ASM_Disabled);
+                m_video_basic.setTexture(&m_video_opengl);
 
-            m_window->invalidate(true);
-            m_window->notifyScreenAreaChanged(true);
+                m_window->invalidate(true);
+                m_window->notifyScreenAreaChanged(true);
+            }
         }
 
     }
@@ -97,7 +101,7 @@ void c_video_tracker::event_action(std::string action)
             return;
         }
         auto path = files[0];
-        std::cout << "Tracker: Playing! path = " << path << std::endl;
+        //std::cout << "Tracker: Playing! path = " << path << std::endl;
         m_media_id = 0;
         m_media_file = std::make_shared<c_media_file>(path);
     }

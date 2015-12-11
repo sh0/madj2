@@ -63,7 +63,6 @@ class c_video_tracker : public c_video_view, boost::noncopyable
         CEGUI::OpenGLTexture& m_video_opengl;
         CEGUI::Image& m_video_image;
         CEGUI::BasicImage& m_video_basic;
-        std::shared_ptr<c_opengl_texture_2d> m_video_temp;
 
         // Media
         int64_t m_media_id;

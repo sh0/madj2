@@ -4,7 +4,6 @@
  */
 
 // Internal
-#include "config.hpp"
 #include "media/file_mp4.hpp"
 
 // Boost
@@ -17,11 +16,9 @@ c_media_file_mp4::c_media_file_mp4(boost::filesystem::path path) :
     // File
     m_stream(nullptr), m_movie(nullptr), m_track(nullptr),
     // Info
-    m_width(0), m_height(0),
+    m_frames(0), m_width(0), m_height(0),
     // Scaling
-    m_swscaler(nullptr),
-    // Frame
-    m_frame_id(-1)
+    m_swscaler(nullptr)
 {
     // Debug
     std::cout << boost::format("MP4: Opening file! path = %1%") % path << std::endl;
@@ -259,12 +256,8 @@ c_media_file_mp4::~c_media_file_mp4()
 }
 
 // Read
-std::shared_ptr<c_opengl_texture_2d> c_media_file_mp4::read(int64_t id)
+std::shared_ptr<c_opengl_image> c_media_file_mp4::read(int64_t id)
 {
-    // Caching
-    if (m_frame_id == id && m_frame_texture)
-        return m_frame_texture;
-
     // Range check
     if (id < 0 || id >= m_frames) {
         std::cout << "MP4: Sample id out of range!" << std::endl;
@@ -347,15 +340,10 @@ std::shared_ptr<c_opengl_texture_2d> c_media_file_mp4::read(int64_t id)
         m_codec_frame->data, m_codec_frame->linesize, 0, m_codec_frame->height,
         dstpic.data, dstpic.linesize
     );
-    //avpicture_layout((AVPicture *)av_frame_RGB_, PIX_FMT_RGB24, image_w_, image_h_, (unsigned char *)rgb_buffer, rgb_size_);
 
-    // Upload
-    if (!m_frame_texture)
-        m_frame_texture = std::make_shared<c_opengl_texture_2d>(c_opengl_texture_2d::e_format::rgb24);
-    m_frame_texture->upload(image);
-    g_opengl_check();
+    //av_image_copy
+    //avpicture_layout
 
     // Success
-    m_frame_id = id;
-    return m_frame_texture;
+    return image;
 }

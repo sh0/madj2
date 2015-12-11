@@ -31,6 +31,7 @@ class c_opengl_image : boost::noncopyable
 
         // Constructors
         c_opengl_image(e_type type, int width, int height);
+        c_opengl_image(e_type type, int width, int height, int stride);
         c_opengl_image(e_type type, int width, int height, std::unique_ptr<uint8_t[]>&& data);
 
         // Parameters
