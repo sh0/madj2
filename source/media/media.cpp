@@ -17,6 +17,7 @@ extern "C" {
 c_media::c_media()
 {
     // FFmpeg library
+    av_register_all();
     avcodec_register_all();
 }
 

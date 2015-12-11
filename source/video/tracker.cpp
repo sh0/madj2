@@ -26,6 +26,7 @@ c_video_tracker::c_video_tracker(
     m_video_basic(static_cast<CEGUI::BasicImage&>(m_video_image)),
     // Media
     m_media_id(0),
+    m_media_temp(0),
     m_media_texture(std::make_shared<c_opengl_texture_2d>())
 {
     // Debug
@@ -100,7 +101,11 @@ void c_video_tracker::event_action(std::string action)
             std::cout << "Tracker: No media files to play!" << std::endl;
             return;
         }
-        auto path = files[0];
+
+        if (m_media_temp >= static_cast<int>(files.size()))
+            m_media_temp = 0;
+        auto path = files[m_media_temp++];
+
         //std::cout << "Tracker: Playing! path = " << path << std::endl;
         m_media_id = 0;
         m_media_file = std::make_shared<c_media_file>(path);

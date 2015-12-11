@@ -45,17 +45,18 @@ c_media_file_ffst::c_media_file_ffst(boost::filesystem::path path)
         throw c_exception("FFST: Failed to find subtitle stream!", { throw_format("path", path) });
 
     // Codec
-    auto codec_context = std::shared_ptr<AVCodecContext>(
-        avcodec_alloc_context3(codec_decoder),
-        [](AVCodecContext* ctx){ avcodec_close(ctx); avcodec_free_context(&ctx); }
-    );
-    int codec_result = avcodec_open2(codec_context.get(), codec_decoder, nullptr);
+    auto codec_context = format_context->streams[stream]->codec;
+    int codec_result = avcodec_open2(codec_context, codec_decoder, nullptr);
     if (codec_result < 0)
         throw c_exception("FFST: Failed to open subtitle decoder!", { throw_format("path", path), throw_format("error", averror(codec_result)) });
 
     // Timing
-    //double timebase = av_q2d(codec_context->time_base);
-    //std::cout << "FFST: Timbase: " << timebase << std::endl;
+    /*
+    std::cout << boost::format("FFST: stream_timebase = %f, codec_timebase = %f") %
+        av_q2d(format_context->streams[stream]->time_base) %
+        av_q2d(codec_context->time_base) << std::endl;
+    */
+    double timebase = av_q2d(format_context->streams[stream]->time_base);
 
     // Format specific parsing
     auto parse_ass = [&](std::string line) {
@@ -79,12 +80,10 @@ c_media_file_ffst::c_media_file_ffst(boost::filesystem::path path)
     // Parsing lambda
     auto parse = [&](AVSubtitle* sub, double ts_s, double ts_e) {
         c_media_subtitle::s_entry entry;
-        entry.ts_s = sub->start_display_time;
-        if (entry.ts_s <= 0)
-            entry.ts_s = ts_s;
-        entry.ts_e = sub->end_display_time;
-        if (entry.ts_e <= 0)
-            entry.ts_e = ts_e;
+        entry.ts_s = ts_s;
+        entry.ts_e = ts_e;
+        //entry.ts_s = sub->start_display_time;
+        //entry.ts_e = sub->end_display_time;
         for (unsigned int i = 0; i < sub->num_rects; i++) {
             AVSubtitleRect* rect = sub->rects[i];
             if (rect->type == SUBTITLE_TEXT && rect->text) {
@@ -112,15 +111,15 @@ c_media_file_ffst::c_media_file_ffst(boost::filesystem::path path)
         // Decode
         AVSubtitle sub;
         memset(&sub, 0, sizeof(sub));
-        int ret = avcodec_decode_subtitle2(codec_context.get(), &sub, &got_sub, packet);
+        int ret = avcodec_decode_subtitle2(codec_context, &sub, &got_sub, packet);
         if (ret < 0)
             return ret;
 
         // Parse
         if (got_sub > 0) {
             //std::cout << boost::format("FFST: * pts = %d, dts = %d, duration = %d") % packet->pts % packet->dts % packet->duration << std::endl;
-            double ts_s = 1000.0 * static_cast<double>(packet->pts) / static_cast<double>(AV_TIME_BASE); // timebase * packet->pts;
-            double ts_e = ts_s + (1000.0 * static_cast<double>(packet->duration) / static_cast<double>(AV_TIME_BASE)); // ts_s + (timebase * packet->duration);
+            double ts_s = timebase * packet->pts;
+            double ts_e = ts_s + (timebase * packet->duration);
             parse(&sub, ts_s, ts_e);
             avsubtitle_free(&sub);
         }

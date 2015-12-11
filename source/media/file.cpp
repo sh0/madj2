@@ -38,7 +38,7 @@ c_media_file::c_media_file(boost::filesystem::path path)
     }
 
     // Debug
-    #if 1
+    #if 0
     if (m_subtitle) {
         for (auto& entry : m_subtitle->entries()) {
             std::string content = boost::algorithm::join(entry.content, ", ");
