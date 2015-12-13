@@ -104,6 +104,13 @@ c_video_screen::c_video_screen(
         throw c_exception("Screen: Wrong number of view columns/rows specified!", { throw_format("name", m_name) });
     }
 
+    // Debug
+    #if 0
+    uint64_t tid;
+    pthread_threadid_np(NULL, &tid);
+    std::cout << "Screen: thread = " << tid << std::endl;
+    #endif
+
     // Create viewports
     /*
     float block_w = 1.0f / m_view_rows;
@@ -326,7 +333,8 @@ bool c_video_screen::gl_init()
 }
 
 // View
-void c_video_screen::view_add(std::shared_ptr<c_video_view> view) {
+void c_video_screen::view_add(std::shared_ptr<c_video_view> view)
+{
     // List
     m_view_list.push_back(view);
 

@@ -21,8 +21,6 @@
 
 // OpenGL
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
-//#include <GL/gl.h>
 
 // Helper functions
 inline std::string g_opengl_error(GLenum err)

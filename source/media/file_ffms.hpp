@@ -11,6 +11,9 @@
 #include "media/file.hpp"
 #include "opengl/texture.hpp"
 
+// C++
+#include <array>
+
 // FFMS2
 #include <ffms.h>
 

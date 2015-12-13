@@ -26,6 +26,22 @@ class c_video_context : boost::noncopyable
             m_context = SDL_GL_CreateContext(window);
             if (!m_context)
                 throw c_exception("Failed to create OpenGL context!", { throw_format("error", SDL_GetError()) });
+            if (SDL_GL_MakeCurrent(window, m_context))
+                throw c_exception("Failed to make OpenGL context current!", { throw_format("error", SDL_GetError()) });
+            g_opengl_check();
+
+            // GLEW
+            glewExperimental = GL_TRUE;
+            GLenum glew_result = glewInit();
+            if (glew_result != GLEW_OK)
+                throw c_exception("Failed to initialize GLEW!", { throw_format("error", glewGetErrorString(glew_result)) });
+
+            // Debug
+            std::cout << "Context: is_null = " << (SDL_GL_GetCurrentContext() == nullptr ? "true" : "false") << std::endl;
+            GLuint test[] = { 0, 0 };
+            glGenTextures(2, test);
+            std::cout << "Context: test textures = " << test[0] << ", " << test[1] << std::endl;
+            g_opengl_check();
 
             // CEGUI
             m_cegui = std::unique_ptr<c_cegui>(new c_cegui());
