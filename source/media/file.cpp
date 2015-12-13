@@ -10,11 +10,29 @@
 #include "media/file_srt.hpp"
 #include "media/file_ffst.hpp"
 
+// C++
+#include <chrono>
+
 // Boost
 #include <boost/algorithm/string.hpp>
 
+// Timing
+inline double time_now() // s units
+{
+    auto now = std::chrono::high_resolution_clock::now();
+    return static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count()) / 1000000.0;
+}
+
 // Constructor and destructor
-c_media_file::c_media_file(boost::filesystem::path path)
+c_media_file::c_media_file(boost::filesystem::path path) :
+    // Playback mode
+    m_playback_mode(PLAYBACK_STOP),
+    m_playback_point(0),
+    m_playback_frame(0),
+    // Playback play
+    m_playback_play_point(time_now()),
+    m_playback_play_frame(0.0),
+    m_playback_play_speed(1.0)
 {
     // Load video
     std::string path_ext = path.extension().native();
@@ -52,4 +70,40 @@ c_media_file::c_media_file(boost::filesystem::path path)
 c_media_file::~c_media_file()
 {
 
+}
+
+// Dispatch
+void c_media_file::dispatch()
+{
+    if (!m_video)
+        return;
+
+    if (m_playback_mode == PLAYBACK_PLAY) {
+        // Play
+        double curr = time_now();
+        m_playback_play_frame = std::max<double>(std::min<double>(m_playback_play_speed * (curr - m_playback_play_point), m_video->frames()), 0.0);
+        m_playback_play_point = curr;
+
+        // Mode
+        m_playback_point = std::max<double>(std::min<double>(m_playback_play_frame, m_video->frames()), 0.0);
+        m_playback_frame = std::max<int64_t>(std::min<int64_t>(m_playback_point, m_video->frames() - 1), 0);
+    }
+}
+
+// Stop playback
+void c_media_file::playback_stop()
+{
+    m_playback_mode = PLAYBACK_STOP;
+}
+
+// Start playback
+void c_media_file::playback_play(double speed, double frame)
+{
+    m_playback_mode = PLAYBACK_PLAY;
+    m_playback_play_speed = speed;
+    m_playback_play_point = time_now();
+    if (frame >= 0.0)
+        m_playback_play_frame = frame;
+    else
+        m_playback_play_frame = std::max<double>(std::min<double>(frame, m_video->frames()), 0.0);
 }
