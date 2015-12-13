@@ -1,3 +1,6 @@
 [submodule "libraries/bento4"]
 	path = libraries/bento4
 	url = git@github.com:axiomatic-systems/Bento4.git
+[submodule "libraries/ffms2"]
+	path = libraries/ffms2
+	url = git@github.com:FFMS/ffms2.git
