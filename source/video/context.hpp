@@ -35,12 +35,6 @@ class c_video_context : boost::noncopyable
             GLenum glew_result = glewInit();
             if (glew_result != GLEW_OK)
                 throw c_exception("Failed to initialize GLEW!", { throw_format("error", glewGetErrorString(glew_result)) });
-
-            // Debug
-            std::cout << "Context: is_null = " << (SDL_GL_GetCurrentContext() == nullptr ? "true" : "false") << std::endl;
-            GLuint test[] = { 0, 0 };
-            glGenTextures(2, test);
-            std::cout << "Context: test textures = " << test[0] << ", " << test[1] << std::endl;
             g_opengl_check();
 
             // CEGUI

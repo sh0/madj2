@@ -214,6 +214,324 @@
 
     <!--
     ***************************************************
+        madj/MenuItem
+    ***************************************************
+    -->
+
+    <WidgetLook name="madj/MenuItem">
+        <PropertyDefinition initialValue="FFFFFFFF" name="NormalTextColour" redrawOnWrite="true" />
+        <PropertyDefinition initialValue="FF525252" name="DisabledTextColour" redrawOnWrite="true" />
+        <PropertyDefinition initialValue="FFFFFFFF" name="HoverTextColour" redrawOnWrite="true" />
+        <PropertyDefinition initialValue="CCCCCCFF" name="PushedTextColour" redrawOnWrite="true" />
+        <Property name="WantsMultiClickEvents" value="False" />
+
+        <NamedArea name="ContentSize">
+          <Area>
+            <Dim type="LeftEdge">
+              <AbsoluteDim value="0" />
+            </Dim>
+            <Dim type="TopEdge">
+              <AbsoluteDim value="0" />
+            </Dim>
+            <Dim type="Width">
+              <OperatorDim op="Add">
+                <FontDim padding="28" type="HorzExtent" />
+                <OperatorDim op="Add">
+                    <ImageDim dimension="Width" name="GWEN/Menu.Hover.Middle.Left" />
+                    <ImageDim dimension="Width" name="GWEN/Menu.Hover.Middle.Right" />
+                </OperatorDim>
+              </OperatorDim>
+            </Dim>
+            <Dim type="Height">
+              <OperatorDim op="Add">
+                <FontDim type="LineSpacing" />
+                <OperatorDim op="Add">
+                    <ImageDim dimension="Height" name="GWEN/Menu.Hover.Top.Middle" />
+                    <ImageDim dimension="Height" name="GWEN/Menu.Hover.Bottom.Middle" />
+                </OperatorDim>
+              </OperatorDim>
+              </Dim>
+          </Area>
+        </NamedArea>
+
+        <NamedArea name="HasPopupContentSize">
+          <Area>
+            <Dim type="LeftEdge">
+              <AbsoluteDim value="0" />
+            </Dim>
+            <Dim type="TopEdge">
+              <AbsoluteDim value="0" />
+            </Dim>
+            <Dim type="Width">
+              <OperatorDim op="Add"><FontDim padding="28" type="HorzExtent" />
+            <OperatorDim op="Add"><ImageDim dimension="Width" name="GWEN/Menu.Hover.Middle.Left" />
+                <OperatorDim op="Add"><ImageDim dimension="Width" name="GWEN/Menu.Hover.Middle.Right" />
+                    <OperatorDim op="Multiply">
+                        <ImageDim dimension="Width" name="GWEN/Menu.LeftArrow" />
+                        <AbsoluteDim value="3" />
+                            </OperatorDim>
+                          </OperatorDim>
+                      </OperatorDim>
+                  </OperatorDim>
+              </Dim>
+            <Dim type="Height">
+              <OperatorDim op="Add"><FontDim type="LineSpacing" />
+            <OperatorDim op="Add">
+                <ImageDim dimension="Height" name="GWEN/Menu.Hover.Top.Middle" />
+                <ImageDim dimension="Height" name="GWEN/Menu.Hover.Bottom.Middle" />
+                    </OperatorDim>
+                  </OperatorDim>
+              </Dim>
+          </Area>
+        </NamedArea>
+
+        <ImagerySection name="label">
+          <TextComponent>
+            <Area>
+              <Dim type="LeftEdge">
+                <ImageDim dimension="Width" name="GWEN/Menu.Hover.Middle.Left" />
+              </Dim>
+              <Dim type="TopEdge">
+                <ImageDim dimension="Height" name="GWEN/Menu.Hover.Top.Middle" />
+              </Dim>
+              <Dim type="RightEdge">
+                <UnifiedDim scale="1" type="RightEdge" />
+              </Dim>
+              <Dim type="BottomEdge">
+                <UnifiedDim scale="1" type="BottomEdge" />
+              </Dim>
+            </Area>
+            <VertFormat type="CentreAligned" />
+            <HorzFormat type="LeftAligned" />
+          </TextComponent>
+        </ImagerySection>
+
+        <ImagerySection name="frame">
+          <FrameComponent>
+            <Area>
+              <Dim type="LeftEdge">
+                <AbsoluteDim value="0" />
+              </Dim>
+              <Dim type="TopEdge">
+                <AbsoluteDim value="0" />
+              </Dim>
+              <Dim type="Width">
+                <UnifiedDim scale="1" type="Width" />
+              </Dim>
+              <Dim type="Height">
+                <UnifiedDim scale="1" type="Height" />
+              </Dim>
+            </Area>
+          </FrameComponent>
+        </ImagerySection>
+
+        <ImagerySection name="popup_arrow_right">
+          <ImageryComponent>
+            <Area>
+              <Dim type="LeftEdge">
+                <AbsoluteDim value="0" />
+              </Dim>
+              <Dim type="TopEdge">
+                <AbsoluteDim value="0" />
+              </Dim>
+              <Dim type="Width">
+                <OperatorDim op="Subtract"><UnifiedDim scale="1" type="Width" />
+              <ImageDim dimension="Width" name="GWEN/Menu.RightArrow" />
+                  </OperatorDim>
+                </Dim>
+              <Dim type="Height">
+                <UnifiedDim scale="1" type="Height" />
+              </Dim>
+            </Area>
+            <Image name="GWEN/Menu.RightArrow" />
+            <VertFormat type="CentreAligned" />
+            <HorzFormat type="RightAligned" />
+          </ImageryComponent>
+        </ImagerySection>
+
+        <ImagerySection name="popup_arrow_left">
+          <ImageryComponent>
+            <Area>
+              <Dim type="LeftEdge">
+                <AbsoluteDim value="0" />
+              </Dim>
+              <Dim type="TopEdge">
+                <AbsoluteDim value="0" />
+              </Dim>
+              <Dim type="Width">
+                <OperatorDim op="Subtract"><UnifiedDim scale="1" type="Width" />
+              <ImageDim dimension="Width" name="GWEN/Menu.RightArrow" />
+                  </OperatorDim>
+                </Dim>
+              <Dim type="Height">
+                <UnifiedDim scale="1" type="Height" />
+              </Dim>
+            </Area>
+            <Image name="GWEN/Menu.RightArrow" />
+            <VertFormat type="CentreAligned" />
+            <HorzFormat type="RightAligned" />
+          </ImageryComponent>
+        </ImagerySection>
+
+        <StateImagery name="EnabledNormal">
+          <Layer>
+            <Section section="label">
+              <ColourProperty name="NormalTextColour" />
+            </Section>
+          </Layer>
+        </StateImagery>
+
+        <StateImagery name="EnabledHover">
+          <Layer>
+            <Section section="frame" />
+            <Section section="label">
+              <ColourProperty name="HoverTextColour" />
+            </Section>
+          </Layer>
+        </StateImagery>
+
+        <StateImagery name="EnabledPushed">
+          <Layer>
+            <Section section="frame" />
+            <Section section="label">
+              <ColourProperty name="PushedTextColour" />
+            </Section>
+          </Layer>
+        </StateImagery>
+
+        <StateImagery name="EnabledPopupOpen">
+          <Layer>
+            <Section section="frame" />
+            <Section section="label">
+              <ColourProperty name="NormalTextColour" />
+            </Section>
+          </Layer>
+        </StateImagery>
+
+        <StateImagery name="DisabledNormal">
+          <Layer>
+            <Section section="label">
+              <ColourProperty name="DisabledTextColour" />
+            </Section>
+          </Layer>
+        </StateImagery>
+
+        <StateImagery name="DisabledHover">
+          <Layer>
+            <Section section="frame">
+              <Colours bottomLeft="FF7F7F7F" bottomRight="FF7F7F7F" topLeft="FF7F7F7F" topRight="FF7F7F7F" />
+            </Section>
+            <Section section="label">
+              <ColourProperty name="DisabledTextColour" />
+            </Section>
+          </Layer>
+        </StateImagery>
+
+        <StateImagery name="DisabledPushed">
+          <Layer>
+            <Section section="frame">
+              <Colours bottomLeft="FF7F7F7F" bottomRight="FF7F7F7F" topLeft="FF7F7F7F" topRight="FF7F7F7F" />
+            </Section>
+            <Section section="label">
+              <ColourProperty name="DisabledTextColour" />
+            </Section>
+          </Layer>
+        </StateImagery>
+
+        <StateImagery name="DisabledPopupOpen">
+          <Layer>
+            <Section section="frame">
+              <Colours bottomLeft="FF7F7F7F" bottomRight="FF7F7F7F" topLeft="FF7F7F7F" topRight="FF7F7F7F" />
+            </Section>
+            <Section section="label">
+              <ColourProperty name="DisabledTextColour" />
+            </Section>
+          </Layer>
+        </StateImagery>
+
+        <StateImagery name="PopupClosedIcon">
+          <Layer>
+            <Section section="popup_arrow_right" />
+          </Layer>
+        </StateImagery>
+
+        <StateImagery name="PopupOpenIcon">
+          <Layer>
+            <Section section="popup_arrow_left" />
+          </Layer>
+        </StateImagery>
+    </WidgetLook>
+
+    <!--
+    ***************************************************
+        madj/Menubar
+    ***************************************************
+    -->
+    <WidgetLook name="madj/Menubar">
+        <PropertyDefinition initialValue="tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF" name="BackgroundColours" redrawOnWrite="true" />
+        <PropertyDefinition initialValue="3" layoutOnWrite="true" name="BorderWidth" />
+
+        <NamedArea name="ItemRenderArea">
+            <Area>
+                <Dim type="LeftEdge">
+                    <PropertyDim name="BorderWidth" />
+                </Dim>
+                <Dim type="TopEdge">
+                    <AbsoluteDim value="0" />
+                </Dim>
+                <Dim type="Width">
+                    <UnifiedDim scale="1" type="Width" />
+                </Dim>
+                <Dim type="Height">
+                    <UnifiedDim scale="1" type="Height" />
+                </Dim>
+            </Area>
+        </NamedArea>
+
+        <ImagerySection name="frame">
+            <FrameComponent>
+                <Area>
+                    <Dim type="LeftEdge">
+                        <AbsoluteDim value="0" />
+                    </Dim>
+                    <Dim type="TopEdge">
+                        <AbsoluteDim value="0" />
+                    </Dim>
+                    <Dim type="Width">
+                        <OperatorDim op="Subtract">
+                            <UnifiedDim scale="1" type="Width" />
+                            <AbsoluteDim value="1" />
+                        </OperatorDim>
+                    </Dim>
+                    <Dim type="Height">
+                        <UnifiedDim scale="1" type="Height" />
+                    </Dim>
+                </Area>
+                <Image component="BottomRightEdge" name="madj/MenubarBottomRightCorner" />
+                <Image component="BottomEdge" name="madj/MenubarBottomEdge" />
+                <Image component="RightEdge" name="madj/MenubarRightEdge" />
+                <Image component="Background" name="madj/MenubarBackground" />
+            </FrameComponent>
+        </ImagerySection>
+
+        <StateImagery name="Enabled">
+            <Layer>
+                <Section section="frame">
+                    <ColourRectProperty name="BackgroundColours" />
+                </Section>
+            </Layer>
+        </StateImagery>
+        <StateImagery name="Disabled">
+            <Layer>
+                <Section section="frame">
+                    <Colours bottomLeft="FF7F7F7F" bottomRight="FF7F7F7F" topLeft="FF7F7F7F" topRight="FF7F7F7F" />
+                </Section>
+            </Layer>
+        </StateImagery>
+    </WidgetLook>
+
+    <!--
+    ***************************************************
         madj/RootWindow
     ***************************************************
     -->
@@ -326,6 +644,7 @@
             </Area>
             <Property name="AlwaysOnTop" value="false" />
         </Child>
+
         <Child type="madj/Button" nameSuffix="__auto_closebutton__">
             <Area>
                 <Dim type="LeftEdge" >
@@ -523,7 +842,7 @@
     <WidgetLook name="madj/Titlebar">
         <PropertyDefinition name="CaptionColour" initialValue="FFFFFFFF" redrawOnWrite="true" type="ColourRect"/>
         <Property name="NonClient" value="true" />
-        <Property name="Size" value="{{0, 256}, {0, 32}}" />
+        <Property name="Size" value="{{0, 256}, {0, 24}}" />
 
         <!-- Bar -->
         <ImagerySection name="main">

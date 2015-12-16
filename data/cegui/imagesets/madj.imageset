@@ -12,5 +12,9 @@
     <Image height="1" name="WindowBottomRight" width="1" xPos="63" yPos="63" />
     <Image height="1" name="WindowTopLeft" width="1" xPos="0" yPos="23" />
     <Image height="1" name="WindowTopRight" width="1" xPos="63" yPos="23" />
-    <Image height="1" name="GenericBrush" width="1" xPos="2" yPos="25" />
+    <Image height="20" name="GenericBrush" width="20" xPos="2" yPos="25" />
+    <Image height="1" name="MenubarBottomEdge" width="62" xPos="1" yPos="23" />
+    <Image height="22" name="MenubarBackground" width="62" xPos="1" yPos="1" />
+    <Image height="22" name="MenubarRightEdge" width="1" xPos="63" yPos="1" />
+    <Image height="1" name="MenubarBottomRightCorner" width="1" xPos="63" yPos="33" />
 </Imageset>

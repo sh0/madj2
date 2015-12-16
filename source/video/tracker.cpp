@@ -30,7 +30,7 @@ c_video_tracker::c_video_tracker(
     m_media_texture(std::make_shared<c_opengl_texture_2d>())
 {
     // Debug
-    std::cout << boost::format("View (%s)") % m_name << std::endl;
+    //std::cout << boost::format("View (%s)") % m_name << std::endl;
 
     // Temporary video
     #if 0
@@ -50,6 +50,7 @@ c_video_tracker::c_video_tracker(
     // Window
     m_window = CEGUI::WindowManager::getSingletonPtr()->loadLayoutFromFile("tracker-video.layout");
     m_window->setName(m_name);
+    m_window->setText(m_name);
     m_window_image = m_window->getChild("Video");
     m_window_image->setProperty("Image", m_video_image.getName());
 
@@ -109,6 +110,8 @@ void c_video_tracker::event_action(std::string action)
         //std::cout << "Tracker: Playing! path = " << path << std::endl;
         m_media_id = 0;
         m_media_file = std::make_shared<c_media_file>(path);
+
+        m_window->setText(m_name + " - " + path.stem().native());
     }
 }
 

@@ -45,7 +45,7 @@ void c_media::media_add(std::string path)
                 boost::algorithm::to_lower(ext);
 
                 // File type selection
-                if (ext == ".mp4")
+                if (ext == ".mp4" || ext == ".mkv" || ext == ".avi" || ext == ".ogv")
                     m_files.push_back(iter->path());
             }
         }

@@ -27,13 +27,6 @@ c_opengl_texture_2d::c_opengl_texture_2d(e_format format, e_filter filter) :
         default: assert(false);
     }
 
-    // Debug
-    #if 0
-    uint64_t tid;
-    pthread_threadid_np(NULL, &tid);
-    std::cout << "Texture: thread = " << tid << std::endl;
-    #endif
-
     // Generate
     glGenTextures(1, &m_object);
     if (!m_object)
