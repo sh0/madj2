@@ -1,6 +1,6 @@
 #
 # MADJ project
-# Copyright (C) 2014 Siim Meerits <siim@yutani.ee>
+# Copyright (C) 2015 Siim Meerits <siim@yutani.ee>
 #
 
 # Config
@@ -48,8 +48,18 @@ add_executable(${CORE_EXEC} ${CORE_SOURCE})
 get_target_property(_flags ${CORE_EXEC} COMPILE_FLAGS)
 append_flags(_flags "${CORE_CFLAGS}")
 set_target_properties(${CORE_EXEC} PROPERTIES COMPILE_FLAGS "${_flags}")
-string(REPLACE " " ";" CORE_LDFLAGS ${CORE_LDFLAGS})
-target_link_libraries(${CORE_EXEC} ${CORE_LDFLAGS})
+
+# Linking
+target_link_libraries(${CORE_EXEC} ${BOOST_LDFLAGS})
+target_link_libraries(${CORE_EXEC} ${CEGUI_LDFLAGS})
+target_link_libraries(${CORE_EXEC} ${FFMPEG_LDFLAGS})
+target_link_libraries(${CORE_EXEC} ${FFMS_LDFLAGS})
+target_link_libraries(${CORE_EXEC} ${BENTO4_LDFLAGS})
+target_link_libraries(${CORE_EXEC} ${OPENGL_LDFLAGS})
+target_link_libraries(${CORE_EXEC} ${GLEW_LDFLAGS})
+target_link_libraries(${CORE_EXEC} ${LADSPA_LDFLAGS})
+target_link_libraries(${CORE_EXEC} ${PORTMIDI_LDFLAGS})
+target_link_libraries(${CORE_EXEC} ${SDL_LDFLAGS})
 
 # Debug
 message(STATUS "################################################")

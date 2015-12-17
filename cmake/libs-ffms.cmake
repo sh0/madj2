@@ -17,7 +17,7 @@ if (NOT FFMS_FOUND)
 
     # Flags
     set(FFMS_FOUND TRUE)
-    set(FFMS_CFLAGS "-I${FFMS_PATH_INCLUDE}")
-    set(FFMS_LDFLAGS "${FFMS_PATH_LIBRARY}/libffms2.a -lz")
+    set(FFMS_CFLAGS -I${FFMS_PATH_INCLUDE})
+    set(FFMS_LDFLAGS ${FFMS_PATH_LIBRARY}/libffms2.a -lz)
 endif ()
 info_library("FFMS" FFMS FATAL_ERROR)

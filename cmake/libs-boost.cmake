@@ -1,6 +1,6 @@
 #
 # Boost libraries
-# Copyright (C) 2014 Siim Meerits <siim@yutani.ee>
+# Copyright (C) 2015 Siim Meerits <siim@yutani.ee>
 #
 
 # Messages
@@ -16,9 +16,7 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.40 COMPONENTS system filesystem program_options regex)
 set(BOOST_FOUND TRUE)
 foreach (_incs ${Boost_INCLUDE_DIRS})
-    append_flags(BOOST_CFLAGS "-I${_incs}")
+    append_flags(BOOST_CFLAGS -I${_incs})
 endforeach (_incs)
-foreach (_libs ${Boost_LIBRARIES})
-    append_flags(BOOST_LDFLAGS "${_libs}")
-endforeach (_libs)
+set(BOOST_LDFLAGS ${Boost_LIBRARIES})
 info_library("boost" BOOST FATAL_ERROR)
