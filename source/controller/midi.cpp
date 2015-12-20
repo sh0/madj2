@@ -68,7 +68,7 @@ c_controller_midi::~c_controller_midi()
 }
 
 // Dispatch
-void c_controller_midi::dispatch()
+void c_controller_midi::dispatch_input()
 {
     if (m_input_stream) {
         while (Pm_Poll(m_input_stream)) {
@@ -104,6 +104,12 @@ void c_controller_midi::dispatch()
     }
 }
 
+void c_controller_midi::dispatch_render()
+{
+
+}
+
+// Read message opcodes
 int c_controller_midi::read_msg(PmEvent* events, size_t size)
 {
     auto msg = events->message;

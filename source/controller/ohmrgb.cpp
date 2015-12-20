@@ -11,7 +11,10 @@
 
 // Constructor
 c_controller_ohmrgb::c_controller_ohmrgb(PmDeviceID input, PmDeviceID output) :
-    c_controller_midi(input, output)
+    // MIDI
+    c_controller_midi(input, output),
+    // States
+    m_state_needs_update(false)
 {
     // Info
     std::cout << boost::format("OhmRGB: input = %d, output = %d") % input % output << std::endl;
@@ -30,6 +33,15 @@ c_controller_ohmrgb::c_controller_ohmrgb(PmDeviceID input, PmDeviceID output) :
 
     // Get controls
     write_sysex_ohmrgb_request_controls();
+}
+
+// Dispatch
+void c_controller_ohmrgb::dispatch_render()
+{
+    if (m_state_needs_update) {
+        m_state_needs_update = false;
+        leds_update();
+    }
 }
 
 // Leds
@@ -58,8 +70,13 @@ static std::map<std::string, int> g_leds = {
 void c_controller_ohmrgb::leds_set(std::string id, uint8_t value)
 {
     auto it = g_leds.find(id);
-    if (it != g_leds.end())
-        m_state_leds[it->second] = value;
+    if (it != g_leds.end()) {
+        uint8_t& state = m_state_leds[it->second];
+        if (state != value) {
+            state = value;
+            m_state_needs_update = true;
+        }
+    }
 }
 
 // Controls

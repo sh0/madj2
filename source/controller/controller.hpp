@@ -9,6 +9,7 @@
 // Internal
 #include "config.hpp"
 #include "controller/midi.hpp"
+#include "controller/tempo.hpp"
 
 // Main controller class
 class c_controller : boost::noncopyable
@@ -26,9 +27,14 @@ class c_controller : boost::noncopyable
         void mapping_add(std::string device, std::vector<std::string> keys, std::string target, std::string action);
 
         // Dispatch
-        void dispatch() {
+        void dispatch_input() {
             for (auto& midi : m_midi)
-                midi->dispatch();
+                midi->dispatch_input();
+        }
+
+        void dispatch_render() {
+            for (auto& midi : m_midi)
+                midi->dispatch_render();
         }
 
     private:
@@ -47,6 +53,9 @@ class c_controller : boost::noncopyable
             }
         };
         std::vector<s_mapping> m_mappings;
+
+        // Tempo
+        std::vector<std::shared_ptr<c_controller_tempo>> m_tempo;
 };
 
 #endif

@@ -21,8 +21,12 @@ class c_controller_ohmrgb : public c_controller_midi //, boost::noncopyable
         c_controller_ohmrgb(PmDeviceID input, PmDeviceID output);
         virtual ~c_controller_ohmrgb() { }
 
+        // Dispatch
+        virtual void dispatch_render();
+
     protected:
         // States
+        bool m_state_needs_update;
         std::array<uint8_t, 82> m_state_leds;
         std::map<std::string, uint8_t> m_state_control;
 

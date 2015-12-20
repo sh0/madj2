@@ -64,8 +64,18 @@ c_video_screen::c_video_screen(
 
     // Window settings
     SDL_DisableScreenSaver();
-    if (SDL_GL_SetSwapInterval(1) != 0) // 0 = immediate, 1 = vertical retrace sync, -1 = late swap tearing
-        std::cout << "Screen: Failed to set swap interval!" << std::endl;
+    if (SDL_GL_SetSwapInterval(-1) != 0) {
+        // 0 = immediate, 1 = vertical retrace sync, -1 = late swap tearing
+        //std::cout << "Screen: Failed to set swap interval to late swap tearing!" << std::endl;
+        if (SDL_GL_SetSwapInterval(1) != 0)
+            std::cout << "Screen: Failed to set swap interval to vsync!" << std::endl;
+    }
+
+    // Display mode
+    SDL_DisplayMode mode = { SDL_PIXELFORMAT_UNKNOWN, 0, 0, 0, 0 };
+    if (SDL_GetWindowDisplayMode(m_window, &mode) == 0 && mode.refresh_rate != 0) {
+        std::cout << "Screen: refresh_rate = " << mode.refresh_rate << std::endl;
+    }
 
     // Rendering area
     SDL_GL_GetDrawableSize(m_window, &m_window_width, &m_window_height);
@@ -121,15 +131,8 @@ c_video_screen::~c_video_screen()
 }
 
 // Dispatch
-void c_video_screen::dispatch()
+void c_video_screen::dispatch_input()
 {
-    // Acquire context
-    if (!m_context->make_current(m_window)) {
-        std::cout << boost::format("Screen (%1%): Failed to acquire OpenGL context!") % m_name << std::endl;
-        return;
-    }
-    g_opengl_check();
-
     // Poll events
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
@@ -238,6 +241,16 @@ void c_video_screen::dispatch()
                 break;
         }
     }
+}
+
+void c_video_screen::dispatch_render()
+{
+    // Acquire context
+    if (!m_context->make_current(m_window)) {
+        std::cout << boost::format("Screen (%1%): Failed to acquire OpenGL context!") % m_name << std::endl;
+        return;
+    }
+    g_opengl_check();
 
     // Init screen drawing
     gl_init();

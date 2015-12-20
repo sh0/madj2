@@ -171,17 +171,22 @@ c_context::~c_context()
 void c_context::run()
 {
     // Profiler and timer
-    c_time_thread timer(0);
+    c_time_cyclic timer(g_time_fps2us(60));
 
     // Loop
     while (m_run.load()) {
-
-        // Sleep
+        // Timer
         timer.cycle();
 
         // Subsystems
         c_global::media->dispatch();
-        c_global::controller->dispatch();
-        c_global::video->dispatch();
+
+        // Input
+        c_global::controller->dispatch_input();
+        c_global::video->dispatch_input();
+
+        // Render
+        c_global::controller->dispatch_render();
+        c_global::video->dispatch_render();
     }
 }

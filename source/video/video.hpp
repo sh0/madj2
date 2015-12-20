@@ -68,9 +68,14 @@ class c_video : boost::noncopyable
         }
 
         // Dispatch
-        void dispatch() {
+        void dispatch_input() {
             for (auto& screen : m_screens)
-                screen->dispatch();
+                screen->dispatch_input();
+        }
+
+        void dispatch_render() {
+            for (auto& screen : m_screens)
+                screen->dispatch_render();
         }
 
     private:

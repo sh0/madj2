@@ -25,7 +25,8 @@ class c_controller_midi : boost::noncopyable
         virtual ~c_controller_midi();
 
         // Dispatch
-        void dispatch();
+        virtual void dispatch_input();
+        virtual void dispatch_render();
 
     protected:
         // Devices
@@ -68,30 +69,6 @@ class c_controller_midi : boost::noncopyable
                 size_t m_size;
         };
         c_buffer_recv m_buffer_recv;
-
-        // Send buffer
-        /*
-        class c_buffer_send : boost::noncopyable
-        {
-            public:
-                // Reading
-                uint8_t* read_data() { return m_data.data(); }
-                size_t read_size() { return m_data.size(); }
-                void read_pop(size_t size) {
-                    assert(size <= m_data.size());
-                    memcpy(&m_data[0], &m_data[size], m_data.size() - size);
-                    m_data.resize(m_data.size() - size);
-                }
-
-                // Writing
-                void write(std::vector<uint8_t>& data) {
-                    m_data.insert(m_data.end(), data.begin(), data.end());
-                }
-            private:
-                std::vector<uint8_t> m_data;
-        };
-        c_buffer_send m_buffer_send;
-        */
 
         // Data
         struct s_channel {
