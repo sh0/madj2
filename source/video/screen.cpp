@@ -90,7 +90,6 @@ c_video_screen::c_video_screen(
     m_cegui = std::unique_ptr<c_cegui>(new c_cegui(m_context));
 
     // Scheme
-    CEGUI::SchemeManager::getSingleton().createFromFile("madj.scheme");
     CEGUI::SchemeManager::getSingleton().createFromFile("GWEN.scheme");
 
     // Defaults

@@ -10,6 +10,10 @@
 #include "config.hpp"
 #include "opengl/texture.hpp"
 
+// C++
+#include <thread>
+#include <atomic>
+
 // Boost
 #include <boost/filesystem.hpp>
 
@@ -62,6 +66,10 @@ class c_media_file : boost::noncopyable
         // Dispatch
         void dispatch();
 
+        // State
+        bool state_error() { return m_state_error; }
+        bool state_loaded() { return m_state_loaded; }
+
         // Media
         std::shared_ptr<c_media_video> video() { return m_video; }
         std::shared_ptr<c_media_subtitle> subtitle() { return m_subtitle; }
@@ -86,6 +94,16 @@ class c_media_file : boost::noncopyable
         double playback_play_speed() { return m_playback_play_speed; }
 
     private:
+        // Thread
+        std::atomic_bool m_run;
+        std::thread m_thread;
+        std::mutex m_mutex;
+        void thread(boost::filesystem::path path);
+
+        // State
+        std::atomic_bool m_state_error;
+        std::atomic_bool m_state_loaded;
+
         // Media
         std::shared_ptr<c_media_video> m_video;
         std::shared_ptr<c_media_subtitle> m_subtitle;

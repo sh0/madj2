@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
 <GUIScheme name="GWEN"	version="5">
   <Imageset filename="GWEN.imageset" />
+
+  <Font filename="DroidSansMono-10.font" />
   <Font filename="OpenSans-8.font" />
+
   <LookNFeel filename="GWEN.looknfeel" />
   <WindowRendererSet filename="CEGUICoreWindowRendererSet" />
   <FalagardMapping lookNFeel="GWEN/Button"			renderer="Core/Button"			targetType="CEGUI/PushButton"		windowType="GWEN/Button" />
@@ -15,7 +18,7 @@
   <FalagardMapping lookNFeel="GWEN/ProgressBar"			renderer="Core/ProgressBar"		targetType="CEGUI/ProgressBar"		windowType="GWEN/ProgressBar" />
   <FalagardMapping lookNFeel="GWEN/VUMeter"			renderer="Core/ProgressBar"		targetType="CEGUI/ProgressBar"		windowType="GWEN/VUMeter" />
   <FalagardMapping lookNFeel="GWEN/SliderThumb"			renderer="Core/Button"			targetType="CEGUI/Thumb"		windowType="GWEN/SliderThumb" />
-  <FalagardMapping lookNFeel="GWEN/HorizontalSliderThumb"	renderer="Core/Button"			targetType="CEGUI/Thumb"		windowType="GWEN/HorizontalSliderThumb" />	
+  <FalagardMapping lookNFeel="GWEN/HorizontalSliderThumb"	renderer="Core/Button"			targetType="CEGUI/Thumb"		windowType="GWEN/HorizontalSliderThumb" />
   <FalagardMapping lookNFeel="GWEN/Slider"			renderer="Core/Slider"			targetType="CEGUI/Slider"		windowType="GWEN/Slider" />
   <FalagardMapping lookNFeel="GWEN/HorizontalSlider"		renderer="Core/Slider"			targetType="CEGUI/Slider"		windowType="GWEN/HorizontalSlider" />
   <FalagardMapping lookNFeel="GWEN/HorizontalScrollbarThumb"	renderer="Core/Button"			targetType="CEGUI/Thumb"		windowType="GWEN/HorizontalScrollbarThumb" />
