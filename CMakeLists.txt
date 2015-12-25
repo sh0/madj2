@@ -35,8 +35,9 @@ include(libs-ffms)
 include(libs-bento4)
 include(libs-opengl)
 include(libs-glew)
-include(libs-portmidi)
+include(libs-glfw)
 include(libs-sdl2)
+include(libs-portmidi)
 
 # Subdirs
 add_subdirectory(source)
