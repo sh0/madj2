@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout version="4" >
+    <Window type="GWEN/FrameWindow" name="Box" >
+        <Property name="Area" value="{{0,0},{0,0},{0,70},{0,55}}" />
+        <Property name="MinSize" value="{{0,0},{0,0}}" />
+        <Property name="SizingEnabled" value="false" />
+        <Property name="TitlebarEnabled" value="false" />
+        <Property name="DragMovingEnabled" value="false" />
+        <Property name="CloseButtonEnabled" value="false" />
+        <Property name="HorizontalAlignment" value="Right" />
+        <Property name="AutoRenderingSurface" value="true" />
+        <AutoWindow namePath="__auto_titlebar__" >
+            <Property name="NonClient" value="true" />
+            <Property name="AlwaysOnTop" value="false" />
+            <Property name="DraggingEnabled" value="false" />
+        </AutoWindow>
+        <AutoWindow namePath="__auto_closebutton__" >
+            <Property name="NonClient" value="true" />
+            <Property name="AlwaysOnTop" value="true" />
+        </AutoWindow>
+        <Window type="GridLayoutContainer" name="Layout" >
+            <Property name="Area" value="{{0,0},{0,0},{1,0},{1,0}}" />
+            <Property name="GridSize" value="w:2 h:2" />
+            <Window type="GWEN/Button" name="Button1" >
+                <Property name="Area" value="{{0,0},{0,0},{1,-24},{0,24}}" />
+                <Property name="Text" value="80" />
+                <Property name="WantsMultiClickEvents" value="false" />
+            </Window>
+            <Window type="GWEN/ProgressBar" name="Progress1" >
+                <Property name="Area" value="{{0,0},{0,0},{0,24},{0,24}}" />
+                <Property name="StepSize" value="0.01" />
+                <Property name="CurrentProgress" value="0.5" />
+            </Window>
+            <Window type="GWEN/Button" name="Button2" >
+                <Property name="Area" value="{{0,0},{0,0},{1,-24},{0,24}}" />
+                <Property name="WantsMultiClickEvents" value="false" />
+            </Window>
+            <Window type="GWEN/ProgressBar" name="Progress2" >
+                <Property name="Area" value="{{0,0},{0,0},{0,24},{0,24}}" />
+                <Property name="StepSize" value="0.01" />
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>

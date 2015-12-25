@@ -3,7 +3,6 @@
 <Window type="DefaultWindow" name="Root">
     <Property name="Area" value="{{0,0},{0,0},{1,0},{1,0}}" />
     <Property name="MaxSize" value="{{1,0},{1,0}}" />
-    <!--Property name="BackgroundColours" value="tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF" /-->
     <Property name="AutoRenderingSurface" value="false" />
 
     <!--Window type="GWEN/StaticImage" name="Background" >

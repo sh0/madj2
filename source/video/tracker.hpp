@@ -13,6 +13,7 @@
 #include "opengl/texture.hpp"
 #include "media/media.hpp"
 #include "media/file.hpp"
+#include "video/tracker_tempo.hpp"
 
 // CEGUI
 #include <CEGUI/GUIContext.h>
@@ -56,7 +57,11 @@ class c_video_tracker : public c_video_view, boost::noncopyable
 
         // Window
         CEGUI::Window* m_window;
+        CEGUI::Window* m_window_client;
         CEGUI::Window* m_window_image;
+
+        // Tempo
+        std::shared_ptr<c_video_tracker_tempo> m_tempo;
 
         // Video
         CEGUI::Texture& m_video_texture;

@@ -93,7 +93,8 @@ c_video_screen::c_video_screen(
     CEGUI::SchemeManager::getSingleton().createFromFile("GWEN.scheme");
 
     // Defaults
-    m_cegui->context().setDefaultFont("DroidSansMono-10");
+    m_cegui->context().setDefaultFont("OpenSans-8");
+    //m_cegui->context().setDefaultFont("DroidSansMono-10");
     //m_cegui->context().getMouseCursor().setDefaultImage("TaharezLook/MouseArrow");
     //m_cegui->context().setDefaultTooltipType("TaharezLook/Tooltip");
 
@@ -316,7 +317,7 @@ void c_video_screen::view_add(std::shared_ptr<c_video_view> view)
     auto window = view->window();
     float block_w = 1.0f / m_view_rows;
     float block_h = 1.0f / m_view_cols;
-    window->setPosition(CEGUI::UVector2(CEGUI::UDim(view->pos_x() * block_w, 0.0f), CEGUI::UDim(view->pos_y() * block_h, 0.0f)));
-    window->setSize(CEGUI::USize(CEGUI::UDim(view->pos_w() * block_w, 0.0f), CEGUI::UDim(view->pos_h() * block_h, 0.0f)));
+    window->setPosition(CEGUI::UVector2(CEGUI::UDim(view->pos_x() * block_w, 1.0f), CEGUI::UDim(view->pos_y() * block_h, 1.0f)));
+    window->setSize(CEGUI::USize(CEGUI::UDim(view->pos_w() * block_w, -2.0f), CEGUI::UDim(view->pos_h() * block_h, -2.0f)));
     m_cegui_root->addChild(window);
 }

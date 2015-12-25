@@ -49,17 +49,34 @@ c_video_tracker::c_video_tracker(
 
     // Window
     m_window = CEGUI::WindowManager::getSingletonPtr()->loadLayoutFromFile("tracker-video.layout");
+    BOOST_ASSERT(m_window);
     m_window->setName(m_name);
     m_window->setText(m_name);
-    m_window_image = m_window->getChild("Video");
+
+    // Client area
+    m_window_client = m_window->getChildRecursive("Client");
+    BOOST_ASSERT(m_window_client);
+
+    // Video
+    m_window_image = m_window->getChildRecursive("Video");
+    BOOST_ASSERT(m_window_image);
     m_window_image->setProperty("Image", m_video_image.getName());
+
+    // Tempo
+    m_tempo = std::make_shared<c_video_tracker_tempo>(m_window_client);
 
     // Events
     m_window->subscribeEvent(CEGUI::Window::EventSized, CEGUI::Event::Subscriber(&c_video_tracker::event_window_resize, this));
+
+    // Update
+    m_window->invalidate(true);
 }
 
 c_video_tracker::~c_video_tracker()
 {
+    // Tempo
+    m_tempo.reset();
+
     // Window
     CEGUI::WindowManager::getSingletonPtr()->destroyWindow(m_window);
 

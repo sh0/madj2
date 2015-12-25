@@ -122,12 +122,12 @@
     <Image height="4" name="Window.Bottom.Normal.Left" width="4" xPos="0" yPos="123" />
     <Image height="4" name="Window.Bottom.Normal.Right" width="4" xPos="123" yPos="123" />
     <Image height="4" name="Window.Bottom.Normal.Middle" width="119" xPos="4" yPos="123" />
-    <Image height="99" name="Window.Middle.Normal.Left" width="2" xPos="0" yPos="24" />
-    <Image height="99" name="Window.Middle.Normal.Right" width="2" xPos="125" yPos="24" />
-    <Image height="99" name="Window.Middle.Normal.Middle" width="122" xPos="3" yPos="24" />
-    <Image height="99" name="Window.Middle.Inactive.Middle" width="123" xPos="130" yPos="24" />
-    <Image height="99" name="Window.Middle.Inactive.Left" width="2" xPos="128" yPos="24" />
-    <Image height="99" name="Window.Middle.Inactive.Right" width="2" xPos="253" yPos="24" />
+    <Image height="95" name="Window.Middle.Normal.Left" width="2" xPos="0" yPos="28" />
+    <Image height="95" name="Window.Middle.Normal.Right" width="2" xPos="125" yPos="28" />
+    <Image height="95" name="Window.Middle.Normal.Middle" width="123" xPos="2" yPos="28" />
+    <Image height="95" name="Window.Middle.Inactive.Middle" width="123" xPos="130" yPos="28" />
+    <Image height="95" name="Window.Middle.Inactive.Left" width="2" xPos="128" yPos="28" />
+    <Image height="95" name="Window.Middle.Inactive.Right" width="2" xPos="253" yPos="28" />
     <Image height="4" name="Window.Bottom.Inactive.Left" width="4" xPos="128" yPos="123" />
     <Image height="4" name="Window.Bottom.Inactive.Right" width="4" xPos="251" yPos="123" />
     <Image height="4" name="Window.Bottom.Inactive.Middle" width="119" xPos="132" yPos="123" />
@@ -345,4 +345,10 @@
     <Image height="1" name="VProgressBar.Front.Bottom.Left" width="1" xPos="38" yPos="478" />
     <Image height="1" name="VProgressBar.Front.Bottom.Middle" width="25" xPos="41" yPos="478" />
     <Image height="1" name="VProgressBar.Front.Bottom.Right" width="1" xPos="68" yPos="478" />
+    <Image height="4" name="Window.Top.Normal.Left" width="4" xPos="0" yPos="24" />
+    <Image height="4" name="Window.Top.Normal.Middle" width="119" xPos="4" yPos="24" />
+    <Image height="4" name="Window.Top.Normal.Right" width="4" xPos="123" yPos="24" />
+    <Image height="4" name="Window.Top.Inactive.Left" width="4" xPos="128" yPos="24" />
+    <Image height="4" name="Window.Top.Inactive.Right" width="4" xPos="251" yPos="24" />
+    <Image height="4" name="Window.Top.Inactive.Middle" width="119" xPos="132" yPos="24" />
 </Imageset>
