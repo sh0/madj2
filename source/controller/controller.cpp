@@ -17,7 +17,7 @@ c_controller::c_controller()
 {
     // Tempo
     for (int i = 0; i < 2; i++)
-        m_tempo.push_back(std::make_shared<c_controller_tempo>());
+        m_tempos.push_back(std::make_shared<c_controller_tempo>());
 
     // MIDI initialization
     PmError midi_error = Pm_Initialize();

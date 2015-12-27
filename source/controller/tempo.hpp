@@ -8,7 +8,7 @@
 
 // Internal
 #include "config.hpp"
-#include "time.hpp"
+#include "timer.hpp"
 
 // Tempo class
 class c_controller_tempo : boost::noncopyable

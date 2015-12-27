@@ -1,10 +1,10 @@
 /*
  * MADJ project
- * Copyright (C) 2014 Siim Meerits <siim@yutani.ee>
+ * Copyright (C) 2015 Siim Meerits <siim@yutani.ee>
  */
 
-#ifndef H_TIME
-#define H_TIME
+#ifndef H_TIMER
+#define H_TIMER
 
 // Internal
 #include "config.hpp"

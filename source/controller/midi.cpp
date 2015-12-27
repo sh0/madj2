@@ -68,7 +68,7 @@ c_controller_midi::~c_controller_midi()
 }
 
 // Dispatch
-void c_controller_midi::dispatch_input()
+void c_controller_midi::dispatch_input(c_time_cyclic& timer)
 {
     if (m_input_stream) {
         while (Pm_Poll(m_input_stream)) {
@@ -104,7 +104,7 @@ void c_controller_midi::dispatch_input()
     }
 }
 
-void c_controller_midi::dispatch_render()
+void c_controller_midi::dispatch_render(c_time_cyclic& timer)
 {
 
 }

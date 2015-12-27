@@ -36,7 +36,7 @@ c_controller_ohmrgb::c_controller_ohmrgb(PmDeviceID input, PmDeviceID output) :
 }
 
 // Dispatch
-void c_controller_ohmrgb::dispatch_render()
+void c_controller_ohmrgb::dispatch_render(c_time_cyclic& timer)
 {
     if (m_state_needs_update) {
         m_state_needs_update = false;

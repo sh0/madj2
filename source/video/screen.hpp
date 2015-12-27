@@ -25,8 +25,8 @@ class c_video_screen : boost::noncopyable
         ~c_video_screen();
 
         // Dispatch
-        void dispatch_input();
-        void dispatch_render();
+        void dispatch_input(c_time_cyclic& timer);
+        void dispatch_render(c_time_cyclic& timer);
 
         // Info
         std::string name() { return m_name; }

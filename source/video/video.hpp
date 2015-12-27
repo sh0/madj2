@@ -8,6 +8,7 @@
 
 // Internal
 #include "config.hpp"
+#include "timer.hpp"
 #include "opengl/opengl.hpp"
 #include "opengl/shader.hpp"
 #include "video/context.hpp"
@@ -68,14 +69,14 @@ class c_video : boost::noncopyable
         }
 
         // Dispatch
-        void dispatch_input() {
+        void dispatch_input(c_time_cyclic& timer) {
             for (auto& screen : m_screens)
-                screen->dispatch_input();
+                screen->dispatch_input(timer);
         }
 
-        void dispatch_render() {
+        void dispatch_render(c_time_cyclic& timer) {
             for (auto& screen : m_screens)
-                screen->dispatch_render();
+                screen->dispatch_render(timer);
         }
 
     private:

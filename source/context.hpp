@@ -8,7 +8,7 @@
 
 // Internal
 #include "config.hpp"
-#include "time.hpp"
+#include "timer.hpp"
 #include "global.hpp"
 
 // C++

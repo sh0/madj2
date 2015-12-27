@@ -8,6 +8,7 @@
 
 // Internal
 #include "config.hpp"
+#include "timer.hpp"
 #include "controller/midi.hpp"
 #include "controller/tempo.hpp"
 
@@ -26,15 +27,18 @@ class c_controller : boost::noncopyable
         // Mappings
         void mapping_add(std::string device, std::vector<std::string> keys, std::string target, std::string action);
 
+        // Tempos
+        std::vector<std::shared_ptr<c_controller_tempo>> tempos() { return m_tempos; }
+
         // Dispatch
-        void dispatch_input() {
+        void dispatch_input(c_time_cyclic& timer) {
             for (auto& midi : m_midi)
-                midi->dispatch_input();
+                midi->dispatch_input(timer);
         }
 
-        void dispatch_render() {
+        void dispatch_render(c_time_cyclic& timer) {
             for (auto& midi : m_midi)
-                midi->dispatch_render();
+                midi->dispatch_render(timer);
         }
 
     private:
@@ -55,7 +59,7 @@ class c_controller : boost::noncopyable
         std::vector<s_mapping> m_mappings;
 
         // Tempo
-        std::vector<std::shared_ptr<c_controller_tempo>> m_tempo;
+        std::vector<std::shared_ptr<c_controller_tempo>> m_tempos;
 };
 
 #endif

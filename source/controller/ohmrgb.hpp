@@ -22,7 +22,7 @@ class c_controller_ohmrgb : public c_controller_midi //, boost::noncopyable
         virtual ~c_controller_ohmrgb() { }
 
         // Dispatch
-        virtual void dispatch_render();
+        virtual void dispatch_render(c_time_cyclic& timer);
 
     protected:
         // States

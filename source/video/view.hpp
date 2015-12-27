@@ -8,6 +8,7 @@
 
 // Internal
 #include "config.hpp"
+#include "timer.hpp"
 
 // CEGUI
 #include <CEGUI/Window.h>
@@ -20,7 +21,7 @@ class c_video_view
         virtual ~c_video_view() { }
 
         // Dispatch
-        virtual void dispatch() { };
+        virtual void dispatch(c_time_cyclic& timer) { };
 
         // Window
         virtual CEGUI::Window* window() = 0;

@@ -33,7 +33,7 @@ class c_video_tracker : public c_video_view, boost::noncopyable
         std::string name() { return m_name; }
 
         // Dispatch
-        virtual void dispatch();
+        virtual void dispatch(c_time_cyclic& timer);
 
         // Window
         virtual CEGUI::Window* window() { return m_window; }

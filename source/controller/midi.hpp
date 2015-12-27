@@ -8,6 +8,7 @@
 
 // Internal
 #include "config.hpp"
+#include "timer.hpp"
 
 // C++
 #include <array>
@@ -25,8 +26,8 @@ class c_controller_midi : boost::noncopyable
         virtual ~c_controller_midi();
 
         // Dispatch
-        virtual void dispatch_input();
-        virtual void dispatch_render();
+        virtual void dispatch_input(c_time_cyclic& timer);
+        virtual void dispatch_render(c_time_cyclic& timer);
 
     protected:
         // Devices

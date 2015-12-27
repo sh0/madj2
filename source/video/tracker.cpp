@@ -86,8 +86,13 @@ c_video_tracker::~c_video_tracker()
 }
 
 // Dispatch
-void c_video_tracker::dispatch()
+void c_video_tracker::dispatch(c_time_cyclic& timer)
 {
+    // Tempo
+    if (m_tempo)
+        m_tempo->dispatch(timer);
+
+    // Media
     if (m_media_file && m_media_file->video()) {
 
         auto image = m_media_file->video()->read(m_media_id++);

@@ -182,11 +182,11 @@ void c_context::run()
         c_global::media->dispatch();
 
         // Input
-        c_global::controller->dispatch_input();
-        c_global::video->dispatch_input();
+        c_global::controller->dispatch_input(timer);
+        c_global::video->dispatch_input(timer);
 
         // Render
-        c_global::controller->dispatch_render();
-        c_global::video->dispatch_render();
+        c_global::controller->dispatch_render(timer);
+        c_global::video->dispatch_render(timer);
     }
 }

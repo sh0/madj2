@@ -131,7 +131,7 @@ c_video_screen::~c_video_screen()
 }
 
 // Dispatch
-void c_video_screen::dispatch_input()
+void c_video_screen::dispatch_input(c_time_cyclic& timer)
 {
     // Poll events
     SDL_Event event;
@@ -243,7 +243,7 @@ void c_video_screen::dispatch_input()
     }
 }
 
-void c_video_screen::dispatch_render()
+void c_video_screen::dispatch_render(c_time_cyclic& timer)
 {
     // Acquire context
     if (!m_context->make_current(m_window)) {
@@ -264,7 +264,7 @@ void c_video_screen::dispatch_render()
 
     // Viewport drawing
     for (auto& view : m_view_list)
-        view->dispatch();
+        view->dispatch(timer);
     g_opengl_check();
 
     // CEGUI
