@@ -27,6 +27,7 @@ c_video_tracker::c_video_tracker(
     // Media
     m_media_id(0),
     m_media_temp(0),
+    m_media_work(std::make_shared<c_media_work>())
     m_media_texture(std::make_shared<c_opengl_texture_2d>())
 {
     // Debug
@@ -93,8 +94,11 @@ void c_video_tracker::dispatch(c_time_cyclic& timer)
         m_tempo->dispatch(timer);
 
     // Media
+    if (m_media_work->state_loaded()) {
+        auto frame = m_media_work->frame_play();
+    }
+    /*
     if (m_media_file && m_media_file->video()) {
-
         auto image = m_media_file->video()->read(m_media_id++);
         if (image) {
             bool update = (image->width() != m_media_texture->width() || image->height() != m_media_texture->height());
@@ -111,8 +115,8 @@ void c_video_tracker::dispatch(c_time_cyclic& timer)
                 m_window->notifyScreenAreaChanged(true);
             }
         }
-
     }
+    */
 }
 
 // Events
@@ -131,7 +135,7 @@ void c_video_tracker::event_action(std::string action)
 
         //std::cout << "Tracker: Playing! path = " << path << std::endl;
         m_media_id = 0;
-        m_media_file = std::make_shared<c_media_file>(path);
+        m_media_work->open(path);
 
         m_window->setText(m_name + " - " + path.stem().native());
     }

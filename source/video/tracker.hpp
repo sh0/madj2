@@ -12,7 +12,7 @@
 #include "video/view.hpp"
 #include "opengl/texture.hpp"
 #include "media/media.hpp"
-#include "media/file.hpp"
+#include "media/work.hpp"
 #include "video/tracker_tempo.hpp"
 
 // CEGUI
@@ -72,7 +72,7 @@ class c_video_tracker : public c_video_view, boost::noncopyable
         // Media
         int64_t m_media_id;
         int m_media_temp;
-        std::shared_ptr<c_media_file> m_media_file;
+        std::shared_ptr<c_media_work> m_media_work;
         std::shared_ptr<c_opengl_texture_2d> m_media_texture;
 
         // Events
