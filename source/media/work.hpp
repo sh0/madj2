@@ -8,10 +8,12 @@
 
 // Internal
 #include "config.hpp"
+#include "timer.hpp"
 #include "media/file.hpp"
 #include "opengl/texture.hpp"
 
 // C++
+#include <array>
 #include <thread>
 #include <mutex>
 #include <atomic>
@@ -51,16 +53,14 @@ class c_media_work : boost::noncopyable
             PLAYBACK_BOUNCE
         };
         e_playback playback_mode() { return m_playback_mode; }
-        double playback_point() { return m_playback_point; }
-        int64_t playback_frame() { return m_playback_frame; }
+        double playback_time() { return m_playback_time; }
 
         // Stop playback
         void playback_stop();
 
         // Start playback
-        void playback_play(double speed, double frame = -1.0);
-        double playback_play_point() { return m_playback_play_point; }
-        double playback_play_frame() { return m_playback_play_frame; }
+        void playback_play(double speed, double time = -1.0);
+        double playback_play_time() { return m_playback_play_time; }
         double playback_play_speed() { return m_playback_play_speed; }
 
     private:
@@ -86,26 +86,31 @@ class c_media_work : boost::noncopyable
         };
         struct s_cache {
             // Data
-            int64_t frame;
+            int64_t frame_this;
+            int64_t frame_next;
             bool uploaded;
             std::shared_ptr<c_opengl_image> image;
             std::shared_ptr<c_opengl_texture_2d> texture;
 
             // Constrcutor
-            s_cache() : frame(-1), uploaded(false) { }
+            s_cache() : frame_this(-1), frame_next(-1), uploaded(false) { }
         };
         std::array<s_cache, CACHE_COUNT> m_cache;
+        void cache_clean();
         std::shared_ptr<c_opengl_texture_2d> cache_view(int id);
-        void cache_load(int id, int64_t frame);
+        bool cache_load(int id, int64_t frame);
+
+        // Media
+        int64_t m_media_frames;
+        double m_media_rate;
 
         // Playback mode
         e_playback m_playback_mode;
-        double m_playback_point;
-        int64_t m_playback_frame;
+        double m_playback_time;
 
         // Playback play
         int64_t m_playback_play_point;
-        double m_playback_play_frame;
+        double m_playback_play_time;
         double m_playback_play_speed;
 };
 

@@ -27,8 +27,8 @@ c_video_tracker::c_video_tracker(
     // Media
     m_media_id(0),
     m_media_temp(0),
-    m_media_work(std::make_shared<c_media_work>())
-    m_media_texture(std::make_shared<c_opengl_texture_2d>())
+    m_media_work(std::make_shared<c_media_work>()),
+    m_media_texture(nullptr) //(std::make_shared<c_opengl_texture_2d>())
 {
     // Debug
     //std::cout << boost::format("View (%s)") % m_name << std::endl;
@@ -94,8 +94,25 @@ void c_video_tracker::dispatch(c_time_cyclic& timer)
         m_tempo->dispatch(timer);
 
     // Media
+    m_media_work->dispatch(timer);
     if (m_media_work->state_loaded()) {
         auto frame = m_media_work->frame_play();
+        if (frame) {
+            bool update = (m_media_texture != frame);
+            if (!update && m_media_texture && frame)
+                update = (frame->width() != m_media_texture->width() || frame->height() != m_media_texture->height());
+            m_media_texture = frame;
+            if (update) {
+                m_video_opengl.setOpenGLTexture(m_media_texture->object(), CEGUI::Sizef(m_media_texture->width(), m_media_texture->height()));
+                m_video_basic.setArea(CEGUI::Rectf(0.0f, 0.0f, m_media_texture->width(), m_media_texture->height()));
+                //m_video_basic.setArea(CEGUI::Rectf(0.0f, 0.0f, 200, 200));
+                m_video_basic.setAutoScaled(CEGUI::ASM_Disabled);
+                m_video_basic.setTexture(&m_video_opengl);
+
+                m_window->invalidate(true);
+                m_window->notifyScreenAreaChanged(true);
+            }
+        }
     }
     /*
     if (m_media_file && m_media_file->video()) {

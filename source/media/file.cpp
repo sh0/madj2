@@ -10,6 +10,9 @@
 #include "media/file_srt.hpp"
 #include "media/file_ffst.hpp"
 
+// Boost
+#include <boost/algorithm/string.hpp>
+
 // Constructor and destructor
 c_media_file::c_media_file(boost::filesystem::path path)
 {
@@ -20,7 +23,7 @@ c_media_file::c_media_file(boost::filesystem::path path)
         //m_video = std::make_shared<c_media_file_mp4>(path);
         m_video = std::make_shared<c_media_file_ffms>(path);
     } else {
-        std::cout << "File: Unknown media file!" << std::endl;
+        throw c_exception("File: Unknown media file!", { throw_format("path", path) });
     }
 
     // Load subtitles

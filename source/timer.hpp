@@ -32,6 +32,7 @@ inline double g_time_now_s() // s units
 
 inline int64_t g_time_fps2us(double fps) { return (1.0 / fps) * 1000000.0; }
 inline int64_t g_time_sec2us(double sec) { return sec * 1000000.0; }
+inline double g_time_us2sec(int64_t us) { return static_cast<double>(us) / 1000000.0; }
 
 // Cyclic timer
 class c_time_cyclic
