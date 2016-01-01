@@ -59,12 +59,12 @@ class c_video : boost::noncopyable
         void tracker_add(
             std::string name, std::string screen, int pos_x, int pos_y, int pos_w, int pos_h
         ) {
-            for (auto& s : m_screens) {
-                if (s->name() != screen)
+            for (auto& entity : m_screens) {
+                if (entity->name() != screen)
                     continue;
-                auto tracker = std::make_shared<c_video_tracker>(s->context(), name, pos_x, pos_y, pos_w, pos_h);
+                auto tracker = std::make_shared<c_video_tracker>(entity, name, pos_x, pos_y, pos_w, pos_h);
                 m_trackers.push_back(tracker);
-                s->view_add(tracker);
+                entity->view_add(tracker);
             }
         }
 

@@ -75,6 +75,7 @@ class c_video_screen : boost::noncopyable
                 CEGUI::RenderTarget& m_target;
                 CEGUI::GUIContext& m_context;
         };
+        CEGUI::DefaultWindow* root() { return m_cegui_root; }
 
     private:
         // Info

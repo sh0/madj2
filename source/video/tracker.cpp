@@ -11,16 +11,16 @@
 
 // Constructor and destructor
 c_video_tracker::c_video_tracker(
-    std::shared_ptr<c_video_context> context,
+    std::shared_ptr<c_video_screen> screen,
     std::string name, int pos_x, int pos_y, int pos_w, int pos_h
 ) :
     // Info
     m_name(name),
     m_pos_x(pos_x), m_pos_y(pos_y), m_pos_w(pos_w), m_pos_h(pos_h),
     // Context
-    m_context(context),
+    m_context(screen->context()),
     // Video
-    m_video_texture(context->cegui_renderer().createTexture(name + "-texture")),
+    m_video_texture(m_context->cegui_renderer().createTexture(name + "-texture")),
     m_video_opengl(static_cast<CEGUI::OpenGLTexture&>(m_video_texture)),
     m_video_image(CEGUI::ImageManager::getSingleton().create("BasicImage", "video/" + name)),
     m_video_basic(static_cast<CEGUI::BasicImage&>(m_video_image)),
@@ -38,7 +38,7 @@ c_video_tracker::c_video_tracker(
     m_video_temp->upload(640, 480, true);
 
     m_video_opengl.setOpenGLTexture(m_video_temp->object(), CEGUI::Sizef(m_video_temp->width(), m_video_temp->height()));
-    if (context->cegui_renderer().isTexCoordSystemFlipped()) {
+    if (m_context->cegui_renderer().isTexCoordSystemFlipped()) {
         m_video_basic.setArea(CEGUI::Rectf(0.0f, m_video_temp->height(), m_video_temp->width(), 0.0f));
     } else {
         m_video_basic.setArea(CEGUI::Rectf(0.0f, 0.0f, m_video_temp->width(), m_video_temp->height()));
@@ -52,6 +52,7 @@ c_video_tracker::c_video_tracker(
     BOOST_ASSERT(m_window);
     m_window->setName(m_name);
     m_window->setText(m_name);
+    m_window->subscribeEvent(CEGUI::Window::EventSized, CEGUI::Event::Subscriber(&c_video_tracker::event_window_resize, this));
 
     // Client area
     m_window_client = m_window->getChildRecursive("Client");
@@ -62,14 +63,15 @@ c_video_tracker::c_video_tracker(
     BOOST_ASSERT(m_window_image);
     m_window_image->setProperty("Image", m_video_image.getName());
 
-    // Tempo
-    m_tempo = std::make_shared<c_video_tracker_tempo>(m_window_client);
+    // Menu
+    m_menu_file = dynamic_cast<CEGUI::MenuItem*>(m_window->getChildRecursive("MenuFile"));
+    BOOST_ASSERT(m_menu_file);
+    m_menu_file->subscribeEvent(CEGUI::MenuItem::EventClicked, CEGUI::Event::Subscriber(&c_video_tracker::event_menu_file, this));
 
-    // Story
-    m_story = std::make_shared<c_video_tracker_story>(m_window_client, m_media_work);
-
-    // Events
-    m_window->subscribeEvent(CEGUI::Window::EventSized, CEGUI::Event::Subscriber(&c_video_tracker::event_window_resize, this));
+    // Widgets
+    m_widget_tempo = std::unique_ptr<c_video_tracker_tempo>(new c_video_tracker_tempo(m_window_client));
+    m_widget_story = std::unique_ptr<c_video_tracker_story>(new c_video_tracker_story(m_window_client, m_media_work));
+    m_widget_file = std::unique_ptr<c_video_tracker_file>(new c_video_tracker_file(screen->root(), name, m_media_work));
 
     // Update
     m_window->invalidate(true);
@@ -77,11 +79,10 @@ c_video_tracker::c_video_tracker(
 
 c_video_tracker::~c_video_tracker()
 {
-    // Tempo
-    m_tempo.reset();
-
-    // Story
-    m_story.reset();
+    // Widgets
+    m_widget_tempo.reset();
+    m_widget_story.reset();
+    m_widget_file.reset();
 
     // Work
     m_media_work.reset();
@@ -97,13 +98,13 @@ c_video_tracker::~c_video_tracker()
 // Dispatch
 void c_video_tracker::dispatch(c_time_cyclic& timer)
 {
-    // Tempo
-    if (m_tempo)
-        m_tempo->dispatch(timer);
-
-    // Story
-    if (m_story)
-        m_story->dispatch(timer);
+    // Widgets
+    if (m_widget_tempo)
+        m_widget_tempo->dispatch(timer);
+    if (m_widget_story)
+        m_widget_story->dispatch(timer);
+    if (m_widget_file)
+        m_widget_file->dispatch(timer);
 
     // Media
     m_media_work->dispatch(timer);
@@ -165,5 +166,11 @@ bool c_video_tracker::event_window_resize(const CEGUI::EventArgs& event)
     */
 
     // Propagate
+    return false;
+}
+
+bool c_video_tracker::event_menu_file(const CEGUI::EventArgs& event)
+{
+    m_widget_file->show();
     return false;
 }

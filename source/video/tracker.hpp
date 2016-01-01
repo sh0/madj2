@@ -9,25 +9,28 @@
 // Internal
 #include "config.hpp"
 #include "video/context.hpp"
-#include "video/view.hpp"
+#include "video/screen.hpp"
 #include "opengl/texture.hpp"
 #include "media/media.hpp"
 #include "media/work.hpp"
 #include "video/tracker_tempo.hpp"
 #include "video/tracker_story.hpp"
+#include "video/tracker_file.hpp"
 
 // CEGUI
 #include <CEGUI/GUIContext.h>
 #include <CEGUI/Window.h>
 #include <CEGUI/WindowManager.h>
 #include <CEGUI/SchemeManager.h>
+#include <CEGUI/widgets/Menubar.h>
+#include <CEGUI/widgets/MenuItem.h>
 
 // Tracker class
 class c_video_tracker : public c_video_view, boost::noncopyable
 {
     public:
         // Constructor and destructor
-        c_video_tracker(std::shared_ptr<c_video_context> context, std::string name, int pos_x, int pos_y, int pos_w, int pos_h);
+        c_video_tracker(std::shared_ptr<c_video_screen> screen, std::string name, int pos_x, int pos_y, int pos_w, int pos_h);
         virtual ~c_video_tracker();
 
         // Info
@@ -61,11 +64,13 @@ class c_video_tracker : public c_video_view, boost::noncopyable
         CEGUI::Window* m_window_client;
         CEGUI::Window* m_window_image;
 
-        // Tempo
-        std::shared_ptr<c_video_tracker_tempo> m_tempo;
+        // Menu
+        CEGUI::MenuItem* m_menu_file;
 
-        // Story
-        std::shared_ptr<c_video_tracker_story> m_story;
+        // Widgets
+        std::unique_ptr<c_video_tracker_tempo> m_widget_tempo;
+        std::unique_ptr<c_video_tracker_story> m_widget_story;
+        std::unique_ptr<c_video_tracker_file> m_widget_file;
 
         // Video
         CEGUI::Texture& m_video_texture;
@@ -81,6 +86,7 @@ class c_video_tracker : public c_video_view, boost::noncopyable
 
         // Events
         bool event_window_resize(const CEGUI::EventArgs& event);
+        bool event_menu_file(const CEGUI::EventArgs& event);
 };
 
 #endif

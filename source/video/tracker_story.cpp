@@ -35,6 +35,7 @@ c_video_tracker_story::c_video_tracker_story(CEGUI::Window* root, std::shared_pt
 c_video_tracker_story::~c_video_tracker_story()
 {
     // Window
+    m_window->removeAllEvents();
     //CEGUI::WindowManager::getSingletonPtr()->destroyWindow(m_window);
 }
 
@@ -66,7 +67,7 @@ void c_video_tracker_story::dispatch(c_time_cyclic& timer)
 bool c_video_tracker_story::event_thumb_track_started(const CEGUI::EventArgs& event)
 {
     m_tracking = true;
-    return true;
+    return false;
 }
 
 bool c_video_tracker_story::event_thumb_track_ended(const CEGUI::EventArgs& event)
@@ -74,5 +75,5 @@ bool c_video_tracker_story::event_thumb_track_ended(const CEGUI::EventArgs& even
     m_work->playback_play(m_work->playback_play_speed(), m_work->playback_length() * m_slider->getCurrentValue());
 
     m_tracking = false;
-    return true;
+    return false;
 }

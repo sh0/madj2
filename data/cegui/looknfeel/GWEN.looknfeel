@@ -623,8 +623,8 @@
   </WidgetLook>
 
   <WidgetLook name="GWEN/Editbox">
-    <PropertyDefinition initialValue="FF323232" name="NormalTextColour" redrawOnWrite="true" />
-    <PropertyDefinition initialValue="FF5EBCFF" name="ActiveSelectionColour" redrawOnWrite="true" />
+    <PropertyDefinition initialValue="FFFFFFFF" name="NormalTextColour" redrawOnWrite="true" />
+    <PropertyDefinition initialValue="FFCCCCCC" name="ActiveSelectionColour" redrawOnWrite="true" />
     <NamedArea name="TextArea">
       <Area>
         <Dim type="LeftEdge">
@@ -739,6 +739,8 @@
           </Dim>
         </Area>
         <Image name="GWEN/TextBox.SelectedTextColor" />
+        <VertFormat type="Stretched" />
+        <HorzFormat type="Stretched" />
       </ImageryComponent>
     </ImagerySection>
     <ImagerySection name="Caret">
@@ -2451,7 +2453,7 @@
 
   <WidgetLook name="GWEN/ListboxItem">
     <PropertyDefinition initialValue="FF494949" name="TextColour" redrawOnWrite="true" />
-    <PropertyDefinition initialValue="FFFFFFFF" name="SelectedTextColour" redrawOnWrite="true" />
+    <PropertyDefinition initialValue="FF00FFFF" name="SelectedTextColour" redrawOnWrite="true" />
     <PropertyDefinition initialValue="set:GWEN image:Input.ListBox.EvenLineSelected" name="SelectionBrush" redrawOnWrite="true" />
     <PropertyDefinition initialValue="FF5C8FFF" name="SelectionColour" redrawOnWrite="true" />
     <Property name="Selectable" value="True" />

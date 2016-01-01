@@ -25,7 +25,7 @@
             <Window type="GWEN/Menubar" name="Menubar" >
                 <Property name="Area" value="{{0,0},{0,0},{1,0},{0,24}}" />
                 <Property name="MaxSize" value="{{1,0},{0,24}}" />
-                <Window type="GWEN/MenuItem" name="MenuItem" >
+                <Window type="GWEN/MenuItem" name="MenuFile" >
                     <Property name="Area" value="{{0,5},{0,0},{0,54},{0,17}}" />
                     <Property name="Text" value="File" />
                     <Property name="VerticalAlignment" value="Centre" />

@@ -4,6 +4,8 @@
     <Window type="GWEN/FrameWindow" name="FrameWindow" >
         <Property name="Area" value="{{0,0},{0,0},{0,640},{0,480}}" />
         <Property name="Text" value="File" />
+        <Property name="VerticalAlignment" value="Centre" />
+        <Property name="HorizontalAlignment" value="Centre" />
         <Property name="AutoRenderingSurface" value="true" />
         <AutoWindow namePath="__auto_titlebar__" >
             <Property name="NonClient" value="true" />

@@ -24,6 +24,7 @@ c_video_tracker_tempo::c_video_tracker_tempo(CEGUI::Window* root)
 c_video_tracker_tempo::~c_video_tracker_tempo()
 {
     // Window
+    m_window->removeAllEvents();
     //CEGUI::WindowManager::getSingletonPtr()->destroyWindow(m_window);
 }
 
