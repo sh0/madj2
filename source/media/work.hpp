@@ -54,6 +54,7 @@ class c_media_work : boost::noncopyable
         };
         e_playback playback_mode() { return m_playback_mode; }
         double playback_time() { return m_playback_time; }
+        double playback_length() { return static_cast<double>(m_media_frames) * m_media_rate; }
 
         // Stop playback
         void playback_stop();

@@ -25,7 +25,6 @@ c_video_tracker::c_video_tracker(
     m_video_image(CEGUI::ImageManager::getSingleton().create("BasicImage", "video/" + name)),
     m_video_basic(static_cast<CEGUI::BasicImage&>(m_video_image)),
     // Media
-    m_media_id(0),
     m_media_temp(0),
     m_media_work(std::make_shared<c_media_work>()),
     m_media_texture(nullptr) //(std::make_shared<c_opengl_texture_2d>())
@@ -66,6 +65,9 @@ c_video_tracker::c_video_tracker(
     // Tempo
     m_tempo = std::make_shared<c_video_tracker_tempo>(m_window_client);
 
+    // Story
+    m_story = std::make_shared<c_video_tracker_story>(m_window_client, m_media_work);
+
     // Events
     m_window->subscribeEvent(CEGUI::Window::EventSized, CEGUI::Event::Subscriber(&c_video_tracker::event_window_resize, this));
 
@@ -77,6 +79,12 @@ c_video_tracker::~c_video_tracker()
 {
     // Tempo
     m_tempo.reset();
+
+    // Story
+    m_story.reset();
+
+    // Work
+    m_media_work.reset();
 
     // Window
     CEGUI::WindowManager::getSingletonPtr()->destroyWindow(m_window);
@@ -92,6 +100,10 @@ void c_video_tracker::dispatch(c_time_cyclic& timer)
     // Tempo
     if (m_tempo)
         m_tempo->dispatch(timer);
+
+    // Story
+    if (m_story)
+        m_story->dispatch(timer);
 
     // Media
     m_media_work->dispatch(timer);
@@ -114,26 +126,6 @@ void c_video_tracker::dispatch(c_time_cyclic& timer)
             }
         }
     }
-    /*
-    if (m_media_file && m_media_file->video()) {
-        auto image = m_media_file->video()->read(m_media_id++);
-        if (image) {
-            bool update = (image->width() != m_media_texture->width() || image->height() != m_media_texture->height());
-            m_media_texture->upload(image);
-
-            if (update) {
-                m_video_opengl.setOpenGLTexture(m_media_texture->object(), CEGUI::Sizef(m_media_texture->width(), m_media_texture->height()));
-                m_video_basic.setArea(CEGUI::Rectf(0.0f, 0.0f, m_media_texture->width(), m_media_texture->height()));
-                //m_video_basic.setArea(CEGUI::Rectf(0.0f, 0.0f, 200, 200));
-                m_video_basic.setAutoScaled(CEGUI::ASM_Disabled);
-                m_video_basic.setTexture(&m_video_opengl);
-
-                m_window->invalidate(true);
-                m_window->notifyScreenAreaChanged(true);
-            }
-        }
-    }
-    */
 }
 
 // Events
@@ -150,8 +142,6 @@ void c_video_tracker::event_action(std::string action)
             m_media_temp = 0;
         auto path = files[m_media_temp++];
 
-        //std::cout << "Tracker: Playing! path = " << path << std::endl;
-        m_media_id = 0;
         m_media_work->open(path);
 
         m_window->setText(m_name + " - " + path.stem().native());

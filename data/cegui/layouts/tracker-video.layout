@@ -6,13 +6,14 @@
         <Property name="Text" value="Workspace" />
         <Property name="MaxSize" value="{{1,0},{1,0}}" />
         <Property name="MinSize" value="{{0,150},{0,150}}" />
-        <Property name="CloseButtonEnabled" value="false" />
         <Property name="SizingEnabled" value="false" />
         <Property name="DragMovingEnabled" value="false" />
+        <Property name="CloseButtonEnabled" value="false" />
         <Property name="AutoRenderingSurface" value="false" />
         <AutoWindow namePath="__auto_titlebar__" >
             <Property name="NonClient" value="true" />
             <Property name="AlwaysOnTop" value="false" />
+            <Property name="DraggingEnabled" value="false" />
         </AutoWindow>
         <AutoWindow namePath="__auto_closebutton__" >
             <Property name="NonClient" value="true" />
@@ -21,7 +22,6 @@
         <Window type="VerticalLayoutContainer" name="Layout" >
             <Property name="Area" value="{{0,0},{0,0},{1,0},{1,0}}" />
             <Property name="MaxSize" value="{{1,0},{1,0}}" />
-            <Property name="AutoRenderingSurface" value="false" />
             <Window type="GWEN/Menubar" name="Menubar" >
                 <Property name="Area" value="{{0,0},{0,0},{1,0},{0,24}}" />
                 <Property name="MaxSize" value="{{1,0},{0,24}}" />
@@ -35,7 +35,6 @@
             <Window type="DefaultWindow" name="Client" >
                 <Property name="Area" value="{{0,0},{0,24},{1,0},{1,0}}" />
                 <Property name="MaxSize" value="{{1,0},{1,0}}" />
-                <Property name="AutoRenderingSurface" value="false" />
                 <Window type="GWEN/StaticImage" name="Video" >
                     <Property name="Area" value="{{0,0},{0,0},{1,0},{1,0}}" />
                     <Property name="MaxSize" value="{{1,0},{1,0}}" />

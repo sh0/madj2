@@ -24,7 +24,7 @@ c_media_work::c_media_work() :
     m_media_rate(0),
     // Playback mode
     m_playback_mode(PLAYBACK_STOP),
-    m_playback_time(10.0),
+    m_playback_time(0.0),
     // Playback play
     m_playback_play_point(g_time_now_us()),
     m_playback_play_time(0.0),
@@ -118,6 +118,7 @@ void c_media_work::playback_play(double speed, double time)
     else
         m_playback_play_time = m_playback_time;
     m_playback_play_speed = speed;
+    m_playback_time = std::max<double>(std::min<double>(m_playback_play_time, m_media_frames * m_media_rate), 0.0);
 }
 
 // Thread

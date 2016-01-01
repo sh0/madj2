@@ -93,8 +93,8 @@ c_video_screen::c_video_screen(
     CEGUI::SchemeManager::getSingleton().createFromFile("GWEN.scheme");
 
     // Defaults
-    m_cegui->context().setDefaultFont("OpenSans-8");
-    //m_cegui->context().setDefaultFont("DroidSansMono-10");
+    //m_cegui->context().setDefaultFont("OpenSans-8");
+    m_cegui->context().setDefaultFont("DroidSansMono-10");
     //m_cegui->context().getMouseCursor().setDefaultImage("TaharezLook/MouseArrow");
     //m_cegui->context().setDefaultTooltipType("TaharezLook/Tooltip");
 

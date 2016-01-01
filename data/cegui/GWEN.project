@@ -5,5 +5,7 @@
         <Item path="layouts/tracker-tempo.layout" type="file" />
         <Item path="layouts/tracker-video.layout" type="file" />
         <Item path="layouts/tracker-window.layout" type="file" />
+        <Item path="layouts/tracker-story.layout" type="file" />
+        <Item path="layouts/tracker-file.layout" type="file" />
     </Items>
 </Project>
