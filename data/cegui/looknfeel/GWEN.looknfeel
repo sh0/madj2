@@ -2453,9 +2453,9 @@
 
   <WidgetLook name="GWEN/ListboxItem">
     <PropertyDefinition initialValue="FF494949" name="TextColour" redrawOnWrite="true" />
-    <PropertyDefinition initialValue="FF00FFFF" name="SelectedTextColour" redrawOnWrite="true" />
+    <PropertyDefinition initialValue="FFFFFFFF" name="SelectedTextColour" redrawOnWrite="true" />
     <PropertyDefinition initialValue="set:GWEN image:Input.ListBox.EvenLineSelected" name="SelectionBrush" redrawOnWrite="true" />
-    <PropertyDefinition initialValue="FF5C8FFF" name="SelectionColour" redrawOnWrite="true" />
+    <PropertyDefinition initialValue="FFFFFFFF" name="SelectionColour" redrawOnWrite="true" />
     <Property name="Selectable" value="True" />
     <Property name="MouseInputPropagationEnabled" value="True" />
     <NamedArea name="ContentSize">

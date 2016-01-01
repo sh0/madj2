@@ -155,18 +155,23 @@ void c_video_screen::dispatch_input(c_time_cyclic& timer)
                     bool key_gui = ((key_sym.mod & KMOD_GUI) != 0);
 
                     // Send event to controller
-                    if (key_sym.sym == SDLK_ESCAPE)
+                    bool handled = false;
+                    if (key_sym.sym == SDLK_ESCAPE) {
                         c_global::context->kill();
-                    else
-                        c_global::controller->input_keyboard(key_name, key_down, key_ctrl, key_shift, key_alt, key_gui);
+                        handled = true;
+                    } else {
+                        handled = c_global::controller->input_keyboard(key_name, key_down, key_ctrl, key_shift, key_alt, key_gui);
+                    }
 
                     // Send event to GUI
-                    CEGUI::Key::Scan key_cegui = static_cast<CEGUI::Key::Scan>(g_convert_sdl_scancode_to_cegui(static_cast<int>(event.key.keysym.scancode)));
-                    if (key_cegui != 0) {
-                        if (event.type == SDL_KEYDOWN)
-                            m_cegui->context().injectKeyDown(key_cegui);
-                        else if (event.type == SDL_KEYUP)
-                            m_cegui->context().injectKeyUp(key_cegui);
+                    if (!handled) {
+                        CEGUI::Key::Scan key_cegui = static_cast<CEGUI::Key::Scan>(g_convert_sdl_scancode_to_cegui(static_cast<int>(event.key.keysym.scancode)));
+                        if (key_cegui != 0) {
+                            if (event.type == SDL_KEYDOWN)
+                                m_cegui->context().injectKeyDown(key_cegui);
+                            else if (event.type == SDL_KEYUP)
+                                m_cegui->context().injectKeyUp(key_cegui);
+                        }
                     }
                 }
                 break;

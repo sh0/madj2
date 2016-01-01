@@ -50,13 +50,14 @@ c_controller::c_controller()
 }
 
 // Input
-void c_controller::input_keyboard(std::string key, bool value, bool mod_ctrl, bool mod_shift, bool mod_alt, bool mod_gui)
+bool c_controller::input_keyboard(std::string key, bool value, bool mod_ctrl, bool mod_shift, bool mod_alt, bool mod_gui)
 {
     // Only press events
     if (!value)
-        return;
+        return false;
 
     // Find mapping
+    bool handled = false;
     for (auto& map : m_mappings) {
         // Filter
         if (map.device != "key")
@@ -75,9 +76,10 @@ void c_controller::input_keyboard(std::string key, bool value, bool mod_ctrl, bo
         // Exectute
         for (auto& tracker : c_global::video->tracker_list()) {
             if (tracker->name() == map.target)
-                tracker->event_action(map.action);
+                handled = (tracker->event_action(map.action) ? true : handled);
         }
     }
+    return handled;
 }
 
 void c_controller::input_midi_key(std::string key, bool value)

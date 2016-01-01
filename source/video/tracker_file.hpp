@@ -34,6 +34,8 @@ class c_video_tracker_file : boost::noncopyable
 
         // Operations
         void show();
+        void load(boost::filesystem::path path);
+        void list(std::string query);
 
     private:
         // Window
@@ -47,12 +49,17 @@ class c_video_tracker_file : boost::noncopyable
         // Work
         std::shared_ptr<c_media_work> m_work;
 
+        // Files
+        const std::vector<boost::filesystem::path>& m_files;
+        std::vector<CEGUI::ListboxTextItem*> m_items;
+
         // Events
         bool event_window_key_down(const CEGUI::EventArgs& event);
         bool event_window_deactivated(const CEGUI::EventArgs& event);
         bool event_window_close_button(const CEGUI::EventArgs& event);
         bool event_editbox_text_changed(const CEGUI::EventArgs& event);
         bool event_listbox_selection_changed(const CEGUI::EventArgs& event);
+        bool event_listbox_double_click(const CEGUI::EventArgs& event);
 };
 
 #endif

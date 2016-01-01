@@ -20,7 +20,7 @@ class c_controller : boost::noncopyable
         c_controller();
 
         // Input
-        void input_keyboard(std::string key, bool value, bool mod_ctrl, bool mod_shift, bool mod_alt, bool mod_gui);
+        bool input_keyboard(std::string key, bool value, bool mod_ctrl, bool mod_shift, bool mod_alt, bool mod_gui);
         void input_midi_key(std::string key, bool value);
         void input_midi_pot(std::string key, float value);
 

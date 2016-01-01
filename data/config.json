@@ -74,7 +74,7 @@
         [ "key", "escape", "system", "quit" ],
         // File browser
         [ "key", "ctrl+x", "work_a", "browser_toggle" ],
-        [ "key", "return", "work_a", "browser_open" ],
+        [ "key", "ctrl+1", "work_a", "browser_open" ],
         [ "key", "up", "work_a", "browser_up" ],
         [ "key", "down", "work_a", "browser_down" ],
         [ "key", "page_up", "work_a", "browser_pgup" ],

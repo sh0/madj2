@@ -25,7 +25,6 @@ c_video_tracker::c_video_tracker(
     m_video_image(CEGUI::ImageManager::getSingleton().create("BasicImage", "video/" + name)),
     m_video_basic(static_cast<CEGUI::BasicImage&>(m_video_image)),
     // Media
-    m_media_temp(0),
     m_media_work(std::make_shared<c_media_work>()),
     m_media_texture(nullptr) //(std::make_shared<c_opengl_texture_2d>())
 {
@@ -109,6 +108,7 @@ void c_video_tracker::dispatch(c_time_cyclic& timer)
     // Media
     m_media_work->dispatch(timer);
     if (m_media_work->state_loaded()) {
+        //m_window->setText(m_name + " - " + path.stem().native());
         auto frame = m_media_work->frame_play();
         if (frame) {
             bool update = (m_media_texture != frame);
@@ -130,23 +130,16 @@ void c_video_tracker::dispatch(c_time_cyclic& timer)
 }
 
 // Events
-void c_video_tracker::event_action(std::string action)
+bool c_video_tracker::event_action(std::string action)
 {
+    // Actions
     if (action == "browser_open") {
-        const auto& files = c_global::media->media_files();
-        if (files.empty()) {
-            std::cout << "Tracker: No media files to play!" << std::endl;
-            return;
-        }
-
-        if (m_media_temp >= static_cast<int>(files.size()))
-            m_media_temp = 0;
-        auto path = files[m_media_temp++];
-
-        m_media_work->open(path);
-
-        m_window->setText(m_name + " - " + path.stem().native());
+        m_widget_file->show();
+        return true;
     }
+
+    // Unhandled
+    return false;
 }
 
 bool c_video_tracker::event_window_resize(const CEGUI::EventArgs& event)

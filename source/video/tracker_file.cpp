@@ -7,6 +7,9 @@
 #include "global.hpp"
 #include "video/tracker_file.hpp"
 
+// Boost
+#include <boost/algorithm/string.hpp>
+
 // Constructor and destructor
 c_video_tracker_file::c_video_tracker_file(CEGUI::Window* root, std::string name, std::shared_ptr<c_media_work> work) :
     // Window
@@ -16,7 +19,9 @@ c_video_tracker_file::c_video_tracker_file(CEGUI::Window* root, std::string name
     m_editbox(nullptr),
     m_listbox(nullptr),
     // Work
-    m_work(work)
+    m_work(work),
+    // Files
+    m_files(c_global::media->media_files())
 {
     // Window
     m_window = dynamic_cast<CEGUI::FrameWindow*>(CEGUI::WindowManager::getSingletonPtr()->loadLayoutFromFile("tracker-file.layout"));
@@ -35,38 +40,37 @@ c_video_tracker_file::c_video_tracker_file(CEGUI::Window* root, std::string name
     m_listbox = dynamic_cast<CEGUI::Listbox*>(m_window->getChildRecursive("Listbox"));
     m_listbox->setMultiselectEnabled(false);
     m_listbox->subscribeEvent(CEGUI::Listbox::EventSelectionChanged, CEGUI::Event::Subscriber(&c_video_tracker_file::event_listbox_selection_changed, this));
-    //m_listbox->subscribeEvent(CEGUI::Window::EventKeyDown, CEGUI::Event::Subscriber(&c_video_tracker_file::event_window_key_down, this));
+    m_listbox->subscribeEvent(CEGUI::Window::EventMouseDoubleClick, CEGUI::Event::Subscriber(&c_video_tracker_file::event_listbox_double_click, this));
 
     // Files
-    #if 0
-    const auto& files = c_global::media->media_files();
-    std::cout << "Files: " << files.size() << std::endl;
-    for (size_t i = 0; i < files.size(); i++) {
-        CEGUI::ListboxTextItem* item = new CEGUI::ListboxTextItem(files[i].native(), i);
-        item->setAutoDeleted(true);
-        m_listbox->addItem(item);
+    auto replace = [](std::string subject, const std::string& search, const std::string& replace) {
+        size_t pos = 0;
+        while ((pos = subject.find(search, pos)) != std::string::npos) {
+            subject.replace(pos, search.length(), replace);
+            pos += replace.length();
+        }
+        return subject;
+    };
+    for (size_t i = 0; i < m_files.size(); i++) {
+        std::string file = replace(m_files[i].native(), "[", "\\[");
+        CEGUI::ListboxTextItem* item = new CEGUI::ListboxTextItem(file, i);
+        item->setAutoDeleted(false);
+        item->setSelectionBrushImage("GWEN/Input.ListBox.EvenLineSelected");
+        m_items.push_back(item);
     }
-    #else
-    for (size_t i = 0; i < 100; i++) {
-        CEGUI::ListboxTextItem* item = new CEGUI::ListboxTextItem("blablabal balbablasdfa sdfasf", i);
-        //item->setTextColours(CEGUI::Colour(0, 0, 0));
-        item->setSelectionColours(CEGUI::Colour(1, 0, 0));
-        m_listbox->addItem(item);
-        m_listbox->ensureItemIsVisible(item);
-    }
-    #endif
-
-    // Events
-    //m_slider->subscribeEvent(CEGUI::Slider::EventThumbTrackStarted, CEGUI::Event::Subscriber(&c_video_tracker_file::event_thumb_track_started, this));
-    //m_slider->subscribeEvent(CEGUI::Slider::EventThumbTrackEnded, CEGUI::Event::Subscriber(&c_video_tracker_file::event_thumb_track_ended, this));
+    list(m_editbox->getText().c_str());
 }
 
 c_video_tracker_file::~c_video_tracker_file()
 {
+    // Listbox
+    m_listbox->resetList();
+    for (auto item : m_items)
+        delete item;
+
     // Window
     //m_root->destroyChild(m_window);
     m_root = nullptr;
-
     m_window->removeAllEvents();
     m_window = nullptr;
 }
@@ -84,6 +88,47 @@ void c_video_tracker_file::show()
     m_window->setVisible(true);
     m_window->moveToFront();
     m_editbox->activate();
+
+    // Select first entry
+    if (!m_listbox->getFirstSelectedItem() && m_listbox->getItemCount() > 0)
+        m_listbox->setItemSelectState(static_cast<size_t>(0), true);
+}
+
+void c_video_tracker_file::load(boost::filesystem::path path)
+{
+    //std::cout << "Loading " << path << std::endl;
+    m_work->open(path);
+}
+
+void c_video_tracker_file::list(std::string query)
+{
+    // Break query to filter strings
+    std::vector<std::string> filters;
+    boost::split(filters, query, boost::is_any_of(" \t"));
+    for (auto& filter : filters) {
+        boost::trim(filter);
+        boost::algorithm::to_lower(filter);
+    }
+
+    // Build list
+    m_listbox->resetList();
+    for (size_t i = 0; i < m_items.size(); i++) {
+        std::string file = m_files[i].native();
+        boost::algorithm::to_lower(file);
+
+        bool valid = true;
+        for (auto& filter : filters) {
+            if (file.find(filter) == std::string::npos)
+                valid = false;
+        }
+        if (valid)
+            m_listbox->addItem(m_items[i]);
+    }
+
+    // Select first entry
+    m_listbox->clearAllSelections();
+    if (m_listbox->getItemCount() > 0)
+        m_listbox->setItemSelectState(static_cast<size_t>(0), true);
 }
 
 // Events
@@ -93,6 +138,9 @@ bool c_video_tracker_file::event_window_key_down(const CEGUI::EventArgs& event)
     if (keys.scancode == CEGUI::Key::Scan::Return) {
         // Select file
         m_window->setVisible(false);
+        CEGUI::ListboxItem* item = m_listbox->getFirstSelectedItem();
+        if (item)
+            load(m_files[item->getID()]);
         return true;
 
     } else if (keys.scancode == CEGUI::Key::Scan::ArrowDown && m_listbox->getItemCount() > 0) {
@@ -162,13 +210,24 @@ bool c_video_tracker_file::event_window_close_button(const CEGUI::EventArgs& eve
 
 bool c_video_tracker_file::event_editbox_text_changed(const CEGUI::EventArgs& event)
 {
-    std::cout << "text: " << m_editbox->getText() << std::endl;
+    //std::cout << "text: " << m_editbox->getText() << std::endl;
+    list(m_editbox->getText().c_str());
     return true;
 }
 
 bool c_video_tracker_file::event_listbox_selection_changed(const CEGUI::EventArgs& event)
 {
+    //CEGUI::ListboxItem* item = m_listbox->getFirstSelectedItem();
+    //std::cout << "changed: " << (item ? static_cast<int>(item->getID()) : -1) << std::endl;
+    return true;
+}
+
+bool c_video_tracker_file::event_listbox_double_click(const CEGUI::EventArgs& event)
+{
     CEGUI::ListboxItem* item = m_listbox->getFirstSelectedItem();
-    std::cout << "changed: " << (item ? static_cast<int>(item->getID()) : -1) << std::endl;
+    if (item) {
+        m_window->setVisible(false);
+        load(m_files[item->getID()]);
+    }
     return true;
 }
