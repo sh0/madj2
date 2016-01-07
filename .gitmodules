@@ -6,3 +6,6 @@
 	path = libraries/ffms2
 	url = git@github.com:FFMS/ffms2.git
 	ignore = all
+[submodule "libraries/leapmotion"]
+	path = libraries/leapmotion
+	url = git@github.com:sh0/leapmotion.git
