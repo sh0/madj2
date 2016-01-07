@@ -49,7 +49,7 @@ class c_video_tracker : public c_video_view, boost::noncopyable
         virtual int pos_h() { return m_pos_h; };
 
         // Events
-        bool event_action(std::string action);
+        bool event_action(std::string action, bool active);
 
     private:
         // Info
@@ -84,6 +84,7 @@ class c_video_tracker : public c_video_view, boost::noncopyable
 
         // Events
         bool event_window_resize(const CEGUI::EventArgs& event);
+        bool event_window_key_down(const CEGUI::EventArgs& event);
         bool event_menu_file(const CEGUI::EventArgs& event);
 };
 

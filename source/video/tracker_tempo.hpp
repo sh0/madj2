@@ -10,6 +10,9 @@
 #include "config.hpp"
 #include "controller/controller.hpp"
 
+// C++
+#include <array>
+
 // CEGUI
 #include <CEGUI/GUIContext.h>
 #include <CEGUI/Window.h>

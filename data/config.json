@@ -8,14 +8,6 @@
         "~/madj"
     ],
 
-    // Soundcards
-    "soundcards" : [
-        {
-            "device" : "", // server address
-            "channels" : [ "left", "right" ]
-        }
-    ],
-
     // Screens
     "screens" : [
         {

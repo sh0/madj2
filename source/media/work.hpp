@@ -64,6 +64,35 @@ class c_media_work : boost::noncopyable
         double playback_play_time() { return m_playback_play_time; }
         double playback_play_speed() { return m_playback_play_speed; }
 
+        // Events
+        void event_pause() {
+            if (m_playback_mode == PLAYBACK_STOP) {
+                playback_play(m_playback_play_speed);
+            } else {
+                playback_stop();
+            }
+        }
+        void event_skip_forward() {
+            if (m_playback_mode == PLAYBACK_STOP) {
+                m_playback_time = std::min<double>(m_playback_time + 1.0, playback_length());
+            } else if (m_playback_mode == PLAYBACK_PLAY) {
+                m_playback_play_time = std::min<double>(m_playback_time + 1.0, playback_length());
+            }
+        }
+        void event_skip_backward() {
+            if (m_playback_mode == PLAYBACK_STOP) {
+                m_playback_time = std::max<double>(m_playback_time - 1.0, 0.0);
+            } else if (m_playback_mode == PLAYBACK_PLAY) {
+                m_playback_play_time = std::max<double>(m_playback_time - 1.0, 0.0);
+            }
+        }
+        void event_play_forward() {
+            playback_play(1.0);
+        }
+        void event_play_backward() {
+            playback_play(-1.0);
+        }
+
     private:
         // Thread
         std::atomic_bool m_run;

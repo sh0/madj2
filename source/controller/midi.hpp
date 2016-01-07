@@ -8,7 +8,7 @@
 
 // Internal
 #include "config.hpp"
-#include "timer.hpp"
+#include "controller/device.hpp"
 
 // C++
 #include <array>
@@ -18,16 +18,18 @@
 #include <portmidi.h>
 
 // MIDI controller class
-class c_controller_midi : boost::noncopyable
+class c_controller_midi : public c_controller_device, boost::noncopyable
 {
     public:
         // Constructor and destructor
         c_controller_midi(PmDeviceID input, PmDeviceID output);
         virtual ~c_controller_midi();
 
+        // Devices
+        static std::vector<std::shared_ptr<c_controller_device>> devices();
+
         // Dispatch
         virtual void dispatch_input(c_time_cyclic& timer);
-        virtual void dispatch_render(c_time_cyclic& timer);
 
     protected:
         // Devices

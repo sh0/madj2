@@ -8,6 +8,7 @@
 #include "global.hpp"
 #include "controller/controller.hpp"
 #include "controller/midi.hpp"
+#include "controller/ohmrgb.hpp"
 
 // Boost
 #include <boost/algorithm/string/join.hpp>
@@ -33,6 +34,9 @@
 #define MIDI_CMD_COMMON_SENSING      0xfe  // active sensing
 #define MIDI_CMD_COMMON_RESET        0xff  // reset
 
+// Initialization
+static std::once_flag g_portmidi_initialized;
+
 // Constructor and destructor
 c_controller_midi::c_controller_midi(PmDeviceID input, PmDeviceID output) :
     // Devices
@@ -43,6 +47,13 @@ c_controller_midi::c_controller_midi(PmDeviceID input, PmDeviceID output) :
     // Opcodes
     m_last_opcode(0)
 {
+    // Initialize library
+    std::call_once(g_portmidi_initialized, [](){
+        PmError midi_error = Pm_Initialize();
+        if (midi_error != pmNoError)
+            throw c_exception("MIDI: Failed to initialize Portmidi library!", { throw_format("error", Pm_GetErrorText(midi_error)) });
+    });
+
     // Reading
     if (m_input_device >= 0) {
         PmError ret = Pm_OpenInput(&m_input_stream, m_input_device, nullptr, m_input_buffer.size(), nullptr, nullptr);
@@ -65,6 +76,45 @@ c_controller_midi::~c_controller_midi()
         Pm_Close(m_input_stream);
     if (m_output_stream)
         Pm_Close(m_output_stream);
+}
+
+// Devices
+std::vector<std::shared_ptr<c_controller_device>> c_controller_midi::devices()
+{
+    // Initialize library
+    std::call_once(g_portmidi_initialized, [](){
+        PmError midi_error = Pm_Initialize();
+        if (midi_error != pmNoError)
+            throw c_exception("MIDI: Failed to initialize Portmidi library!", { throw_format("error", Pm_GetErrorText(midi_error)) });
+    });
+
+    // Enumerate MIDI devices
+    int midi_count = Pm_CountDevices();
+    std::array<int, 2> midi_ohmrgb = {{ -1, -1 }};
+    for (int id = 0; id < midi_count; id++) {
+        // Get MIDI device info
+        const PmDeviceInfo* info = Pm_GetDeviceInfo(id);
+        if (!info)
+            continue;
+
+        // Check for supported device
+        std::string name = info->name;
+        if (name == "OhmRGB MIDI 1") {
+            if (info->input)
+                midi_ohmrgb[0] = id;
+            if (info->output)
+                midi_ohmrgb[1] = id;
+        }
+
+        // Debug
+        //std::cout << boost::format("Controller: MIDI device! name = %s, input = %d, output = %d") % name % info->input % info->output << std::endl;
+    }
+
+    // List
+    std::vector<std::shared_ptr<c_controller_device>> devices;
+    if (midi_ohmrgb[0] >= 0 || midi_ohmrgb[1] >= 0)
+        devices.push_back(std::make_shared<c_controller_ohmrgb>(midi_ohmrgb[0], midi_ohmrgb[1]));
+    return devices;
 }
 
 // Dispatch
@@ -102,11 +152,6 @@ void c_controller_midi::dispatch_input(c_time_cyclic& timer)
                 m_buffer_recv.read_pop(m_buffer_recv.read_size());
         }
     }
-}
-
-void c_controller_midi::dispatch_render(c_time_cyclic& timer)
-{
-
 }
 
 // Read message opcodes

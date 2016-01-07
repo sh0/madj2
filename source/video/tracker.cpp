@@ -52,6 +52,7 @@ c_video_tracker::c_video_tracker(
     m_window->setName(m_name);
     m_window->setText(m_name);
     m_window->subscribeEvent(CEGUI::Window::EventSized, CEGUI::Event::Subscriber(&c_video_tracker::event_window_resize, this));
+    m_window->subscribeEvent(CEGUI::Window::EventKeyDown, CEGUI::Event::Subscriber(&c_video_tracker::event_window_key_down, this));
 
     // Client area
     m_window_client = m_window->getChildRecursive("Client");
@@ -87,6 +88,7 @@ c_video_tracker::~c_video_tracker()
     m_media_work.reset();
 
     // Window
+    m_window->removeAllEvents();
     CEGUI::WindowManager::getSingletonPtr()->destroyWindow(m_window);
 
     // Video
@@ -130,10 +132,10 @@ void c_video_tracker::dispatch(c_time_cyclic& timer)
 }
 
 // Events
-bool c_video_tracker::event_action(std::string action)
+bool c_video_tracker::event_action(std::string action, bool active)
 {
     // Actions
-    if (action == "browser_open") {
+    if (active && action == "browser_open") {
         m_widget_file->show();
         return true;
     }
@@ -159,6 +161,33 @@ bool c_video_tracker::event_window_resize(const CEGUI::EventArgs& event)
     */
 
     // Propagate
+    return false;
+}
+
+bool c_video_tracker::event_window_key_down(const CEGUI::EventArgs& event)
+{
+    const CEGUI::KeyEventArgs& keys = dynamic_cast<const CEGUI::KeyEventArgs&>(event);
+    if (keys.scancode == CEGUI::Key::Scan::Return) {
+        m_widget_file->show();
+        return true;
+    } else if (keys.scancode == CEGUI::Key::Scan::Space) {
+        m_media_work->event_pause();
+        return true;
+    } else if (keys.scancode == CEGUI::Key::Scan::ArrowRight) {
+        m_media_work->event_skip_forward();
+        return true;
+    } else if (keys.scancode == CEGUI::Key::Scan::ArrowLeft) {
+        m_media_work->event_skip_backward();
+        return true;
+    } else if (keys.scancode == CEGUI::Key::Scan::ArrowUp) {
+        m_media_work->event_play_forward();
+        return true;
+    } else if (keys.scancode == CEGUI::Key::Scan::ArrowDown) {
+        m_media_work->event_play_backward();
+        return true;
+    }
+
+    // Not handled
     return false;
 }
 
