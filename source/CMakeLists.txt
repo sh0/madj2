@@ -27,8 +27,9 @@ append_flags(CORE_CFLAGS "${BENTO4_CFLAGS}")
 append_flags(CORE_CFLAGS "${OPENGL_CFLAGS}")
 append_flags(CORE_CFLAGS "${GLEW_CFLAGS}")
 append_flags(CORE_CFLAGS "${GLFW_CFLAGS}")
-append_flags(CORE_CFLAGS "${SDL_CFLAGS}")
+append_flags(CORE_CFLAGS "${SDL2_CFLAGS}")
 append_flags(CORE_CFLAGS "${PORTMIDI_CFLAGS}")
+append_flags(CORE_CFLAGS "${LEAPMOTION_CFLAGS}")
 
 # Linker flags
 append_flags(CORE_LDFLAGS "${BOOST_LDFLAGS}")
@@ -39,8 +40,9 @@ append_flags(CORE_LDFLAGS "${BENTO4_LDFLAGS}")
 append_flags(CORE_LDFLAGS "${OPENGL_LDFLAGS}")
 append_flags(CORE_LDFLAGS "${GLEW_LDFLAGS}")
 append_flags(CORE_LDFLAGS "${GLFW_LDFLAGS}")
-append_flags(CORE_LDFLAGS "${SDL_LDFLAGS}")
+append_flags(CORE_LDFLAGS "${SDL2_LDFLAGS}")
 append_flags(CORE_LDFLAGS "${PORTMIDI_LDFLAGS}")
+append_flags(CORE_LDFLAGS "${LEAPMOTION_LDFLAGS}")
 
 # Compile
 set(CORE_EXEC "${PROJECT_NAME}")
@@ -58,8 +60,9 @@ target_link_libraries(${CORE_EXEC} ${BENTO4_LDFLAGS})
 target_link_libraries(${CORE_EXEC} ${OPENGL_LDFLAGS})
 target_link_libraries(${CORE_EXEC} ${GLEW_LDFLAGS})
 target_link_libraries(${CORE_EXEC} ${GLFW_LDFLAGS})
-target_link_libraries(${CORE_EXEC} ${SDL_LDFLAGS})
+target_link_libraries(${CORE_EXEC} ${SDL2_LDFLAGS})
 target_link_libraries(${CORE_EXEC} ${PORTMIDI_LDFLAGS})
+target_link_libraries(${CORE_EXEC} ${LEAPMOTION_LDFLAGS})
 
 # Debug
 message(STATUS "################################################")

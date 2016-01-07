@@ -9,5 +9,17 @@
 // Prefix
 #define MJ_DATA_PATH "@DATA_PATH@"
 
+// Libraries
+#cmakedefine BENTO4_FOUND
+#cmakedefine BOOST_FOUND
+#cmakedefine CEGUI_FOUND
+#cmakedefine FFMPEG_FOUND
+#cmakedefine FFMS_FOUND
+#cmakedefine GLEW_FOUND
+#cmakedefine GLFW_FOUND
+#cmakedefine LEAPMOTION_FOUND
+#cmakedefine PORTMIDI_FOUND
+#cmakedefine SDL2_FOUND
+
 #endif
 

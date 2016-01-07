@@ -38,6 +38,7 @@ include(libs-glew)
 include(libs-glfw)
 include(libs-sdl2)
 include(libs-portmidi)
+include(libs-leapmotion)
 
 # Subdirs
 add_subdirectory(source)

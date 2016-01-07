@@ -8,5 +8,5 @@ message(STATUS "################################################")
 message(STATUS "Checking for SDL2")
 
 # Find
-pkg_check_modules(SDL sdl2)
-info_library("SDL2" SDL FATAL_ERROR)
+pkg_check_modules(SDL2 sdl2)
+info_library("SDL2" SDL2 FATAL_ERROR)
