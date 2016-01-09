@@ -149,10 +149,15 @@ std::shared_ptr<c_opengl_image> c_media_file_ffms::read(int64_t id)
         return nullptr;
     }
 
+    // Sample aspect ratio
+    float aspect = 1.0f;
+    if (frame->ScaledWidth != frame->EncodedWidth || frame->ScaledHeight != frame->EncodedHeight)
+        aspect = frame->ScaledWidth / frame->ScaledHeight;
+
     // Target image
     auto image = std::make_shared<c_opengl_image>(
         c_opengl_image::e_type::rgb24,
-        frame->EncodedWidth, frame->EncodedHeight, frame->Linesize[0]
+        frame->EncodedWidth, frame->EncodedHeight, aspect, frame->Linesize[0]
     );
     memcpy(image->data(), frame->Data[0], frame->EncodedHeight * frame->Linesize[0]);
 

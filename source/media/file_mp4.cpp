@@ -16,7 +16,7 @@ c_media_file_mp4::c_media_file_mp4(boost::filesystem::path path) :
     // File
     m_stream(nullptr), m_movie(nullptr), m_track(nullptr),
     // Info
-    m_frames(0), m_width(0), m_height(0),
+    m_frames(0), m_aspect(1.0), m_width(0), m_height(0),
     // Scaling
     m_swscaler(nullptr)
 {
@@ -316,7 +316,7 @@ std::shared_ptr<c_opengl_image> c_media_file_mp4::read(int64_t id)
     // Target image
     auto image = std::make_shared<c_opengl_image>(
         c_opengl_image::e_type::rgb24,
-        m_codec_frame->width, m_codec_frame->height
+        m_codec_frame->width, m_codec_frame->height, m_aspect
     );
 
     // Set up scaler

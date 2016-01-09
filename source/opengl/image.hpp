@@ -30,13 +30,14 @@ class c_opengl_image : boost::noncopyable
         };
 
         // Constructors
-        c_opengl_image(e_type type, int width, int height);
-        c_opengl_image(e_type type, int width, int height, int stride);
-        c_opengl_image(e_type type, int width, int height, std::unique_ptr<uint8_t[]>&& data);
+        c_opengl_image(e_type type, int width, int height, float aspect);
+        c_opengl_image(e_type type, int width, int height, float aspect, int stride);
+        c_opengl_image(e_type type, int width, int height, float aspect, std::unique_ptr<uint8_t[]>&& data);
 
         // Parameters
         int width() { return m_width; }
         int height() { return m_height; }
+        float aspect() { return m_aspect; }
 
         // Data
         uint stride() { return m_stride; }
@@ -54,6 +55,7 @@ class c_opengl_image : boost::noncopyable
         e_type m_type;
         int m_width;
         int m_height;
+        float m_aspect;
 
         // Data
         uint m_stride;

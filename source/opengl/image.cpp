@@ -11,22 +11,22 @@
 #include <boost/filesystem.hpp>
 
 // Constructors
-c_opengl_image::c_opengl_image(e_type type, int width, int height) :
-    m_type(type), m_width(width), m_height(height), m_stride(0)
+c_opengl_image::c_opengl_image(e_type type, int width, int height, float aspect) :
+    m_type(type), m_width(width), m_height(height), m_aspect(aspect), m_stride(0)
 {
     // Initialize
     init();
 }
 
-c_opengl_image::c_opengl_image(e_type type, int width, int height, int stride) :
-    m_type(type), m_width(width), m_height(height), m_stride(stride)
+c_opengl_image::c_opengl_image(e_type type, int width, int height, float aspect, int stride) :
+    m_type(type), m_width(width), m_height(height), m_aspect(aspect), m_stride(stride)
 {
     // Initialize
     init();
 }
 
-c_opengl_image::c_opengl_image(e_type type, int width, int height, std::unique_ptr<uint8_t[]>&& data) :
-    m_type(type), m_width(width), m_height(height), m_stride(0), m_data(std::move(data))
+c_opengl_image::c_opengl_image(e_type type, int width, int height, float aspect, std::unique_ptr<uint8_t[]>&& data) :
+    m_type(type), m_width(width), m_height(height), m_aspect(aspect), m_stride(0), m_data(std::move(data))
 {
     // Initialize
     init();

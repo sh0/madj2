@@ -53,12 +53,13 @@ class c_opengl_texture_2d : boost::noncopyable
         // Properties
         int width() { return m_width; }
         int height() { return m_height; }
+        float aspect() { return m_aspect; }
 
         // Upload
         void upload(uint32_t width, uint32_t height, bool clear_texture = false);
         void upload(std::shared_ptr<c_opengl_image> image);
         void upload(
-            uint32_t width, uint32_t height, uint32_t stride,
+            uint32_t width, uint32_t height, uint32_t stride, float aspect,
             GLenum gl_format, GLenum gl_type,
             uint8_t* data
         );
@@ -80,6 +81,7 @@ class c_opengl_texture_2d : boost::noncopyable
         // Properties
         uint32_t m_width;
         uint32_t m_height;
+        float m_aspect;
         GLenum m_format;
 };
 

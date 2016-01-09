@@ -36,7 +36,7 @@ class c_media_file_mp4 : public c_media_video, boost::noncopyable
         // Info
         virtual int64_t frames() { return m_frames; }
         virtual double rate() { return 0.0; };
-        virtual double aspect() { return 1.0; };
+        virtual double aspect() { return m_aspect; };
         virtual int width() { return m_width; }
         virtual int height() { return m_height; }
 
@@ -55,6 +55,7 @@ class c_media_file_mp4 : public c_media_video, boost::noncopyable
 
         // Info
         int64_t m_frames;
+        double m_aspect;
         int m_width;
         int m_height;
 

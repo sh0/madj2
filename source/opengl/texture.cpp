@@ -16,7 +16,7 @@ c_opengl_texture_2d::c_opengl_texture_2d(e_format format, e_filter filter) :
     // Bind
     m_bind_active(false), m_bind_id(0),
     // Parameters
-    m_width(0), m_height(0)
+    m_width(0), m_height(0), m_aspect(1.0f)
 {
     // Format
     switch (format) {
@@ -135,6 +135,7 @@ void c_opengl_texture_2d::upload(uint32_t width, uint32_t height, bool clear_tex
     // Parameters
     m_width = width;
     m_height = height;
+    m_aspect = 1.0f;
 
     // Bind
     bool was_bound = m_bind_active;
@@ -192,6 +193,7 @@ void c_opengl_texture_2d::upload(std::shared_ptr<c_opengl_image> image)
     // Parameters
     m_width = image->width();
     m_height = image->height();
+    m_aspect = image->aspect();
 
     // Bind
     bool was_bound = m_bind_active;
@@ -235,13 +237,14 @@ void c_opengl_texture_2d::upload(std::shared_ptr<c_opengl_image> image)
 }
 
 void c_opengl_texture_2d::upload(
-    uint32_t width, uint32_t height, uint32_t stride,
+    uint32_t width, uint32_t height, uint32_t stride, float aspect,
     GLenum gl_format, GLenum gl_type,
     uint8_t* data
 ) {
     // Parameters
     m_width = width;
     m_height = height;
+    m_aspect = aspect;
 
     // Bind
     bool was_bound = m_bind_active;
