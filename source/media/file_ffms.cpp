@@ -151,8 +151,11 @@ std::shared_ptr<c_opengl_image> c_media_file_ffms::read(int64_t id)
 
     // Sample aspect ratio
     float aspect = 1.0f;
-    if (frame->ScaledWidth != frame->EncodedWidth || frame->ScaledHeight != frame->EncodedHeight)
-        aspect = frame->ScaledWidth / frame->ScaledHeight;
+    if (frame->ScaledWidth != frame->EncodedWidth || frame->ScaledHeight != frame->EncodedHeight) {
+        aspect =
+            (static_cast<float>(frame->ScaledWidth) / static_cast<float>(frame->ScaledHeight)) /
+            (static_cast<float>(frame->EncodedWidth) / static_cast<float>(frame->EncodedHeight));
+    }
 
     // Target image
     auto image = std::make_shared<c_opengl_image>(
