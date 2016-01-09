@@ -8,6 +8,7 @@
 
 // Internal
 #include "config.hpp"
+#include "timer.hpp"
 
 // PortAudio
 #include <portaudio.h>
@@ -21,11 +22,23 @@ class c_audio_source : boost::noncopyable
         ~c_audio_source();
 
         // Parameters
-        int samplerate() { return 44100; }
+        uint32_t samplerate() { return m_samplerate; }
+        uint32_t buffersize() { return m_buffersize; }
+
+        // Read
+        bool read(void* buffer, uint32_t frames, int64_t& timestamp);
 
     private:
         // Initialization
         static std::once_flag m_pa_initialize_once;
+
+        // Stream
+        PaStream* m_stream;
+
+        // Parameters
+        uint32_t m_samplerate;
+        uint32_t m_buffersize;
+        int64_t m_latency;
 };
 
 #endif

@@ -11,6 +11,7 @@
 #include "timer.hpp"
 #include "controller/tempo.hpp"
 #include "controller/device.hpp"
+#include "audio/tempodetect.hpp"
 
 // C++
 #include <map>
@@ -90,6 +91,9 @@ class c_controller : boost::noncopyable
 
         // Tempo
         std::vector<std::shared_ptr<c_controller_tempo>> m_tempos;
+
+        // Detector
+        std::shared_ptr<c_audio_tempodetect> m_tempodetector;
 };
 
 #endif

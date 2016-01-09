@@ -28,6 +28,9 @@ c_controller::c_controller()
     for (auto& device : leapmotion_devices)
         m_devices.push_back(device);
     #endif
+
+    // Tempo detector
+    m_tempodetector = std::make_shared<c_audio_tempodetect>();
 }
 
 // Input

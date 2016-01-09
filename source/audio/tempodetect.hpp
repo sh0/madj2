@@ -9,6 +9,7 @@
 // Internal
 #include "config.hpp"
 #include "timer.hpp"
+#include "audio/source.hpp"
 
 // Aubio
 #include <aubio/aubio.h>
@@ -29,8 +30,13 @@ class c_audio_tempodetect : boost::noncopyable
         std::shared_ptr<fvec_t> m_buffer_src;
         std::shared_ptr<fvec_t> m_buffer_dst;
 
+        // Source
+        std::shared_ptr<c_audio_source> m_source;
+
         // Thread
         std::atomic_bool m_run;
+        std::thread m_thread;
+        std::mutex m_mutex;
         void thread();
 };
 
