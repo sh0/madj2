@@ -1,6 +1,6 @@
 /*
- * Prismriver project
- * Copyright (C) 2015 Siim Meerits <siim@yutani.ee>
+ * MADJ project
+ * Copyright (C) 2016 Siim Meerits <siim@yutani.ee>
  */
 
 #ifndef H_OPENGL_VERTEX

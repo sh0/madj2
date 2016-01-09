@@ -1,6 +1,6 @@
 #
 # CMake tools
-# Copyright (C) 2014 Siim Meerits <siim@yutani.ee>
+# Copyright (C) 2016 Siim Meerits <siim@yutani.ee>
 #
 
 # Messages
