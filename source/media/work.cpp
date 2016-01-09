@@ -103,9 +103,11 @@ void c_media_work::dispatch(c_time_cyclic& timer)
 }
 
 // Stop playback
-void c_media_work::playback_stop()
+void c_media_work::playback_stop(double time)
 {
     m_playback_mode = PLAYBACK_STOP;
+    if (time >= 0.0)
+        m_playback_time = std::max<double>(std::min<double>(time, m_media_frames * m_media_rate), 0.0);
 }
 
 // Start playback

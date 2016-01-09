@@ -57,7 +57,7 @@ class c_media_work : boost::noncopyable
         double playback_length() { return static_cast<double>(m_media_frames) * m_media_rate; }
 
         // Stop playback
-        void playback_stop();
+        void playback_stop(double time = -1.0);
 
         // Start playback
         void playback_play(double speed, double time = -1.0);

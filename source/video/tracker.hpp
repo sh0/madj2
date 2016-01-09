@@ -51,6 +51,9 @@ class c_video_tracker : public c_video_view, boost::noncopyable
         // Events
         bool event_action(std::string action, bool active);
 
+        // Media
+        std::shared_ptr<c_media_work> work() { return m_media_work; }
+
     private:
         // Info
         std::string m_name;

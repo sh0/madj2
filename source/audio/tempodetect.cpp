@@ -22,9 +22,8 @@ c_audio_tempodetect::c_audio_tempodetect()
     // Thresholds
     auto threshold_silence = aubio_tempo_get_silence(m_tempo.get());
     auto threshold_peak = aubio_tempo_get_threshold(m_tempo.get());
-    std::cout << boost::format("Audio: threshold_silence = %f, threshold_peak = %f") % threshold_silence % threshold_peak << std::endl;
-
-    aubio_tempo_set_threshold(m_tempo.get(), 0.15f);
+    //std::cout << boost::format("Audio: threshold_silence = %f, threshold_peak = %f") % threshold_silence % threshold_peak << std::endl;
+    //aubio_tempo_set_threshold(m_tempo.get(), 0.15f);
 
     // Buffers
     uint32_t buffer_size = m_source->buffersize();

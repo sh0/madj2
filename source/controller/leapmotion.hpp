@@ -33,6 +33,9 @@ class c_controller_leapmotion : public c_controller_device, protected Leap::List
         // Controller
         Leap::Controller m_controller;
 
+        // Temporary
+        double m_temp_videopos;
+        float m_temp_handpos;
 };
 
 #endif

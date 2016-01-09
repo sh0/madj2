@@ -1,19 +1,38 @@
 <?xml version="1.0" ?>
-<GUILayout version="4">
-<Window type="DefaultWindow" name="Root">
-    <Property name="Area" value="{{0,0},{0,0},{1,0},{1,0}}" />
-    <Property name="MaxSize" value="{{1,0},{1,0}}" />
-    <Property name="AutoRenderingSurface" value="false" />
 
-    <!--Window type="GWEN/StaticImage" name="Background" >
+<GUILayout version="4">
+    <Window type="DefaultWindow" name="TrackerRoot">
         <Property name="Area" value="{{0,0},{0,0},{1,0},{1,0}}" />
-        <Property name="Position" value="{{0,0},{0,0}}" />
-        <Property name="Size" value="{{1,0},{1,0}}" />
-        <Property name="MinSize" value="{{1,0},{1,0}}" />
         <Property name="MaxSize" value="{{1,0},{1,0}}" />
-        <Property name="Image" value="madj/ClientBrush" />
-        <Property name="VertFormatting" value="Tiled" />
-        <Property name="HorzFormatting" value="Tiled" />
-    </Window-->
-</Window>
+        <Property name="AutoRenderingSurface" value="false" />
+
+        <Window type="VerticalLayoutContainer" name="TrackerLayout" >
+            <Property name="Area" value="{{0,0},{0,0},{1,0},{1,0}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+            <Window type="GWEN/Menubar" name="TrackerMenu" >
+                <Property name="Area" value="{{0,0},{0,0},{1,0},{0,24}}" />
+                <Property name="MaxSize" value="{{1,0},{0,24}}" />
+                <Window type="GWEN/MenuItem" name="TrackerMenuQuit" >
+                    <Property name="Area" value="{{0,5},{0,0},{0,54},{0,17}}" />
+                    <Property name="Text" value="Quit" />
+                    <Property name="VerticalAlignment" value="Centre" />
+                    <Property name="WantsMultiClickEvents" value="false" />
+                </Window>
+            </Window>
+            <Window type="DefaultWindow" name="TrackerClient" >
+                <Property name="Area" value="{{0,0},{0,24},{1,0},{1,0}}" />
+                <Property name="MaxSize" value="{{1,0},{1,0}}" />
+            </Window>
+        </Window>
+        <!--Window type="GWEN/StaticImage" name="Background" >
+            <Property name="Area" value="{{0,0},{0,0},{1,0},{1,0}}" />
+            <Property name="Position" value="{{0,0},{0,0}}" />
+            <Property name="Size" value="{{1,0},{1,0}}" />
+            <Property name="MinSize" value="{{1,0},{1,0}}" />
+            <Property name="MaxSize" value="{{1,0},{1,0}}" />
+            <Property name="Image" value="madj/ClientBrush" />
+            <Property name="VertFormatting" value="Tiled" />
+            <Property name="HorzFormatting" value="Tiled" />
+        </Window-->
+    </Window>
 </GUILayout>

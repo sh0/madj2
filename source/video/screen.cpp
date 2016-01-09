@@ -53,7 +53,8 @@ c_video_screen::c_video_screen(
 
     // Create window
     std::string title = std::string("madj - ") + m_name;
-    Uint32 flags = SDL_WINDOW_OPENGL | (m_window_fullscreen ? SDL_WINDOW_BORDERLESS : 0) | SDL_WINDOW_RESIZABLE;
+    Uint32 flags =
+        SDL_WINDOW_OPENGL | (m_window_fullscreen ? (SDL_WINDOW_BORDERLESS | SDL_WINDOW_FULLSCREEN_DESKTOP) : SDL_WINDOW_RESIZABLE);
     m_window = SDL_CreateWindow(title.c_str(), m_window_pos_x, m_window_pos_y, m_window_width, m_window_height, flags);
     if (m_window == nullptr)
         throw c_exception("Screen: Failed to create window!", { throw_format("name", m_name), throw_format("error", SDL_GetError()) });
@@ -99,8 +100,9 @@ c_video_screen::c_video_screen(
     //m_cegui->context().setDefaultTooltipType("TaharezLook/Tooltip");
 
     // Root window
-    m_cegui_root = reinterpret_cast<CEGUI::DefaultWindow*>(CEGUI::WindowManager::getSingleton().loadLayoutFromFile("tracker-window.layout"));
+    m_cegui_root = reinterpret_cast<CEGUI::DefaultWindow*>(CEGUI::WindowManager::getSingleton().loadLayoutFromFile("screen.layout"));
     m_cegui_root->setUsingAutoRenderingSurface(false);
+    //m_cegui_client = dynamic_cast<CEGUI::DefaultWindow*>(m_cegui_root->getChildRecursive("TrackerClient"));
     m_cegui->context().setRootWindow(m_cegui_root);
 
     // Error check
@@ -172,8 +174,15 @@ void c_video_screen::dispatch_input(c_time_cyclic& timer)
 
                     // Send event to controller
                     bool handled = false;
-                    if (key_sym.sym == SDLK_ESCAPE) {
+                    if (key_sym.sym == SDLK_ESCAPE && key_down) {
                         c_global::context->kill();
+                        handled = true;
+                    } else if (key_sym.sym == SDLK_RETURN && (key_sym.mod & KMOD_ALT) != 0 && key_down) {
+                        m_window_fullscreen = !m_window_fullscreen;
+                        //m_context->cegui_renderer().grabTextures();
+                        if (SDL_SetWindowFullscreen(m_window, (m_window_fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0)) < 0)
+                            std::cout << boost::format("Screen: Failed to resize window! %s") % SDL_GetError() << std::endl;
+                        //m_context->cegui_renderer().restoreTextures();
                         handled = true;
                     } else {
                         handled = c_global::controller->input_keyboard(key_name, key_down);
@@ -246,9 +255,10 @@ void c_video_screen::dispatch_input(c_time_cyclic& timer)
                             // New size
                             SDL_GL_GetDrawableSize(m_window, &m_window_width, &m_window_height);
 
+                            // Debug
+                            //std::cout << boost::format("Screen: New rendering surface! width = %d, height = %d") % m_window_width % m_window_height << std::endl;
+
                             // Renderer
-                            //m_context->cegui_renderer().grabTextures();
-                            //m_context->cegui_renderer().restoreTextures();
                             m_context->cegui_renderer().setDisplaySize(CEGUI::Sizef(m_window_width, m_window_height));
                         }
                         break;
