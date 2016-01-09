@@ -65,9 +65,15 @@ bool c_controller::input_keyboard(std::string key, bool value)
             map.active = active;
 
             // Exectute
-            for (auto& tracker : c_global::video->tracker_list()) {
-                if (tracker->name() == map.target)
-                    handled = (tracker->event_action(map.action, active) ? true : handled);
+            if (map.target == "tempo_a" && m_tempos.size() >= 1) {
+                handled = (m_tempos[0]->event_action(map.action, active) ? true : handled);
+            } else if (map.target == "tempo_b" && m_tempos.size() >= 2) {
+                handled = (m_tempos[1]->event_action(map.action, active) ? true : handled);
+            } else {
+                for (auto& tracker : c_global::video->tracker_list()) {
+                    if (tracker->name() == map.target)
+                        handled = (tracker->event_action(map.action, active) ? true : handled);
+                }
             }
         }
     }

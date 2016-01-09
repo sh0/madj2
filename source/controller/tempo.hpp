@@ -38,6 +38,10 @@ class c_controller_tempo : boost::noncopyable
         bool tempo_state() { return m_tempo_state; }
         double tempo_value_at_timepoint(int64_t tp);
         bool tempo_beat_in_interval(int64_t tp_a, int64_t tp_b); // [tp_a, tp_b)
+        double tempo_bpm() { return m_tempo_bpm; }
+
+        // Events
+        bool event_action(std::string action, bool active);
 
     private:
         // Definition
@@ -55,6 +59,7 @@ class c_controller_tempo : boost::noncopyable
         int64_t m_tempo_start;
         int64_t m_tempo_duration;
         std::vector<int64_t> m_tempo_beats;
+        double m_tempo_bpm;
 };
 
 #endif

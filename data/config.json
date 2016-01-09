@@ -65,12 +65,13 @@
         // Keyboard
         [ "key", "escape", "system", "quit" ],
         // File browser
-        [ "key", "ctrl+x", "work_a", "browser_toggle" ],
         [ "key", "ctrl+1", "work_a", "browser_open" ],
-        [ "key", "up", "work_a", "browser_up" ],
-        [ "key", "down", "work_a", "browser_down" ],
-        [ "key", "page_up", "work_a", "browser_pgup" ],
-        [ "key", "page_down", "work_a", "browser_pgdn" ],
+        [ "key", "ctrl+2", "work_b", "browser_open" ],
+        // Tempo
+        [ "key", "shift+1", "tempo_a", "define_state" ],
+        [ "key", "shift+1+tab", "tempo_a", "define_beat" ],
+        [ "key", "shift+2", "tempo_b", "define_state" ],
+        [ "key", "shift+2+tab", "tempo_b", "define_beat" ],
         // Seek
         [ "key", "space", "work_a", "seek_pause" ],
         [ "key", "z", "work_a", "seek_play_rev" ],
@@ -79,10 +80,6 @@
         [ "key", "s", "work_a", "seek_play_faster" ],
         [ "key", "c", "work_a", "seek_sync_rev" ],
         [ "key", "v", "work_a", "seek_sync_fow" ],
-        // Visualizer
-        [ "key", "ctrl+q", "work_a", "visualizer_toggle" ],
-        [ "key", "ctrl+w", "work_a", "visualizer_prev" ],
-        [ "key", "ctrl+e", "work_a", "visualizer_next" ],
 
         // Joysticks
         [ "joy_a", "start", "system", "quit" ],

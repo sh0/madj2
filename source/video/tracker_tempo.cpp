@@ -42,14 +42,19 @@ void c_video_tracker_tempo::dispatch(c_time_cyclic& timer)
         else if (tempo->freeform_state())
             m_button[i]->setText("F");
         else if (tempo->tempo_state())
-            m_button[i]->setText("T");
+            m_button[i]->setText(boost::str(boost::format("%.0f") % tempo->tempo_bpm()));
         else
             m_button[i]->setText("C");
 
         // Tempo
-        if (tempo->tempo_state())
-            m_progress[i]->setProgress(tempo->tempo_value_at_timepoint(timer.time_this()));
-        else
+        if (tempo->tempo_state()) {
+            double value = tempo->tempo_value_at_timepoint(timer.time_this());
+            //value = 2.0 * std::fabs(value - 0.5);
+            //value = value * value;
+            value = (value < 0.25 ? 1.0 : 0.0);
+            m_progress[i]->setProgress(value);
+        } else {
             m_progress[i]->setProgress(0);
+        }
     }
 }

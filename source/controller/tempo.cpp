@@ -16,7 +16,8 @@ c_controller_tempo::c_controller_tempo() :
     m_freeform_region(0),
     m_freeform_value(0.5),
     // Tempo
-    m_tempo_state(false)
+    m_tempo_state(false),
+    m_tempo_bpm(0)
 {
 
 }
@@ -33,16 +34,36 @@ void c_controller_tempo::define_end()
 {
     // Validate tempo
     if (m_define_beats.size() > 2) {
-        m_tempo_start = m_tempo_beats.front();
+        // Start offset
+        m_tempo_start = m_define_beats.front();
 
+        // Beat durations
         m_tempo_beats.clear();
         for (size_t i = 0; i < m_define_beats.size() - 1; i++)
             m_tempo_beats.push_back(m_define_beats[i + 1] - m_define_beats[i]);
 
+        // Total duration
         m_tempo_duration = 0.0;
         for (auto duration : m_tempo_beats)
             m_tempo_duration += duration;
 
+        // Simple beat detection
+        int64_t simple_duration = m_tempo_duration / m_tempo_beats.size();
+        bool simple_beat = true;
+        for (auto duration : m_tempo_beats) {
+            if (std::abs(duration - simple_duration) > 0.2 * simple_duration)
+                simple_beat = false;
+        }
+        if (simple_beat) {
+            //std::cout << "Tempo: Simple beat!" << std::endl;
+            for (auto& duration : m_tempo_beats)
+                duration = simple_duration;
+        }
+
+        // BPM
+        m_tempo_bpm = 60.0 / g_time_us2sec(m_tempo_duration / m_tempo_beats.size());
+
+        // Set as valid
         m_tempo_state = true;
     }
 
@@ -136,4 +157,24 @@ bool c_controller_tempo::tempo_beat_in_interval(int64_t tp_a, int64_t tp_b)
         return m_tempo_beats.size();
     };
     return (beat_phase_counter(tp_a) == beat_phase_counter(tp_b) ? false : true);
+}
+
+// Events
+bool c_controller_tempo::event_action(std::string action, bool active)
+{
+    // Define
+    if (action == "define_state") {
+        if (active)
+            define_begin();
+        else
+            define_end();
+        return true;
+    } else if (action == "define_beat") {
+        if (active)
+            define_beat();
+        return true;
+    }
+
+    // Not handled
+    return false;
 }

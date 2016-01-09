@@ -149,12 +149,6 @@ void c_video_screen::dispatch_input(c_time_cyclic& timer)
                     std::string key_name = SDL_GetKeyName(key_sym.sym);
                     boost::algorithm::to_lower(key_name);
                     bool key_down = (event.type == SDL_KEYDOWN);
-                    /*
-                    bool key_ctrl = ((key_sym.mod & KMOD_CTRL) != 0);
-                    bool key_shift = ((key_sym.mod & KMOD_SHIFT) != 0);
-                    bool key_alt = ((key_sym.mod & KMOD_ALT) != 0);
-                    bool key_gui = ((key_sym.mod & KMOD_GUI) != 0);
-                    */
 
                     // Specific key names
                     switch (key_sym.sym) {
@@ -175,14 +169,6 @@ void c_video_screen::dispatch_input(c_time_cyclic& timer)
                             key_name = "gui";
                             break;
                     }
-
-                    // Debug
-                    /*
-                    std::cout << boost::format("Screen: Key %s! sym = %s, ctrl = %s, shift = %s, alt = %s, gui = %s")
-                        % (key_down ? "down" : "up") % key_name
-                        % (key_ctrl ? "true" : "false") % (key_shift ? "true" : "false")
-                        % (key_alt ? "true" : "false") % (key_gui ? "true" : "false") << std::endl;
-                    */
 
                     // Send event to controller
                     bool handled = false;
