@@ -138,22 +138,18 @@ c_opengl_shader_program::c_opengl_shader_program(std::string name, std::vector<s
             throw std::runtime_error(boost::str(boost::format("Shader: Failed to get uniform info! name = \"%s\", id = %d, error = \"%s\"") % m_name % i % g_opengl_error(err)));
         } else if (uni_len > 0) {
             // Get address
-            std::cout << boost::format("Shader (%s): Uniform: name = \"%s\", size = %d") % m_name % uni_str.get() % uni_size << std::endl;
+            std::string uni_name = uni_str.get();
             GLint uni_addr = glGetUniformLocation(m_program, uni_str.get());
             if (uni_addr != -1) {
-                m_uniform.insert({
-                    uni_str.get(),
-                    c_opengl_uniform{
-                        std::string(uni_str.get()), uni_size,
-                        uni_type, uni_addr
-                    }
-                });
+                c_opengl_uniform uniform{uni_name, uni_size, uni_type, uni_addr};
+                std::cout << boost::format("Shader (%s): Uniform: name = \"%s\", type = \"%s\", size = %d, address = %d")
+                    % m_name % uniform.name() % uniform.desc() % uniform.size() % uniform.addr() << std::endl;
+                m_uniform.insert({ uni_name, uniform });
             }
         }
     }
 
-
-    // Get uniform list
+    // Get attribute list
     int attr_active = 0;
     glGetProgramiv(m_program, GL_ACTIVE_ATTRIBUTES, &attr_active);
     int attr_maxlen = 0;
@@ -180,14 +176,23 @@ c_opengl_shader_program::c_opengl_shader_program(std::string name, std::vector<s
         if (glGetError() != GL_NO_ERROR) {
             throw std::runtime_error(boost::str(boost::format("Shader: Failed to get attribute info! name = \"%s\", id = %d") % m_name % i));
         } else if (attr_len > 0) {
-            m_attribute.insert({ attr_str.get(), i });
+            std::string attr_name = attr_str.get();
+            GLint attr_addr = glGetAttribLocation(m_program, attr_str.get());
+            if (attr_addr != -1) {
+                c_opengl_uniform attribute{attr_name, attr_size, attr_type, attr_addr};
+                std::cout << boost::format("Shader (%s): Attribute: name = \"%s\", type = \"%s\", size = %d, address = %d")
+                    % m_name % attribute.name() % attribute.desc() % attribute.size() % attribute.addr() << std::endl;
+                m_attribute.insert({ attr_name, attribute });
+            }
         }
     }
 
     // Debug
+    /*
     std::cout <<
-        boost::format("Shader (%1%): uniforms = %2%, attributes = %3%") %
+        boost::format("Shader (%1%): Parameters: uniforms = %2%, attributes = %3%") %
         m_name % uni_active % attr_active << std::endl;
+    */
 }
 
 c_opengl_shader_program::~c_opengl_shader_program()
@@ -240,13 +245,13 @@ c_opengl_uniform* c_opengl_shader_program::uniform(std::string name)
 }
 
 // Attributes
-GLint c_opengl_shader_program::attribute(std::string name)
+c_opengl_uniform* c_opengl_shader_program::attribute(std::string name)
 {
     // Find
     auto it = m_attribute.find(name);
     if (it == m_attribute.end())
-        return -1;
-    return it->second;
+        return nullptr;
+    return &(it->second);
 }
 
 // Info log
@@ -281,14 +286,15 @@ c_opengl_shader::c_opengl_shader()
         throw std::runtime_error(boost::str(boost::format("Shader: Data folder does not exist! path = \"%s\"") % path.native()));
 
     // Program list
-    path /= "program.list";
-    if (!boost::filesystem::exists(path))
-        throw std::runtime_error(boost::str(boost::format("Shader: Program list file does not exist! path = \"%s\"") % path.native()));
+    boost::filesystem::path path_programs = path;
+    path_programs /= "program.list";
+    if (!boost::filesystem::exists(path_programs))
+        throw std::runtime_error(boost::str(boost::format("Shader: Program list file does not exist! path = \"%s\"") % path_programs.native()));
 
-    // Load
-    std::ifstream program_fs(path.native());
+    // Load list
+    std::ifstream program_fs(path_programs.native());
     if (!program_fs.is_open())
-        throw std::runtime_error(boost::str(boost::format("Shader: Failed to open program list file! path = \"%s\"") % path.native()));
+        throw std::runtime_error(boost::str(boost::format("Shader: Failed to open program list file! path = \"%s\"") % path_programs.native()));
     for (std::string line; std::getline(program_fs, line);) {
         // Trim
         boost::trim(line);
@@ -313,53 +319,49 @@ c_opengl_shader::c_opengl_shader()
         for (auto& str : list)
             boost::trim(str);
 
+        // Gather objects
+        std::vector<std::shared_ptr<c_opengl_shader_object>> objects;
+        for (auto& item : list) {
+            // Path
+            boost::filesystem::path fn = path;
+            fn /= item + ".glsl";
+
+            // Object
+            std::shared_ptr<c_opengl_shader_object> object;
+            if (boost::ends_with(item, "-vertex")) {
+                object = std::make_shared<c_opengl_shader_object>(item, e_opengl_shader_type::vertex, fn.native());
+            } else if (boost::ends_with(item, "-tess_control")) {
+                object = std::make_shared<c_opengl_shader_object>(item, e_opengl_shader_type::tess_control, fn.native());
+            } else if (boost::ends_with(item, "-tess_evaluation")) {
+                object = std::make_shared<c_opengl_shader_object>(item, e_opengl_shader_type::tess_evaluation, fn.native());
+            } else if (boost::ends_with(item, "-geometry")) {
+                object = std::make_shared<c_opengl_shader_object>(item, e_opengl_shader_type::geometry, fn.native());
+            } else if (boost::ends_with(item, "-fragment")) {
+                object = std::make_shared<c_opengl_shader_object>(item, e_opengl_shader_type::fragment, fn.native());
+            } else {
+                throw std::runtime_error(boost::str(boost::format("Shader: Unknown type of shader! item = \"%s\", name = \"%s\"") % item % name));
+            }
+            objects.push_back(object);
+        }
+        g_opengl_check();
+
+        // Link
+        if (objects.empty())
+            continue;
+        auto program = std::make_shared<c_opengl_shader_program>(name, objects);
+        g_opengl_check();
+
         // Program
-        m_programs[name] = list;
+        m_programs[name] = program;
     }
     g_opengl_check();
 }
 
 std::shared_ptr<c_opengl_shader_program> c_opengl_shader::program(std::string name)
 {
-    // Get list of objects
-    std::vector<std::string> list = m_programs[name];
-    if (list.empty())
+    // Find
+    auto it = m_programs.find(name);
+    if (it == m_programs.end())
         return nullptr;
-
-    // Path
-    boost::filesystem::path path(MJ_DATA_PATH);
-    path /= "shader";
-
-    // Gather objects
-    std::vector<std::shared_ptr<c_opengl_shader_object>> objects;
-    for (auto& item : list) {
-        // Path
-        boost::filesystem::path fn = path;
-        fn /= item + ".glsl";
-
-        // Object
-        std::shared_ptr<c_opengl_shader_object> object;
-        if (boost::ends_with(item, "-vertex")) {
-            object = std::make_shared<c_opengl_shader_object>(item, e_opengl_shader_type::vertex, fn.native());
-        } else if (boost::ends_with(item, "-tess_control")) {
-            object = std::make_shared<c_opengl_shader_object>(item, e_opengl_shader_type::tess_control, fn.native());
-        } else if (boost::ends_with(item, "-tess_evaluation")) {
-            object = std::make_shared<c_opengl_shader_object>(item, e_opengl_shader_type::tess_evaluation, fn.native());
-        } else if (boost::ends_with(item, "-geometry")) {
-            object = std::make_shared<c_opengl_shader_object>(item, e_opengl_shader_type::geometry, fn.native());
-        } else if (boost::ends_with(item, "-fragment")) {
-            object = std::make_shared<c_opengl_shader_object>(item, e_opengl_shader_type::fragment, fn.native());
-        } else {
-            throw std::runtime_error(boost::str(boost::format("Shader: Unknown type of shader! item = \"%s\", name = \"%s\"") % item % name));
-        }
-        objects.push_back(object);
-    }
-    g_opengl_check();
-
-    // Link
-    if (objects.empty())
-        return nullptr;
-    auto program = std::make_shared<c_opengl_shader_program>(name, objects);
-    g_opengl_check();
-    return program;
+    return it->second;
 }

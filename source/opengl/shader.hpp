@@ -78,7 +78,7 @@ class c_opengl_shader_program : boost::noncopyable
         c_opengl_uniform* uniform(std::string name);
 
         // Attributes
-        GLint attribute(std::string name);
+        c_opengl_uniform* attribute(std::string name);
 
     private:
         // Info
@@ -89,7 +89,7 @@ class c_opengl_shader_program : boost::noncopyable
 
         // Uniforms and attributes
         std::map<std::string, c_opengl_uniform> m_uniform;
-        std::map<std::string, GLint> m_attribute;
+        std::map<std::string, c_opengl_uniform> m_attribute;
 
         // Info log
         void gl_info_program(GLuint obj);
@@ -107,7 +107,7 @@ class c_opengl_shader : boost::noncopyable
 
     private:
         // Program objects
-        std::map<std::string, std::vector<std::string>> m_programs;
+        std::map<std::string, std::shared_ptr<c_opengl_shader_program>> m_programs;
 };
 
 #endif

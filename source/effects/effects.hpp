@@ -14,11 +14,11 @@
 #include <array>
 
 // Effect base class
-class c_effects_base
+class c_effects_effect
 {
     public:
         // Destructor
-        virtual ~c_effects_base() { }
+        virtual ~c_effects_effect() { }
 
         // Execute
         virtual void process(std::shared_ptr<c_opengl_texture_2d> src, std::shared_ptr<c_opengl_texture_2d> dst) = 0;

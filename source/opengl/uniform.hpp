@@ -12,9 +12,6 @@
 // C++
 #include <map>
 
-// OpenCV
-#include <opencv2/core.hpp>
-
 // Shader uniform class
 class c_opengl_uniform
 {
@@ -25,7 +22,8 @@ class c_opengl_uniform
         ) :
             m_name(name),
             m_size(size),
-            m_type(m_typemap[type_gl]),
+            m_type(m_typemap[type_gl].type),
+            m_desc(m_typemap[type_gl].desc),
             m_addr(addr)
         { }
 
@@ -61,9 +59,11 @@ class c_opengl_uniform
         };
 
         // Properties
-        std::string& name() { return m_name; }
+        std::string name() { return m_name; }
         GLint size() { return m_size; }
         e_type type() { return m_type; }
+        std::string desc() { return m_desc; }
+        GLint addr() { return m_addr; }
 
         // Floats
         void set_f1(GLfloat v0) {
@@ -238,23 +238,50 @@ class c_opengl_uniform
         }
 
         // Float matrices
-        void set_f3x3(cv::Matx33f& m) {
+        void set_f2x2(float* r) {
+            assert(m_type == e_type::f2x2);
+            glUniformMatrix2fv(m_addr, 1, GL_FALSE, r);
+        }
+        void set_f3x3(float* r) {
             assert(m_type == e_type::f3x3);
-            float r[9];
-            for (int i = 0; i < 3; i++)
-                for (int j = 0; j < 3; j++)
-                    r[i * 3 + j] = m(j, i); //m(i, j);
             glUniformMatrix3fv(m_addr, 1, GL_FALSE, r);
         }
-
         void set_f4x4(float* r) {
             assert(m_type == e_type::f4x4);
             glUniformMatrix4fv(m_addr, 1, GL_FALSE, r);
+        }
+        void set_f2x3(float* r) {
+            assert(m_type == e_type::f2x3);
+            glUniformMatrix2x3fv(m_addr, 1, GL_FALSE, r);
+        }
+        void set_f2x4(float* r) {
+            assert(m_type == e_type::f2x4);
+            glUniformMatrix2x4fv(m_addr, 1, GL_FALSE, r);
+        }
+        void set_f3x2(float* r) {
+            assert(m_type == e_type::f3x2);
+            glUniformMatrix3x2fv(m_addr, 1, GL_FALSE, r);
+        }
+        void set_f3x4(float* r) {
+            assert(m_type == e_type::f3x4);
+            glUniformMatrix3x4fv(m_addr, 1, GL_FALSE, r);
+        }
+        void set_f4x2(float* r) {
+            assert(m_type == e_type::f4x2);
+            glUniformMatrix4x2fv(m_addr, 1, GL_FALSE, r);
+        }
+        void set_f4x3(float* r) {
+            assert(m_type == e_type::f4x3);
+            glUniformMatrix4x3fv(m_addr, 1, GL_FALSE, r);
         }
         #if 0
         void set_f2x2(glm::mat2x2& m) {
             assert(m_type == e_type::f2x2);
             glUniformMatrix2fv(m_addr, 1, GL_FALSE, glm::value_ptr(m));
+        }
+        void set_f3x3(glm::mat3x3& m) {
+            assert(m_type == e_type::f3x3);
+            glUniformMatrix3fv(m_addr, 1, GL_FALSE, glm::value_ptr(m));
         }
         void set_f4x4(glm::mat4x4& m) {
             assert(m_type == e_type::f4x4);
@@ -347,10 +374,15 @@ class c_opengl_uniform
         std::string m_name;
         GLint m_size;
         e_type m_type;
+        std::string m_desc;
         GLint m_addr;
 
         // Typemap
-        static std::map<GLenum, e_type> m_typemap;
+        struct s_type {
+            e_type type;
+            std::string desc;
+        };
+        static std::map<GLenum, s_type> m_typemap;
 };
 
 #endif
