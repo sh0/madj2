@@ -23,6 +23,7 @@
 #include <vector>
 
 // Boost
+#include <boost/assert.hpp>
 #include <boost/format.hpp>
 #include <boost/noncopyable.hpp>
 

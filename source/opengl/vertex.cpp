@@ -62,3 +62,32 @@ void c_opengl_vertex::unbind()
     glBindVertexArray(0);
     m_active = false;
 }
+
+// Upload
+void c_opengl_vertex_rectangle::upload(GLint index, float x1, float y1, float x2, float y2)
+{
+    // Buffer
+    std::array<float, 2 * 4> data = {{
+        x1, y1,
+        x2, y1,
+        x2, y2,
+        x1, y2
+    }};
+    m_buffer.upload(data.data(), data.size() * sizeof(float), e_opengl_buffer_usage::dynamic_draw);
+
+    // Array
+    m_vertex.bind();
+    m_buffer.bind();
+    glVertexAttribPointer(index, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+    glEnableVertexAttribArray(index),
+    m_buffer.unbind();
+    m_vertex.unbind();
+}
+
+// Draw
+void c_opengl_vertex_rectangle::draw()
+{
+    m_vertex.bind();
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    m_vertex.unbind();
+}

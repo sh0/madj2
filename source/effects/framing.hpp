@@ -9,6 +9,8 @@
 // Internal
 #include "config.hpp"
 #include "effects/effects.hpp"
+#include "opengl/shader.hpp"
+#include "opengl/vertex.hpp"
 
 // Zoombox framing
 class c_effects_zoombox : public c_effects_effect, boost::noncopyable
@@ -23,6 +25,9 @@ class c_effects_zoombox : public c_effects_effect, boost::noncopyable
     private:
         // Shader
         std::shared_ptr<c_opengl_shader_program> m_program;
+
+        // Vertex
+        std::shared_ptr<c_opengl_vertex_rectangle> m_rectangle;
 };
 
 #endif

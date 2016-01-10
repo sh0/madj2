@@ -283,9 +283,6 @@ void c_video_screen::dispatch_render(c_time_cyclic& timer)
     }
     g_opengl_check();
 
-    // Init screen drawing
-    gl_init();
-
     // Time pulses
     const float time_current = SDL_GetTicks() / 1000.f;
     const float time_elapsed = time_current - m_time;
@@ -297,6 +294,9 @@ void c_video_screen::dispatch_render(c_time_cyclic& timer)
     for (auto& view : m_view_list)
         view->dispatch(timer);
     g_opengl_check();
+
+    // Init screen drawing
+    gl_init();
 
     // CEGUI
     CEGUI::Rectf area(CEGUI::Vector2f(0.0f, 0.0f), CEGUI::Sizef(m_window_width, m_window_height));

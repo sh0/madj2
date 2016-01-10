@@ -12,7 +12,14 @@
 // Constructor
 c_effects_zoombox::c_effects_zoombox()
 {
+    // Shader
     m_program = c_global::video->shader()->program("effect-zoombox");
+    auto m_vecpos = m_program->attribute("m_vecpos");
+    BOOST_ASSERT(m_vecpos);
+
+    // Rectangle
+    m_rectangle = std::make_shared<c_opengl_vertex_rectangle>();
+    m_rectangle->upload(m_vecpos->addr(), -1.0f, -1.0f, 1.0f, 1.0f);
 }
 
 // Execute
@@ -23,8 +30,6 @@ void c_effects_zoombox::process(std::shared_ptr<c_opengl_texture_2d> src, std::s
     BOOST_ASSERT(u_texture);
     auto u_framing = m_program->uniform("u_framing");
     BOOST_ASSERT(u_framing);
-    auto m_vecpos = m_program->attribute("m_vecpos");
-    BOOST_ASSERT(m_vecpos);
 
     // Texture
     src->bind(0);
@@ -36,7 +41,7 @@ void c_effects_zoombox::process(std::shared_ptr<c_opengl_texture_2d> src, std::s
 
     // Render
     m_program->use_begin();
-
+    m_rectangle->draw();
     m_program->use_end();
 
     // Texture

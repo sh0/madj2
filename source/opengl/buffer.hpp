@@ -113,7 +113,7 @@ class c_opengl_buffer : boost::noncopyable
         }
 
         // Upload
-        void upload(uint8_t* data, uint32_t size, const e_opengl_buffer_usage usage)
+        void upload(void* data, uint32_t size, const e_opengl_buffer_usage usage)
         {
             // Bind
             bool is_bound = m_active;

@@ -8,15 +8,12 @@
 
 // Internal
 #include "opengl/opengl.hpp"
+#include "opengl/buffer.hpp"
 
 // C++
-#include <stdexcept>
+#include <array>
 
-// Boost
-#include <boost/noncopyable.hpp>
-#include <boost/assert.hpp>
-
-// Vertex class
+// Vertex array object class
 class c_opengl_vertex : boost::noncopyable
 {
     public:
@@ -37,6 +34,21 @@ class c_opengl_vertex : boost::noncopyable
 
         // Bind
         bool m_active;
+};
+
+// Rectangle VAO class
+class c_opengl_vertex_rectangle : boost::noncopyable
+{
+    public:
+        // Upload
+        void upload(GLint index, float x1, float y1, float x2, float y2);
+
+        // Draw
+        void draw();
+
+    private:
+        c_opengl_vertex m_vertex;
+        c_opengl_buffer_array m_buffer;
 };
 
 #endif
