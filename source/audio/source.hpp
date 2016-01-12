@@ -10,6 +10,9 @@
 #include "config.hpp"
 #include "timer.hpp"
 
+// C++
+#include <mutex>
+
 // PortAudio
 #include <portaudio.h>
 

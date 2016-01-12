@@ -11,6 +11,11 @@
 #include "timer.hpp"
 #include "audio/source.hpp"
 
+// C++
+#include <thread>
+#include <mutex>
+#include <atomic>
+
 // Aubio
 #include <aubio/aubio.h>
 
